@@ -2,8 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import ScrollToTop from "../components/ScrollToTop";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { Login } from "@mui/icons-material";
 import Media from "../components/media/Media";
+import Login from "../pages/Login";
+import RouteGuard from "../components/RouteGuard";
 
 const Path = () => {
   return (
@@ -11,7 +12,14 @@ const Path = () => {
       <ScrollToTop />
       <Routes>
         {/* Routes that use the DashboardLayout */}
-        <Route path="/" element={<DashboardLayout />}>
+        <Route
+          path="/"
+          element={
+            <RouteGuard>
+              <DashboardLayout />
+            </RouteGuard>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="/media" element={<Media />} />
         </Route>

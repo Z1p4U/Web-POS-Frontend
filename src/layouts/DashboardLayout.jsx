@@ -17,9 +17,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MediaIcon from "@mui/icons-material/VideoLibrary";
-import { Link, Routes, Route } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
-import Media from "../components/media/Media";
+import { Link, Outlet } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -48,11 +46,10 @@ const DashboardLayout = () => {
           >
             <MenuIcon />
           </IconButton>
-          <h1>App Name</h1>
+          <h1>DeepBlue POS</h1>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer */}
       <Drawer
         variant="permanent"
         open={drawerOpen}
@@ -107,7 +104,6 @@ const DashboardLayout = () => {
         </List>
       </Drawer>
 
-      {/* Main Content */}
       <Box
         component="main"
         sx={{
@@ -118,10 +114,10 @@ const DashboardLayout = () => {
         }}
       >
         <Toolbar />
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/media" element={<Media />} />
-        </Routes>
+
+        {/* Renders the child routes */}
+        <Outlet />
+        {/* Renders the child routes */}
       </Box>
     </Box>
   );

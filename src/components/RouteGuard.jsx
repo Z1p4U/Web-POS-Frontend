@@ -1,14 +1,19 @@
-import Cookies from "js-cookie";
 import { Navigate } from "react-router-dom";
+import useAuth from "../redux/hooks/auth/useAuth";
+import PropTypes from "prop-types";
 
-const RouteGuard = () => {
-  const token = Cookies.get("token");
+const RouteGuard = ({ children }) => {
+  const { isAuthenticated } = useAuth();
 
-  if (token && token != "undefined") {
-    return children;
-  } else {
-    return <Navigate to={"/login"} />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ message: "Session Expired" }} />;
   }
+
+  return children;
+};
+
+RouteGuard.propTypes = {
+  children: PropTypes.object,
 };
 
 export default RouteGuard;
