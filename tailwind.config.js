@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         primary: "#002d5d",
-        secondary: "#dde2e9",
+        secondary: "#38577e",
+        light: "#8AB4F8",
       },
       screens: {
         print: { raw: "print" },

@@ -1,3 +1,19 @@
 * {
   font-family: "Lato", "Noto Sans Myanmar", sans-serif;
 }
+
+.img_div {
+  overflow: hidden;
+  position: relative;
+}
+
+.img_icon {
+  position: absolute;
+  transform: translateY(-200%);
+  right: 10px;
+  top: 10px;
+  transition: 0.5s;
+}
+.img_div:hover .img_icon {
+  transform: translateY(0%);
+}

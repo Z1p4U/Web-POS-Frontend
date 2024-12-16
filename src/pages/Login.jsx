@@ -67,7 +67,7 @@ const Login = () => {
 
             <form onSubmit={submitHandler} className=" flex flex-col gap-4 ">
               {error ? (
-                <div className=" text-primary text-xs">{error}</div>
+                <div className=" text-red-500 text-xs">{error}</div>
               ) : (
                 ""
               )}
