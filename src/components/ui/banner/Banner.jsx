@@ -15,12 +15,12 @@ const Banner = (props) => {
 
         {path1 ? (
           <>
-            <Link
+            <span
               to={`/${path1?.toLowerCase()}`}
-              className={path2 ? "" : "text-primary"}
+              // className={path2 ? "" : "text-primary"}
             >
               {path1}
-            </Link>
+            </span>
             <span> / </span>
           </>
         ) : (

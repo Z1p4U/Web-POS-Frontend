@@ -1,10 +1,7 @@
 import { useState } from "react";
 import Banner from "../ui/banner/Banner";
 import { MdOutlineCloudUpload } from "react-icons/md";
-import { TfiMenuAlt } from "react-icons/tfi";
-import { TbBorderAll } from "react-icons/tb";
 import { Link } from "react-router-dom";
-import MediaTable from "./MediaTable";
 import MediaList from "./MediaList";
 import useMedia from "../../redux/hooks/media/useMedia";
 
@@ -19,7 +16,6 @@ const Media = () => {
   } = useMedia();
 
   const [hover, setHover] = useState(false);
-  const [active, setActive] = useState(1);
 
   const handleSubmit = async (files) => {
     if (!files || files.length === 0) {
@@ -31,8 +27,6 @@ const Media = () => {
     for (let i = 0; i < files.length; i++) {
       photos.append("photos[]", files[i], files[i].name);
     }
-
-    // console.log([...photos.entries()]);
 
     try {
       const response = await handleCreatePhoto(photos);
@@ -93,7 +87,7 @@ const Media = () => {
           </div>
         </div>
 
-        <form className="flex gap-2 justify-center items-center">
+        <form className="flex gap-2 justify-center items-center flex-wrap">
           <input
             multiple
             type="file"
@@ -124,39 +118,17 @@ const Media = () => {
           <Link to={"/"}>Home</Link> <span>/</span> Media <span>/</span>{" "}
           <span className=" text-primary">Uploaded Photo</span>
         </p>
-        <div className="flex">
-          <button
-            onClick={() => setActive(1)}
-            className={`${
-              active != "2" && "text-light"
-            } flex justify-center items-center w-10 h-10 rounded-l-md border border-[#7E7F80] text-[#7E7F80]`}
-          >
-            <TfiMenuAlt size={20} />
-          </button>
-          <button
-            onClick={() => setActive(2)}
-            className={`${
-              active == 2 && "text-light"
-            } flex justify-center items-center w-10 h-10 rounded-r-md border-l-0 border border-[#7E7F80] text-[#7E7F80]`}
-          >
-            <TbBorderAll size={20} />
-          </button>
-        </div>
       </div>
       {/* Media Control */}
 
       {/* MEdia List */}
-      {active == "1" ? (
-        <MediaList
-          pageCount={pageCount}
-          photos={photos}
-          pagination={pagination}
-          handlePaginate={handlePaginate}
-          handleDelete={handleDelete}
-        />
-      ) : (
-        <MediaTable photos={photos} />
-      )}
+      <MediaList
+        pageCount={pageCount}
+        photos={photos}
+        pagination={pagination}
+        handlePaginate={handlePaginate}
+        handleDelete={handleDelete}
+      />
       {/* MEdia List */}
     </>
   );

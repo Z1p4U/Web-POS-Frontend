@@ -5,6 +5,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Media from "../components/media/Media";
 import Login from "../pages/Login";
 import RouteGuard from "../components/RouteGuard";
+import DailyVoucher from "../components/sale/voucher/DailyVoucher";
 
 const Path = () => {
   return (
@@ -22,6 +23,7 @@ const Path = () => {
         >
           <Route index element={<Dashboard />} />
           <Route path="/media" element={<Media />} />
+          <Route path="/daily-voucher" element={<DailyVoucher />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

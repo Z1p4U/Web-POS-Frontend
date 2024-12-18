@@ -7,6 +7,7 @@ export default {
         primary: "#002d5d",
         secondary: "#38577e",
         light: "#8AB4F8",
+        dim: "#7E7F80",
       },
       screens: {
         print: { raw: "print" },

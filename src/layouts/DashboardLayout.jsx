@@ -13,19 +13,58 @@ import {
   ListItemText,
   Divider,
   Tooltip,
+  Collapse,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MediaIcon from "@mui/icons-material/VideoLibrary";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import { Link, Outlet } from "react-router-dom";
 
-const drawerWidth = 240;
+const drawerWidth = 320;
+
+const navItems = [
+  {
+    label: "Dashboard",
+    icon: <DashboardIcon />,
+    path: "/",
+  },
+  {
+    label: "Sale",
+    icon: <StorefrontIcon />,
+    subItems: [
+      { label: "POS", icon: <PointOfSaleIcon />, path: "/sub-item-1" },
+      {
+        label: "Today Sale Record",
+        icon: <ReceiptIcon />,
+        path: "/daily-voucher",
+      },
+    ],
+  },
+  {
+    label: "Media",
+    icon: <MediaIcon />,
+    path: "/media",
+  },
+];
 
 const DashboardLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [submenuOpen, setSubmenuOpen] = useState(false);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
+    if (drawerOpen) {
+      setSubmenuOpen(false); // Collapse submenu when the drawer closes
+    }
+  };
+
+  const toggleSubmenu = () => {
+    setSubmenuOpen(!submenuOpen);
   };
 
   return (
@@ -37,7 +76,8 @@ const DashboardLayout = () => {
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
-        <Toolbar>
+        <Toolbar sx={{ minHeight: 80 }}>
+          {/* Adjust Toolbar height */}
           <IconButton
             color="inherit"
             edge="start"
@@ -64,43 +104,92 @@ const DashboardLayout = () => {
         }}
       >
         <Toolbar />
+        {/* Adjust Toolbar height inside Drawer */}
 
-        {/* Section: Dashboard */}
+        {/* Dynamic Navigation */}
         <List>
-          <Tooltip
-            title="Dashboard"
-            placement="right"
-            disableHoverListener={drawerOpen}
-          >
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/">
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                {drawerOpen && <ListItemText primary="Dashboard" />}
-              </ListItemButton>
-            </ListItem>
-          </Tooltip>
-        </List>
+          {navItems.map((item) => (
+            <Tooltip
+              key={item.label}
+              title={item.label}
+              placement="right"
+              disableHoverListener={drawerOpen}
+            >
+              {item.subItems ? (
+                <>
+                  {/* Parent Menu Item */}
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      sx={{ minHeight: 50 }}
+                      onClick={toggleSubmenu}
+                    >
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      {drawerOpen && (
+                        <ListItemText
+                          primary={item.label}
+                          primaryTypographyProps={{
+                            fontSize: "15px",
+                          }}
+                          sx={{ marginLeft: -1 }}
+                        />
+                      )}
+                      {drawerOpen &&
+                        (submenuOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+                    </ListItemButton>
+                  </ListItem>
 
-        <Divider />
-
-        {/* Section: Media */}
-        <List>
-          <Tooltip
-            title="Media"
-            placement="right"
-            disableHoverListener={drawerOpen}
-          >
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/media">
-                <ListItemIcon>
-                  <MediaIcon />
-                </ListItemIcon>
-                {drawerOpen && <ListItemText primary="Media" />}
-              </ListItemButton>
-            </ListItem>
-          </Tooltip>
+                  {/* Submenu Items */}
+                  <Collapse in={submenuOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {item.subItems.map((subItem) => (
+                        <ListItem
+                          key={subItem.label}
+                          disablePadding
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemButton component={Link} to={subItem.path}>
+                            <ListItemIcon>{subItem.icon}</ListItemIcon>
+                            {drawerOpen && (
+                              <ListItemText
+                                primary={subItem.label}
+                                primaryTypographyProps={{
+                                  fontSize: "14px",
+                                }}
+                                sx={{ marginLeft: -2 }}
+                              />
+                            )}
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                  <Divider />
+                </>
+              ) : (
+                <>
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      sx={{ minHeight: 50 }}
+                      component={Link}
+                      to={item.path}
+                    >
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      {drawerOpen && (
+                        <ListItemText
+                          primary={item.label}
+                          primaryTypographyProps={{
+                            fontSize: "15px",
+                          }}
+                          sx={{ marginLeft: -1 }}
+                        />
+                      )}
+                    </ListItemButton>
+                  </ListItem>
+                  <Divider />
+                </>
+              )}
+            </Tooltip>
+          ))}
         </List>
       </Drawer>
 
@@ -113,11 +202,9 @@ const DashboardLayout = () => {
           transition: "width 0.3s",
         }}
       >
-        <Toolbar />
-
-        {/* Renders the child routes */}
+        <Toolbar sx={{ minHeight: 80 }} />
+        {/* Adjust Toolbar height inside Main Content */}
         <Outlet />
-        {/* Renders the child routes */}
       </Box>
     </Box>
   );

@@ -12,7 +12,7 @@ const useAuth = () => {
     async (email, password) => {
       try {
         const response = await dispatch(login({ email, password })).unwrap();
-        console.log("Auth Response", response);
+        // console.log("Auth Response", response);
         return response;
       } catch (error) {
         console.error("Failed to login:", error);
