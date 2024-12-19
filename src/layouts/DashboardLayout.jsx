@@ -22,7 +22,12 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import CategoryIcon from "@mui/icons-material/Category";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import StyleIcon from "@mui/icons-material/Style";
 import { Link, Outlet } from "react-router-dom";
 
 const drawerWidth = 320;
@@ -34,10 +39,28 @@ const navItems = [
     path: "/",
   },
   {
+    label: "Inventory",
+    icon: <Inventory2Icon />,
+    subItems: [
+      { label: "Brands", icon: <StyleIcon />, path: "/brand" },
+      { label: "Categories", icon: <CategoryIcon />, path: "/category" },
+      {
+        label: "Suppliers",
+        icon: <PrecisionManufacturingIcon />,
+        path: "/supplier",
+      },
+      {
+        label: "Products",
+        icon: <LocalMallIcon />,
+        path: "/product",
+      },
+    ],
+  },
+  {
     label: "Sale",
     icon: <StorefrontIcon />,
     subItems: [
-      { label: "POS", icon: <PointOfSaleIcon />, path: "/sub-item-1" },
+      { label: "POS", icon: <PointOfSaleIcon />, path: "/pos" },
       {
         label: "Today Sale Record",
         icon: <ReceiptIcon />,
@@ -54,17 +77,29 @@ const navItems = [
 
 const DashboardLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [submenuOpen, setSubmenuOpen] = useState(false);
+  const [submenuStates, setSubmenuStates] = useState({});
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
     if (drawerOpen) {
-      setSubmenuOpen(false); // Collapse submenu when the drawer closes
+      setSubmenuStates({}); // Close all submenus when the drawer closes
     }
   };
 
-  const toggleSubmenu = () => {
-    setSubmenuOpen(!submenuOpen);
+  const toggleSubmenu = (menuLabel) => {
+    if (!drawerOpen) {
+      setDrawerOpen(true);
+    }
+    setSubmenuStates((prev) => ({
+      ...Object.keys(prev).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: key === menuLabel ? !prev[key] : false, // Close all other submenus
+        }),
+        {}
+      ),
+      [menuLabel]: !prev[menuLabel], // Toggle the selected submenu
+    }));
   };
 
   return (
@@ -104,8 +139,6 @@ const DashboardLayout = () => {
         }}
       >
         <Toolbar />
-        {/* Adjust Toolbar height inside Drawer */}
-
         {/* Dynamic Navigation */}
         <List>
           {navItems.map((item) => (
@@ -121,7 +154,7 @@ const DashboardLayout = () => {
                   <ListItem disablePadding>
                     <ListItemButton
                       sx={{ minHeight: 50 }}
-                      onClick={toggleSubmenu}
+                      onClick={() => toggleSubmenu(item.label)}
                     >
                       <ListItemIcon>{item.icon}</ListItemIcon>
                       {drawerOpen && (
@@ -134,12 +167,20 @@ const DashboardLayout = () => {
                         />
                       )}
                       {drawerOpen &&
-                        (submenuOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+                        (submenuStates[item.label] ? (
+                          <ExpandLessIcon />
+                        ) : (
+                          <ExpandMoreIcon />
+                        ))}
                     </ListItemButton>
                   </ListItem>
 
                   {/* Submenu Items */}
-                  <Collapse in={submenuOpen} timeout="auto" unmountOnExit>
+                  <Collapse
+                    in={submenuStates[item.label]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
                     <List component="div" disablePadding>
                       {item.subItems.map((subItem) => (
                         <ListItem
@@ -203,7 +244,7 @@ const DashboardLayout = () => {
         }}
       >
         <Toolbar sx={{ minHeight: 80 }} />
-        {/* Adjust Toolbar height inside Main Content */}
+        {/* Renders the child routes */}
         <Outlet />
       </Box>
     </Box>

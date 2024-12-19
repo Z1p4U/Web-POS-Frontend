@@ -6,6 +6,11 @@ import Media from "../components/media/Media";
 import Login from "../pages/Login";
 import RouteGuard from "../components/RouteGuard";
 import DailyVoucher from "../components/sale/voucher/DailyVoucher";
+import POS from "../components/sale/pos/POS";
+import Brand from "../components/inventory/brand/Brand";
+import Category from "../components/inventory/category/Category";
+import Supplier from "../components/inventory/supplier/Supplier";
+import Product from "../components/inventory/product/Product";
 
 const Path = () => {
   return (
@@ -22,8 +27,22 @@ const Path = () => {
           }
         >
           <Route index element={<Dashboard />} />
-          <Route path="/media" element={<Media />} />
+
+          {/* Inventory */}
+          <Route path="/brand" element={<Brand />} />
+          <Route path="/category" element={<Category />} />
+          <Route path="/supplier" element={<Supplier />} />
+          <Route path="/product" element={<Product />} />
+          {/* Inventory */}
+
+          {/* Sale */}
+          <Route path="/pos" element={<POS />} />
           <Route path="/daily-voucher" element={<DailyVoucher />} />
+          {/* Sale */}
+
+          {/* Media */}
+          <Route path="/media" element={<Media />} />
+          {/* Media */}
         </Route>
 
         <Route path="/login" element={<Login />} />
