@@ -1,8 +1,8 @@
 import { BiTrash } from "react-icons/bi";
-import Loader from "../ui/loader/Loader";
 import PropTypes from "prop-types";
 import { Backdrop, Box, Modal, Pagination } from "@mui/material";
 import { useState } from "react";
+import Loader from "../../ui/loader/Loader";
 
 const MediaList = ({
   photos,

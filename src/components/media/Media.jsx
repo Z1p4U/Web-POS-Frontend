@@ -2,8 +2,8 @@ import { useState } from "react";
 import Banner from "../ui/banner/Banner";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { Link } from "react-router-dom";
-import MediaList from "./MediaList";
 import useMedia from "../../redux/hooks/media/useMedia";
+import MediaList from "./components/MediaList";
 
 const Media = () => {
   const {
@@ -121,7 +121,7 @@ const Media = () => {
       </div>
       {/* Media Control */}
 
-      {/* MEdia List */}
+      {/* Media List */}
       <MediaList
         pageCount={pageCount}
         photos={photos}

@@ -11,6 +11,8 @@ import Brand from "../components/inventory/brand/Brand";
 import Category from "../components/inventory/category/Category";
 import Supplier from "../components/inventory/supplier/Supplier";
 import Product from "../components/inventory/product/Product";
+import BrandCreate from "../components/inventory/brand/BrandCreate";
+import BrandUpdate from "../components/inventory/brand/BrandUpdate";
 
 const Path = () => {
   return (
@@ -30,6 +32,8 @@ const Path = () => {
 
           {/* Inventory */}
           <Route path="/brand" element={<Brand />} />
+          <Route path="/brand-create" element={<BrandCreate />} />
+          <Route path="/brand-update" element={<BrandUpdate />} />
           <Route path="/category" element={<Category />} />
           <Route path="/supplier" element={<Supplier />} />
           <Route path="/product" element={<Product />} />

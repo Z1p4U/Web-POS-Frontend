@@ -1,7 +1,7 @@
 import { BiSearch } from "react-icons/bi";
 import useVoucher from "../../../redux/hooks/voucher/useVoucher";
 import Banner from "../../ui/banner/Banner";
-import VoucherTable from "./VoucherTable";
+import VoucherTable from "./components/VoucherTable";
 
 const DailyVoucher = () => {
   const { vouchers, dailyTotalSale, exportVoucher } = useVoucher();

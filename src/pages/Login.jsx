@@ -84,7 +84,7 @@ const Login = () => {
                   required
                   value={credentials.userName}
                   onChange={handleChange}
-                  className=" ring-0 focus:ring-0 focus:border-primary text-sm lg:text-base border border-gray-400 rounded-md px-5 focus:bg-secondary focus:outline-none h-10"
+                  className=" text-primary ring-0 focus:ring-0 focus:border-primary text-sm lg:text-base border border-gray-400 rounded-md px-5 focus:bg-light placeholder:text-secondary focus:outline-none h-10"
                   placeholder="Enter email address to login"
                   autoFocus
                   autoComplete="false"
@@ -103,7 +103,7 @@ const Login = () => {
                   required
                   value={credentials.password}
                   onChange={handleChange}
-                  className=" ring-0 focus:ring-0 focus:border-primary text-sm lg:text-base border border-gray-400 rounded-md px-5 focus:bg-secondary focus:outline-none h-10"
+                  className=" text-dark ring-0 focus:ring-0 focus:border-primary text-sm lg:text-base border border-gray-400 rounded-md px-5 focus:bg-light placeholder:text-secondary focus:outline-none h-10"
                   placeholder="Password"
                 />
               </div>
@@ -113,7 +113,7 @@ const Login = () => {
                   type="submit"
                   className=" group/cart-item border border-primary hover:bg-primary transition-colors duration-200 rounded-full px-5 py-2 font-semibold flex flex-row gap-2 items-center w-fit "
                 >
-                  <span className=" text-primary group-hover/cart-item:text-white transition-colors duration-200 ">
+                  <span className=" text-dark group-hover/cart-item:text-white transition-colors duration-200 ">
                     Login
                   </span>{" "}
                   <LuArrowRightToLine className=" text-xl font-bold text-primary group-hover/cart-item:text-white transition-colors duration-200 " />

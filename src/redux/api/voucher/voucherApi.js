@@ -42,8 +42,8 @@ const fetchExportVoucher = async (token, id) => {
   };
   try {
     const response = await axios.get(
-      // `${config.API_URL}/voucher/print/test/${id}`,
-      `${config.API_URL}/voucher/print/lan/${id}`,
+      `${config.API_URL}/voucher/print/test/${id}`,
+      // `${config.API_URL}/voucher/print/lan/${id}`,
       {
         headers,
       }

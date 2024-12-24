@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Loader from "../../ui/loader/Loader";
+import Loader from "../../../ui/loader/Loader";
 import PropTypes from "prop-types";
 import { Backdrop, Box, Modal } from "@mui/material";
 
