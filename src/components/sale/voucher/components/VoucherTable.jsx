@@ -1,7 +1,19 @@
 import { useState } from "react";
-import Loader from "../../../ui/loader/Loader";
 import PropTypes from "prop-types";
-import { Backdrop, Box, Modal } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 
 const VoucherTable = ({ exportVoucher, vouchers }) => {
   const [open, setOpen] = useState(false);
@@ -16,7 +28,8 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
     setOpen(false);
     setSelectedVoucher(null);
   };
-  const style = {
+
+  const modalStyle = {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -29,56 +42,126 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
     p: 4,
   };
 
-  console.log(vouchers);
+  if (!vouchers) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="50vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div>
-      {!vouchers ? (
-        <div>
-          <Loader />
-        </div>
-      ) : (
-        <div className="overflow-x-scroll">
-          <table className="text-white max-[760px]:whitespace-nowrap max-[760px]:block max-[760px]:overflow-x-auto w-full">
-            <thead className="tracking-wider text-sm border border-dim">
-              <tr className="bg-primary">
-                <th className="p-4 text-start">NO</th>
-                <th className="p-4 text-start">VOUCHER</th>
-                <th className="p-4 text-end">ITEM COUNT</th>
-                <th className="p-4 text-end">TAX</th>
-                <th className="p-4 text-end">TOTAL</th>
-                <th className="p-4 text-end">DATE</th>
-                <th className="p-4 text-end">TIME</th>
-                <th className="p-4 text-end"></th>
-              </tr>
-            </thead>
-            <tbody className="tracking-wide text-sm">
-              {vouchers?.map((rVoucher) => (
-                <tr
-                  key={rVoucher?.id}
-                  className="bg-secondary hover:opacity-90 duration-300 border border-dim"
+      <TableContainer component={Paper} className="overflow-x-auto">
+        <Table sx={{ minWidth: 650 }} aria-label="voucher table">
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#002d5d" }}>
+              {[
+                "NO",
+                "VOUCHER",
+                "ITEM COUNT",
+                "TAX",
+                "TOTAL",
+                "DATE",
+                "TIME",
+                "",
+              ].map((header, index) => (
+                <TableCell
+                  key={index}
+                  align={index === 7 ? "center" : "right"}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    textAlign:
+                      index === 7 ? "center" : index < 2 ? "left" : "right",
+                  }}
                 >
-                  <td className="p-4 text-start">{rVoucher?.id}</td>
-                  <td className="p-4 text-start">{rVoucher?.voucher_number}</td>
-                  <td className="p-4 text-center">{rVoucher?.product_count}</td>
-                  <td className="p-4 text-end">{rVoucher?.tax}</td>
-                  <td className="p-4 text-end">{rVoucher?.net_total}</td>
-                  <td className="p-4 text-end">{rVoucher?.created_at}</td>
-                  <td className="p-4 text-end">{rVoucher?.created_time}</td>
-                  <td className="p-4 text-center">
-                    <div
-                      onClick={() => handleOpen(rVoucher)}
-                      className="px-3 py-2 rounded-lg bg-primary cursor-pointer"
-                    >
-                      View Detail
-                    </div>
-                  </td>
-                </tr>
+                  {header}
+                </TableCell>
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {vouchers?.map((rVoucher, index) => (
+              <TableRow
+                key={rVoucher?.id}
+                sx={{
+                  backgroundColor: index % 2 === 0 ? "#38577e" : "#456a90",
+                  "&:hover": { opacity: 0.9 },
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                <TableCell
+                  align="left"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.id}
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.voucher_number}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.product_count}
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.tax}
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.net_total}
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.created_at}
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: "white", padding: "16px" }}
+                >
+                  {rVoucher?.created_time}
+                </TableCell>
+                <TableCell align="center" sx={{ padding: "16px" }}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#002d5d",
+                      color: "#fff",
+                      "&:hover": {
+                        backgroundColor: "#001a3d",
+                      },
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      textTransform: "none", // Keeps the text case as provided
+                      fontWeight: "bold",
+                    }}
+                    onClick={() => handleOpen(rVoucher)}
+                  >
+                    View Detail
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Modal
         aria-labelledby="voucher-details-title"
@@ -86,116 +169,104 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
         open={open}
         onClose={handleClose}
         closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+        BackdropComponent={Backdrop}
+        BackdropProps={{ timeout: 500 }}
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           {selectedVoucher && (
             <>
-              <div className="text-center mb-4">
-                <h2 id="voucher-details-title" className="text-lg font-bold ">
-                  Deep Blue POS
-                </h2>
-                <p className=" my-3">
+              <Box textAlign="center" mb={2}>
+                <h2 id="voucher-details-title">Deep Blue POS</h2>
+                <p>
                   Voucher No:{" "}
-                  <span className=" font-bold text-primary">
+                  <strong style={{ color: "#002d5d" }}>
                     {selectedVoucher.voucher_number}
-                  </span>
+                  </strong>
                 </p>
-                <hr className="my-2 border-gray-500" />
-              </div>
-              <div className="flex justify-between mb-4">
-                <div>
+              </Box>
+              <Box display="flex" justifyContent="space-between" mb={2}>
+                <Box>
                   <p>Cashier: {selectedVoucher.user_name || "N/A"}</p>
                   <p>Phone: {selectedVoucher.user_phone || "N/A"}</p>
-                </div>
-                <div className="text-right">
+                </Box>
+                <Box textAlign="right">
                   <p>Date: {selectedVoucher.created_at}</p>
                   <p>Time: {selectedVoucher.created_time}</p>
-                </div>
-              </div>
+                </Box>
+              </Box>
 
-              <hr className="my-2 border-gray-500" />
-
-              <table className="w-full text-sm">
-                <thead className="mb-5">
-                  <tr>
-                    <th className=" p-2 font-bold text-primary text-left max-w-[500px]">
-                      Item
-                    </th>
-                    <th className=" p-2 font-bold text-primary text-center">
-                      Qty
-                    </th>
-                    <th className=" p-2 font-bold text-primary text-right">
-                      Price
-                    </th>
-                    <th className=" p-2 font-bold text-primary text-right">
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="space-y-2">
+              <Table
+                size="small"
+                sx={{
+                  marginBottom: 2,
+                  borderTop: "2px solid black",
+                  borderBottom: "2px solid black",
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Item</TableCell>
+                    <TableCell align="center">Qty</TableCell>
+                    <TableCell align="right">Price</TableCell>
+                    <TableCell align="right">Total</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {selectedVoucher.records?.map((record) => (
-                    <tr
-                      key={record?.id}
-                      className="border-b border-gray-200 last:border-0"
-                    >
-                      <td
-                        className="text-left p-2 max-w-[500px] truncate"
-                        title={record?.product_name}
-                      >
-                        {record?.product_name}
-                      </td>
-                      <td className="text-center p-2">{record.quantity}</td>
-                      <td className="text-right p-2">{record.sale_price}</td>
-                      <td className="text-right p-2">{record.cost}</td>
-                    </tr>
+                    <TableRow key={record?.id}>
+                      <TableCell>{record?.product_name}</TableCell>
+                      <TableCell align="center">{record?.quantity}</TableCell>
+                      <TableCell align="right">{record?.sale_price}</TableCell>
+                      <TableCell align="right">{record?.cost}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
 
-              <hr className="my-2 border-gray-500" />
+              <Box
+                display="flex"
+                flexDirection={"column"}
+                alignItems={"end"}
+                justifyContent="space-between"
+                mb={2}
+              >
+                <p>Subtotal: {selectedVoucher.total} Ks</p>
+                <p>Tax: {selectedVoucher.tax} Ks</p>
+                <p>
+                  <strong>Total: {selectedVoucher.net_total} Ks</strong>
+                </p>
+              </Box>
 
-              <div className=" flex flex-col gap-3">
-                <div className=" flex items-center justify-between ">
-                  <span>Subtotal:</span> <span>{selectedVoucher.total} Ks</span>
-                </div>
-                <div className=" flex items-center justify-between ">
-                  <span>Tax: </span>
-                  <span>{selectedVoucher.tax} Ks</span>
-                </div>
-                <div className=" flex items-center justify-between ">
-                  <span>Total: </span>
-                  <span>{selectedVoucher.net_total} Ks</span>
-                </div>
-              </div>
-              <hr className="my-4 border-gray-500" />
-              <p className="text-center">Thank You & See You Again!</p>
+              <Box textAlign="center" mt={4}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#002d5d",
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "#001a3d",
+                    },
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                  }}
+                  onClick={() => exportVoucher(selectedVoucher.id)}
+                >
+                  Export Voucher
+                </Button>
+              </Box>
             </>
           )}
-          <hr className="my-4 border-gray-500" />
-
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={() => exportVoucher(selectedVoucher.id)}
-              className="bg-primary text-white py-2 px-4 rounded-lg hover:opacity-90 transition"
-            >
-              Export Voucher
-            </button>
-          </div>
         </Box>
       </Modal>
     </div>
   );
 };
 
-export default VoucherTable;
-
 VoucherTable.propTypes = {
-  exportVoucher: PropTypes.any,
-  vouchers: PropTypes.any,
+  exportVoucher: PropTypes.func.isRequired,
+  vouchers: PropTypes.array.isRequired,
 };
+
+export default VoucherTable;

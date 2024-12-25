@@ -10,7 +10,7 @@ const Media = () => {
     photos,
     handleCreatePhoto,
     pagination,
-    setPagination,
+    handlePaginate,
     pageCount,
     handleDeletePhoto,
   } = useMedia();
@@ -30,7 +30,6 @@ const Media = () => {
 
     try {
       const response = await handleCreatePhoto(photos);
-      window.location.reload();
       console.log("Server Response:", response);
     } catch (error) {
       console.error("Error uploading photos:", error);
@@ -39,9 +38,7 @@ const Media = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await handleDeletePhoto(id);
-      window.location.reload();
-      console.log("Server Response:", response);
+      await handleDeletePhoto(id);
     } catch (error) {
       console.error("Error uploading photos:", error);
     }
@@ -54,10 +51,6 @@ const Media = () => {
   const handleDragOver = (e) => {
     e.preventDefault();
     setHover(true);
-  };
-
-  const handlePaginate = (e, value) => {
-    setPagination({ page: value, per_page: 10 });
   };
 
   return (

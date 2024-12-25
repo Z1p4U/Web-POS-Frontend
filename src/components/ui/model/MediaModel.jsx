@@ -2,115 +2,82 @@ import { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  Grid,
   IconButton,
   Modal,
   Typography,
-  TextField,
-  CircularProgress,
+  Grid2,
+  Pagination,
 } from "@mui/material";
 import { MdOutlineCloudUpload } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
-import {
-  setSelectActive,
-  setOnclickActive,
-  setPdSelectImg,
-  setInsert,
-  setUserSelectImg,
-  setAdminSelectImg,
-  setPdEditSelectImg,
-  setBrandSelectImg,
-  setBrandEditSelectImg,
-} from "../../Redux/Services/mediaSlice";
-import { useLocation, useParams } from "react-router-dom";
+import useMedia from "../../../redux/hooks/media/useMedia";
+import Loader from "../loader/Loader";
+import PropTypes from "prop-types";
 
-const ModalMedia = ({ opened, onClose, sidebarOpen, editSidebarOpen }) => {
-  const dispatch = useDispatch();
-  const selectActive = useSelector((state) => state.mediaSlice.selectActive);
-  const onclickActive = useSelector((state) => state.mediaSlice.onclickActive);
+const ModalMedia = ({ opened, onClose, handleImageSelect }) => {
+  const {
+    photos,
+    handleCreatePhoto,
+    pagination,
+    setPagination,
+    handlePaginate,
+    pageCount,
+  } = useMedia();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const mediaData = []; // Replace with actual media data
-  const location = useLocation();
-  const path = location.pathname;
-  const { id } = useParams();
 
   const handleSubmit = async (files) => {
-    const photos = new FormData();
-    files.forEach((file) => photos.append("photos[]", file, file.name));
-    // Simulating API call
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      Swal.fire({
-        title: "Successfully uploaded photo",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    }, 2000);
-  };
-
-  const selectImgHandler = (id, url) => {
-    setSelectedImage(selectedImage === url ? null : url);
-    dispatch(setOnclickActive(id));
-  };
-
-  const insertImageHandler = () => {
-    if (path === "/inventory/addProduct") {
-      dispatch(setPdSelectImg(selectedImage));
-    } else if (path === "/user/create") {
-      dispatch(setUserSelectImg(selectedImage));
-    } else if (path === "/profile/edit") {
-      dispatch(setAdminSelectImg(selectedImage));
-    } else if (path === `/inventory/product/editProduct/${id}`) {
-      dispatch(setPdEditSelectImg(selectedImage));
-    } else if (sidebarOpen) {
-      dispatch(setBrandSelectImg(selectedImage));
-    } else if (editSidebarOpen) {
-      dispatch(setBrandEditSelectImg(selectedImage));
+    if (!files || files.length === 0) {
+      console.error("No files to upload.");
+      return;
     }
-    dispatch(setInsert(true));
+
+    const photos = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      photos.append("photos[]", files[i], files[i].name);
+    }
+
+    try {
+      const response = await handleCreatePhoto(photos);
+      console.log("Server Response:", response);
+    } catch (error) {
+      console.error("Error uploading photos:", error);
+    }
   };
 
   useEffect(() => {
     if (opened) {
-      dispatch(setOnclickActive(null));
+      setPagination({ page: 1, per_page: 10 });
+      setSelectedImage(null);
     }
-  }, [opened, dispatch]);
+  }, [opened, setPagination]);
 
   return (
-    <Modal open={opened} onClose={onClose} aria-labelledby="modal-title">
+    <Modal open={opened} onClose={onClose} aria-labelledby="media-modal-title">
       <Box
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "65%",
+          width: "70%",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
           borderRadius: 2,
+          border: "0px",
+          outline: "0px",
         }}
       >
-        <Typography id="modal-title" variant="h6" mb={2}>
-          Select an Image
+        <Typography id="media-modal-title" variant="h6" mb={3}>
+          Select or Upload an Image
         </Typography>
-        {isLoading ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="200px"
-          >
-            <CircularProgress />
-          </Box>
+
+        {!photos ? (
+          <Loader />
         ) : (
           <Box>
-            <Grid container spacing={2} mb={3}>
+            <Grid2 container spacing={2} mb={3}>
               {/* Upload Button */}
-              <Grid item xs={6} sm={4} md={3}>
+              <Grid2 size={{ xs: 6, sm: 4, md: 3 }}>
                 <Box
                   sx={{
                     border: "1px dashed #7E7F80",
@@ -122,29 +89,31 @@ const ModalMedia = ({ opened, onClose, sidebarOpen, editSidebarOpen }) => {
                     justifyContent: "center",
                     cursor: "pointer",
                   }}
-                  onClick={() => document.querySelector("#file-upload").click()}
+                  onClick={() => document.querySelector("#input-field").click()}
                 >
                   <IconButton>
                     <MdOutlineCloudUpload size={40} color="#8AB4F8" />
                   </IconButton>
                   <Typography color="text.secondary">Upload Image</Typography>
-                  <TextField
-                    id="file-upload"
+                  <input
+                    multiple
                     type="file"
-                    inputProps={{ accept: "image/*" }}
-                    sx={{ display: "none" }}
+                    accept="image/jpg,image/jpeg,image/png"
+                    className="input-field"
+                    id="input-field"
+                    hidden
                     onChange={(e) => handleSubmit([...e.target.files])}
                   />
                 </Box>
-              </Grid>
+              </Grid2>
 
-              {/* Display Media */}
-              {mediaData?.map((img) => (
-                <Grid item xs={6} sm={4} md={3} key={img?.id}>
+              {/* Display Uploaded Media */}
+              {photos?.map((photo) => (
+                <Grid2 size={{ xs: 6, sm: 4, md: 3 }} key={photo?.id}>
                   <Box
                     sx={{
                       border:
-                        selectActive === img?.id
+                        selectedImage === photo?.url
                           ? "2px solid blue"
                           : "1px solid #ddd",
                       borderRadius: 2,
@@ -153,11 +122,10 @@ const ModalMedia = ({ opened, onClose, sidebarOpen, editSidebarOpen }) => {
                       position: "relative",
                       "&:hover": { borderColor: "blue" },
                     }}
-                    onClick={() => selectImgHandler(img?.id, img?.url)}
-                    onMouseEnter={() => dispatch(setSelectActive(img?.id))}
+                    onClick={() => setSelectedImage(photo?.url)}
                   >
                     <img
-                      src={img?.url}
+                      src={photo?.url}
                       alt=""
                       style={{
                         width: "100%",
@@ -166,25 +134,43 @@ const ModalMedia = ({ opened, onClose, sidebarOpen, editSidebarOpen }) => {
                       }}
                     />
                   </Box>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
+            </Grid2>
 
-            {onclickActive && (
+            <Box display="flex" gap={2} mt={4} justifyContent={"center"}>
+              <Pagination
+                count={pageCount}
+                shape="rounded"
+                size="large"
+                page={pagination.first}
+                onChange={handlePaginate}
+              />
+            </Box>
+
+            {/* Action Buttons */}
+            <Box display="flex" gap={2} mt={4}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={insertImageHandler}
+                onClick={() => handleImageSelect(selectedImage)}
+                disabled={!selectedImage}
                 fullWidth
               >
                 INSERT
               </Button>
-            )}
+            </Box>
           </Box>
         )}
       </Box>
     </Modal>
   );
+};
+
+ModalMedia.propTypes = {
+  opened: PropTypes.any,
+  onClose: PropTypes.any,
+  handleImageSelect: PropTypes.any,
 };
 
 export default ModalMedia;

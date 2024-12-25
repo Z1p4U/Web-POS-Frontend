@@ -42,17 +42,21 @@ const navItems = [
     label: "Inventory",
     icon: <Inventory2Icon />,
     subItems: [
-      { label: "Brands", icon: <StyleIcon />, path: "/brand" },
-      { label: "Categories", icon: <CategoryIcon />, path: "/category" },
+      { label: "Brands", icon: <StyleIcon />, path: "/inventory/brand" },
+      {
+        label: "Categories",
+        icon: <CategoryIcon />,
+        path: "/inventory/category",
+      },
       {
         label: "Suppliers",
         icon: <PrecisionManufacturingIcon />,
-        path: "/supplier",
+        path: "/inventory/supplier",
       },
       {
         label: "Products",
         icon: <LocalMallIcon />,
-        path: "/product",
+        path: "/inventory/product",
       },
     ],
   },
@@ -60,11 +64,11 @@ const navItems = [
     label: "Sale",
     icon: <StorefrontIcon />,
     subItems: [
-      { label: "POS", icon: <PointOfSaleIcon />, path: "/pos" },
+      { label: "POS", icon: <PointOfSaleIcon />, path: "/sale/pos" },
       {
         label: "Today Sale Record",
         icon: <ReceiptIcon />,
-        path: "/daily-voucher",
+        path: "/sale/daily-voucher",
       },
     ],
   },

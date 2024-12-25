@@ -4,6 +4,7 @@ import useAuth from "../auth/useAuth";
 import {
   clearPhotoData,
   fetchPhotoList,
+  insertImage,
   photoCreate,
   photoDelete,
 } from "../../services/media/mediaSlice";
@@ -13,9 +14,8 @@ const useMedia = () => {
   const { token } = useAuth();
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
-  const selectPhotos = useMemo(() => (state) => state?.media, []);
-
-  const photoResponse = useSelector(selectPhotos, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
+  const selectPhotos = useMemo(() => (state) => state.media, []);
+  const photoResponse = useSelector(selectPhotos, shallowEqual);
 
   const photos = photoResponse?.photos;
   const pageCount = photoResponse?.lastPage;
@@ -31,12 +31,7 @@ const useMedia = () => {
   const handleCreatePhoto = useCallback(
     async (photos) => {
       try {
-        const response = await dispatch(
-          photoCreate({
-            photos,
-            token,
-          })
-        );
+        const response = await dispatch(photoCreate({ photos, token }));
         return response?.payload?.message;
       } catch (error) {
         console.error("Failed to add photos:", error);
@@ -48,12 +43,7 @@ const useMedia = () => {
   const handleDeletePhoto = useCallback(
     async (id) => {
       try {
-        const response = await dispatch(
-          photoDelete({
-            id,
-            token,
-          })
-        );
+        const response = await dispatch(photoDelete({ id, token }));
         return response?.payload?.message;
       } catch (error) {
         console.error("Failed to delete photos:", error);
@@ -61,13 +51,27 @@ const useMedia = () => {
     },
     [dispatch, token]
   );
+
+  const handleImageInsert = useCallback(
+    (path, modalOpen, editModalOpen, selectedImage) => {
+      dispatch(insertImage({ path, modalOpen, editModalOpen, selectedImage }));
+    },
+    [dispatch]
+  );
+
+  const handlePaginate = (e, value) => {
+    setPagination({ page: value, per_page: 10 });
+  };
+
   return {
     photos,
-    handleCreatePhoto,
-    handleDeletePhoto,
+    pageCount,
     pagination,
     setPagination,
-    pageCount,
+    handlePaginate,
+    handleCreatePhoto,
+    handleDeletePhoto,
+    handleImageInsert,
   };
 };
 

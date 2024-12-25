@@ -11,8 +11,6 @@ import Brand from "../components/inventory/brand/Brand";
 import Category from "../components/inventory/category/Category";
 import Supplier from "../components/inventory/supplier/Supplier";
 import Product from "../components/inventory/product/Product";
-import BrandCreate from "../components/inventory/brand/BrandCreate";
-import BrandUpdate from "../components/inventory/brand/BrandUpdate";
 
 const Path = () => {
   return (
@@ -31,17 +29,15 @@ const Path = () => {
           <Route index element={<Dashboard />} />
 
           {/* Inventory */}
-          <Route path="/brand" element={<Brand />} />
-          <Route path="/brand-create" element={<BrandCreate />} />
-          <Route path="/brand-update" element={<BrandUpdate />} />
-          <Route path="/category" element={<Category />} />
-          <Route path="/supplier" element={<Supplier />} />
-          <Route path="/product" element={<Product />} />
+          <Route path="/inventory/brand" element={<Brand />} />
+          <Route path="/inventory/category" element={<Category />} />
+          <Route path="/inventory/supplier" element={<Supplier />} />
+          <Route path="/inventory/product" element={<Product />} />
           {/* Inventory */}
 
           {/* Sale */}
-          <Route path="/pos" element={<POS />} />
-          <Route path="/daily-voucher" element={<DailyVoucher />} />
+          <Route path="/sale/pos" element={<POS />} />
+          <Route path="/sale/daily-voucher" element={<DailyVoucher />} />
           {/* Sale */}
 
           {/* Media */}

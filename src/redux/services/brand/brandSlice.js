@@ -11,7 +11,6 @@ export const brandList = createAsyncThunk(
   async ({ token, pagination, search }, { rejectWithValue }) => {
     try {
       const response = await fetchBrand(token, pagination, search);
-      // console.log(response);
       return response?.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -33,9 +32,9 @@ export const brandCreate = createAsyncThunk(
 
 export const brandUpdate = createAsyncThunk(
   "brand/brandUpdate",
-  async ({ brands, token }, { rejectWithValue }) => {
+  async ({ id, brands, token }, { rejectWithValue }) => {
     try {
-      const response = await fetchUpdateBrand(brands, token);
+      const response = await fetchUpdateBrand(id, brands, token);
       return response;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to update brand");
@@ -89,7 +88,7 @@ const brandSlice = createSlice({
       })
       .addCase(brandCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.brands = [...action.payload.data, ...state.brands];
+        state.brands = [action.payload.data, ...state.brands];
       })
       .addCase(brandCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -100,7 +99,10 @@ const brandSlice = createSlice({
       })
       .addCase(brandUpdate.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.brands = [...action.payload.data, ...state.brands];
+        const updatedBrand = action.payload.data;
+        state.brands = state.brands.map((brand) =>
+          brand.id === updatedBrand.id ? updatedBrand : brand
+        );
       })
       .addCase(brandUpdate.rejected, (state, action) => {
         state.status = "failed";

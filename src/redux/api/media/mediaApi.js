@@ -10,7 +10,6 @@ const fetchPhoto = async (token, pagination) => {
       headers,
       params: pagination,
     });
-    // console.log("Fetched Photo:", response);
     return response?.data;
   } catch (error) {
     console.log("Failed to fetch Photo:", error);
@@ -27,7 +26,6 @@ const addPhoto = async (photos, token) => {
     const response = await axios.post(`${config.API_URL}/photo/store`, photos, {
       headers,
     });
-    // console.log("Photo Added", response);
     return response?.data;
   } catch (error) {
     console.log("Failed to add photo:", error);

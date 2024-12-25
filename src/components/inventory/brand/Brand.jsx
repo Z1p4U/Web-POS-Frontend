@@ -2,6 +2,8 @@ import { BiPlus, BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import BrandTable from "./components/BrandTable";
 import useBrand from "../../../redux/hooks/brand/useBrand";
+import { useState } from "react";
+import EntryBrand from "./components/EntryBrand";
 
 const Brand = () => {
   const {
@@ -11,7 +13,13 @@ const Brand = () => {
     pageCount,
     setSearch,
     handleDeleteBrand,
+    handleCreateBrand,
+    handleUpdateBrand,
   } = useBrand();
+
+  const [addModal, setAddModal] = useState(false);
+  const [editBrand, setEditBrand] = useState(null);
+
   const handlePaginate = (e, value) => {
     setPagination({ page: value, per_page: 10 });
   };
@@ -22,6 +30,11 @@ const Brand = () => {
     setSearch(inputValue);
   };
 
+  const handleEdit = (brand) => {
+    setEditBrand(brand);
+    setAddModal(true);
+  };
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-[95%] my-6 flex flex-col gap-8">
@@ -29,10 +42,21 @@ const Brand = () => {
           {/* banner  */}
           <Banner title={"Brands"} path1={"Inventory"} />
           {/* banner  */}
-          <a className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300">
+          <div
+            onClick={() => setAddModal(true)}
+            className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
+          >
             <BiPlus size={20} />
             Add Brand
-          </a>
+          </div>
+          <EntryBrand
+            addModal={addModal}
+            currentBrand={editBrand}
+            setAddModal={setAddModal}
+            handleCreateBrand={handleCreateBrand}
+            handleUpdateBrand={handleUpdateBrand}
+            setEditBrand={setEditBrand}
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -57,12 +81,13 @@ const Brand = () => {
         ) : (
           <div className="flex flex-col gap-8">
             {/* table  */}
-            {/* <VoucherTable brands={brands} exportVoucher={exportVoucher} /> */}
             <BrandTable
               brands={brands}
               pageCount={pageCount}
               pagination={pagination}
+              handleEdit={handleEdit}
               handlePaginate={handlePaginate}
+              handleUpdateBrand={handleUpdateBrand}
               handleDeleteBrand={handleDeleteBrand}
             />
             {/* table  */}

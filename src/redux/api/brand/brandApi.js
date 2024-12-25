@@ -22,7 +22,7 @@ const fetchBrand = async (token, pagination, search, columns = "name") => {
   }
 };
 
-const fetchCreateBrand = async (token, brand) => {
+const fetchCreateBrand = async (brands, token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
@@ -30,7 +30,7 @@ const fetchCreateBrand = async (token, brand) => {
     const response = await axios.post(
       `${config.API_URL}/brand/create`,
       {
-        brand,
+        ...brands,
       },
       {
         headers,
@@ -44,7 +44,7 @@ const fetchCreateBrand = async (token, brand) => {
   }
 };
 
-const fetchUpdateBrand = async (token, brand, id) => {
+const fetchUpdateBrand = async (id, brands, token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
@@ -52,7 +52,7 @@ const fetchUpdateBrand = async (token, brand, id) => {
     const response = await axios.put(
       `${config.API_URL}/brand/update/${id}`,
       {
-        brand,
+        ...brands,
       },
       {
         headers,
@@ -71,7 +71,6 @@ const fetchDeleteBrand = async (id, token) => {
     Authorization: `Bearer ${token}`,
   };
   try {
-    console.log(id);
     const response = await axios.delete(
       `${config.API_URL}/brand/delete/${id}`,
       {

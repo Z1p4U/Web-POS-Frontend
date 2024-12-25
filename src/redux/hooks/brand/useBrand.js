@@ -5,6 +5,7 @@ import {
   brandCreate,
   brandDelete,
   brandList,
+  brandUpdate,
   clearBrandData,
 } from "../../services/brand/brandSlice";
 
@@ -46,6 +47,24 @@ const useBrand = () => {
     [dispatch, token]
   );
 
+  const handleUpdateBrand = useCallback(
+    async (id, brands) => {
+      try {
+        const response = await dispatch(
+          brandUpdate({
+            id,
+            brands,
+            token,
+          })
+        );
+        return response?.payload?.message;
+      } catch (error) {
+        console.error("Failed to update brands:", error);
+      }
+    },
+    [dispatch, token]
+  );
+
   const handleDeleteBrand = useCallback(
     async (id) => {
       try {
@@ -69,6 +88,7 @@ const useBrand = () => {
     pagination,
     setSearch,
     setPagination,
+    handleUpdateBrand,
     handleCreateBrand,
     handleDeleteBrand,
   };

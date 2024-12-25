@@ -1,4 +1,14 @@
-import { Pagination } from "@mui/material";
+import {
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Box,
+} from "@mui/material";
 import Loader from "../../../ui/loader/Loader";
 import PropTypes from "prop-types";
 import { BiEdit, BiTrash } from "react-icons/bi";
@@ -8,8 +18,9 @@ import { useState } from "react";
 const BrandTable = ({
   brands,
   pagination,
-  handlePaginate,
   pageCount,
+  handleEdit,
+  handlePaginate,
   handleDeleteBrand,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,57 +52,122 @@ const BrandTable = ({
           <Loader />
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="text-white md:whitespace-nowrap md:block w-full">
-            <thead className="tracking-wider text-sm border border-dim">
-              <tr className="bg-primary">
-                <th className="p-4 text-start">NO</th>
-                <th className="p-4 text-start">PHOTO</th>
-                <th className="p-4 text-start">NAME</th>
-                <th className="p-4 text-start">COMPANY</th>
-                <th className="p-4 text-center max-w-[1000px]">NOTE</th>
-                <th className="p-4 text-end"></th>
-              </tr>
-            </thead>
-            <tbody className="tracking-wide text-sm">
-              {brands?.map((brand) => (
-                <tr
-                  key={brand?.id}
-                  className="bg-secondary hover:opacity-90 duration-300 border border-dim"
+        <TableContainer component={Paper} className="overflow-x-auto">
+          <Table sx={{ minWidth: 650 }} aria-label="brand table">
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#002d5d", color: "#fff" }}>
+                <TableCell
+                  align="left"
+                  sx={{ padding: "16px", color: "white" }}
                 >
-                  <td className="p-4 text-start">{brand?.id}</td>
-                  <td className="p-4 text-start">
-                    <img
-                      src={brand?.photo}
-                      className=" object-contain aspect-square w-20"
-                      alt=""
-                    />
-                  </td>
-                  <td className="p-4 text-start">{brand?.name}</td>
-                  <td className="p-4 text-start">{brand?.company}</td>
-                  <td className="p-4 text-start max-w-[1000px] text-wrap">
-                    {brand?.note}
-                  </td>
-                  <td className="p-4 text-start">
-                    <div className=" flex flex-row gap-3">
-                      <div className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 hover:text-light transition-all duration-200">
-                        <BiEdit className=" text-lg" />
-                      </div>
-                      <div
-                        onClick={() => handleOpenModal(brand?.id)}
-                        className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 hover:text-red-500 transition-all duration-200"
+                  NO
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{ padding: "16px", color: "white" }}
+                >
+                  PHOTO
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{ padding: "16px", color: "white" }}
+                >
+                  NAME
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{ padding: "16px", color: "white" }}
+                >
+                  COMPANY
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{ padding: "16px", color: "white", maxWidth: 500 }}
+                >
+                  NOTE
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ padding: "16px", color: "white" }}
+                ></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {brands?.map((brand, index) => {
+                return (
+                  <TableRow
+                    key={brand?.id}
+                    sx={{
+                      backgroundColor: index % 2 === 0 ? "#38577e" : "#38577e", // alternate row colors (bg-secondary & bg-primary)
+                      "&:hover": {
+                        opacity: 0.9,
+                      },
+                    }}
+                  >
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
+                      {index + 1}
+                    </TableCell>
+                    <TableCell align="left" sx={{ padding: "16px" }}>
+                      <img
+                        src={brand?.photo}
+                        className="object-contain aspect-square w-40"
+                        alt=""
+                      />
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
+                      {brand?.name}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
+                      {brand?.company}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
+                      {brand?.note}
+                    </TableCell>
+                    <TableCell align="center" sx={{ padding: "16px" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          flexDirection: "row",
+                          gap: 1,
+                        }}
                       >
-                        <BiTrash className=" text-lg" />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                        <div
+                          onClick={() => handleEdit(brand)}
+                          className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 text-white hover:text-light transition-all duration-200"
+                        >
+                          <BiEdit className=" text-lg" />
+                        </div>
+                        <div
+                          onClick={() => handleOpenModal(brand?.id)}
+                          className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 text-white hover:text-red-500 transition-all duration-200"
+                        >
+                          <BiTrash className=" text-lg" />
+                        </div>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
-      <div className=" flex justify-end pr-10">
+
+      <div className="flex justify-end pr-10 mt-4">
         <Pagination
           count={pageCount}
           shape="rounded"
@@ -115,8 +191,10 @@ BrandTable.propTypes = {
   brands: PropTypes.any.isRequired,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
+  handleEdit: PropTypes.any,
   handlePaginate: PropTypes.any,
   handleDeleteBrand: PropTypes.any,
+  handleUpdateBrand: PropTypes.any,
 };
 
 export default BrandTable;

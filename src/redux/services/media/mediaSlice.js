@@ -1,19 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { addPhoto, deletePhoto, fetchPhoto } from "../../api/media/mediaApi";
 
+// Fetch photos from API
 export const fetchPhotoList = createAsyncThunk(
   "media/fetchPhoto",
   async ({ token, pagination }, { rejectWithValue }) => {
     try {
       const response = await fetchPhoto(token, pagination);
-      console.log(response);
       return response?.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || "Failed to fetch photos");
     }
   }
 );
 
+// Add photo to API
 export const photoCreate = createAsyncThunk(
   "media/addPhoto",
   async ({ photos, token }, { rejectWithValue }) => {
@@ -26,14 +27,15 @@ export const photoCreate = createAsyncThunk(
   }
 );
 
+// Delete photo from API
 export const photoDelete = createAsyncThunk(
   "media/deletePhoto",
   async ({ id, token }, { rejectWithValue }) => {
     try {
       const response = await deletePhoto(id, token);
-      return response;
+      return { id, ...response }; // Include the deleted photo ID in the response
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to delete");
+      return rejectWithValue(error.response?.data || "Failed to delete photo");
     }
   }
 );
@@ -49,8 +51,24 @@ const photoSlice = createSlice({
   name: "media",
   initialState,
   reducers: {
+    insertImage: (state, action) => {
+      const { path, modalOpen, editModalOpen, selectedImage } = action.payload;
+
+      if (path === "/inventory/brand") {
+        state.selectedBrandImage = selectedImage;
+      } else if (modalOpen) {
+        state.selectedBrandImage = selectedImage;
+      } else if (editModalOpen) {
+        state.selectedBrandEditImage = selectedImage;
+      }
+
+      state.isImageInserted = true;
+    },
+
     clearPhotoData(state) {
-      state.photos = null;
+      state.photos = [];
+      state.status = "idle";
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -81,8 +99,11 @@ const photoSlice = createSlice({
       .addCase(photoDelete.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(photoDelete.fulfilled, (state) => {
+      .addCase(photoDelete.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.photos = state.photos.filter(
+          (photo) => photo.id !== action.payload.id
+        );
       })
       .addCase(photoDelete.rejected, (state, action) => {
         state.status = "failed";
@@ -91,6 +112,5 @@ const photoSlice = createSlice({
   },
 });
 
-export const { clearPhotoData } = photoSlice.actions;
-
+export const { clearPhotoData, insertImage } = photoSlice.actions;
 export default photoSlice.reducer;
