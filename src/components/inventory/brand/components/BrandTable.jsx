@@ -2,14 +2,38 @@ import { Pagination } from "@mui/material";
 import Loader from "../../../ui/loader/Loader";
 import PropTypes from "prop-types";
 import { BiEdit, BiTrash } from "react-icons/bi";
+import ConfirmationModal from "../../../ui/model/ConfirmationModal";
+import { useState } from "react";
 
 const BrandTable = ({
   brands,
   pagination,
   handlePaginate,
   pageCount,
-  handleOpenModal,
+  handleDeleteBrand,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const handleOpenModal = (id) => {
+    setSelectedId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedId(null);
+    setIsModalOpen(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await handleDeleteBrand(selectedId);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting the brand:", error);
+    }
+  };
+
   return (
     <>
       {!brands ? (
@@ -55,7 +79,7 @@ const BrandTable = ({
                       </div>
                       <div
                         onClick={() => handleOpenModal(brand?.id)}
-                        className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 hover:text-light transition-all duration-200"
+                        className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 hover:text-red-500 transition-all duration-200"
                       >
                         <BiTrash className=" text-lg" />
                       </div>
@@ -76,6 +100,13 @@ const BrandTable = ({
           onChange={handlePaginate}
         />
       </div>
+
+      <ConfirmationModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete this brand? This action cannot be undone."
+      />
     </>
   );
 };
@@ -85,8 +116,7 @@ BrandTable.propTypes = {
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
   handlePaginate: PropTypes.any,
-  handleDelete: PropTypes.any,
-  handleOpenModal: PropTypes.any,
+  handleDeleteBrand: PropTypes.any,
 };
 
 export default BrandTable;
