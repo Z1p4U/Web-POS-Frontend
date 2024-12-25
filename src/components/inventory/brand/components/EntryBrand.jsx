@@ -25,7 +25,16 @@ const EntryBrand = ({
     note: "",
   });
 
-  console.log(currentBrand);
+  const handleModalClose = () => {
+    setAddModal(false);
+    setEditBrand(null);
+    setFormData({
+      photo: "",
+      name: "",
+      company: "",
+      note: "",
+    });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +58,7 @@ const EntryBrand = ({
     } else {
       handleCreateBrand(formData);
     }
-    setAddModal(false);
+    handleModalClose();
   };
 
   useEffect(() => {
@@ -59,17 +68,6 @@ const EntryBrand = ({
       setFormData({ photo: "", name: "", company: "", note: "" });
     }
   }, [currentBrand]);
-
-  const handleModalClose = () => {
-    setAddModal(false);
-    setEditBrand(null); // Clear edit data
-    setFormData({
-      photo: "",
-      name: "",
-      company: "",
-      note: "",
-    });
-  };
 
   return (
     <>
