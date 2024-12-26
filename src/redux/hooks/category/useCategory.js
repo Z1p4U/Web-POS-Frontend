@@ -1,0 +1,97 @@
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import useAuth from "../auth/useAuth";
+import {
+  categoryCreate,
+  categoryDelete,
+  categoryList,
+  categoryUpdate,
+  clearCategoryData,
+} from "../../services/category/categorySlice";
+
+const useCategory = () => {
+  const dispatch = useDispatch();
+  const { token } = useAuth();
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+  const [search, setSearch] = useState("");
+
+  const selectCategory = useMemo(() => (state) => state?.category, []);
+
+  const categoryResponse = useSelector(selectCategory, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
+
+  const categories = categoryResponse?.categories;
+  const pageCount = categoryResponse?.lastPage;
+
+  useEffect(() => {
+    if (token) {
+      dispatch(categoryList({ token, pagination, search }));
+    } else {
+      dispatch(clearCategoryData());
+    }
+  }, [token, pagination, dispatch, search]);
+
+  const handleCreateCategory = useCallback(
+    async (categories) => {
+      try {
+        const response = await dispatch(
+          categoryCreate({
+            categories,
+            token,
+          })
+        );
+        return response?.payload?.message;
+      } catch (error) {
+        console.error("Failed to add categories:", error);
+      }
+    },
+    [dispatch, token]
+  );
+
+  const handleUpdateCategory = useCallback(
+    async (id, categories) => {
+      try {
+        const response = await dispatch(
+          categoryUpdate({
+            id,
+            categories,
+            token,
+          })
+        );
+        return response?.payload?.message;
+      } catch (error) {
+        console.error("Failed to update categories:", error);
+      }
+    },
+    [dispatch, token]
+  );
+
+  const handleDeleteCategory = useCallback(
+    async (id) => {
+      try {
+        const response = await dispatch(
+          categoryDelete({
+            id,
+            token,
+          })
+        );
+        return response?.payload?.message;
+      } catch (error) {
+        console.error("Failed to delete categories:", error);
+      }
+    },
+    [dispatch, token]
+  );
+  return {
+    categories,
+    search,
+    pageCount,
+    pagination,
+    setSearch,
+    setPagination,
+    handleUpdateCategory,
+    handleCreateCategory,
+    handleDeleteCategory,
+  };
+};
+
+export default useCategory;

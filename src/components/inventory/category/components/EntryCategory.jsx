@@ -9,29 +9,25 @@ import {
 import ModalMedia from "../../../ui/model/MediaModel";
 import PropTypes from "prop-types";
 
-const EntryBrand = ({
+const EntryCategory = ({
   addModal,
   setAddModal,
-  currentBrand,
-  setEditBrand,
-  handleCreateBrand,
-  handleUpdateBrand,
+  currentCategory,
+  setEditCategory,
+  handleCreateCategory,
+  handleUpdateCategory,
 }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    photo: "",
     name: "",
-    company: "",
     note: "",
   });
 
   const handleModalClose = () => {
     setAddModal(false);
-    setEditBrand(null);
+    setEditCategory(null);
     setFormData({
-      photo: "",
       name: "",
-      company: "",
       note: "",
     });
   };
@@ -53,21 +49,21 @@ const EntryBrand = ({
   };
 
   const handleSubmit = () => {
-    if (currentBrand?.id) {
-      handleUpdateBrand(currentBrand.id, formData);
+    if (currentCategory?.id) {
+      handleUpdateCategory(currentCategory.id, formData);
     } else {
-      handleCreateBrand(formData);
+      handleCreateCategory(formData);
     }
     handleModalClose();
   };
 
   useEffect(() => {
-    if (currentBrand) {
-      setFormData(currentBrand);
+    if (currentCategory) {
+      setFormData(currentCategory);
     } else {
-      setFormData({ photo: "", name: "", company: "", note: "" });
+      setFormData({ name: "", note: "" });
     }
-  }, [currentBrand]);
+  }, [currentCategory]);
 
   return (
     <>
@@ -79,43 +75,8 @@ const EntryBrand = ({
       >
         <Box sx={{ width: 400, p: 3, mt: 8 }}>
           <Typography variant="h6" mb={2}>
-            Add Brand
+            Add Category
           </Typography>
-
-          {/* Image Placeholder */}
-          <Box
-            sx={{
-              height: 150,
-              width: "100%",
-              bgcolor: formData.photo ? "transparent" : "grey.200",
-              border: "1px dashed grey",
-              borderRadius: 2,
-              mb: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-              position: "relative",
-            }}
-            onClick={() => setImageModalOpen(true)}
-          >
-            {formData.photo ? (
-              <img
-                src={formData.photo}
-                alt="Selected"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-              />
-            ) : (
-              <Typography color="text.secondary">
-                Click to select image
-              </Typography>
-            )}
-          </Box>
 
           {/* Name Field */}
           <TextField
@@ -123,17 +84,6 @@ const EntryBrand = ({
             label="Name"
             name="name"
             value={formData.name}
-            onChange={handleInputChange}
-            margin="normal"
-            variant="outlined"
-          />
-
-          {/* Company Field */}
-          <TextField
-            fullWidth
-            label="Company"
-            name="company"
-            value={formData.company}
             onChange={handleInputChange}
             margin="normal"
             variant="outlined"
@@ -173,13 +123,13 @@ const EntryBrand = ({
   );
 };
 
-EntryBrand.propTypes = {
+EntryCategory.propTypes = {
   addModal: PropTypes.any,
   setAddModal: PropTypes.any,
-  currentBrand: PropTypes.any,
-  setEditBrand: PropTypes.any,
-  handleUpdateBrand: PropTypes.any,
-  handleCreateBrand: PropTypes.any,
+  currentCategory: PropTypes.any,
+  setEditCategory: PropTypes.any,
+  handleUpdateCategory: PropTypes.any,
+  handleCreateCategory: PropTypes.any,
 };
 
-export default EntryBrand;
+export default EntryCategory;
