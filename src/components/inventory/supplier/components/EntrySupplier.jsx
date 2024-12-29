@@ -6,7 +6,6 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import ModalMedia from "../../../ui/model/MediaModel";
 import PropTypes from "prop-types";
 
 const EntrySupplier = ({
@@ -17,7 +16,6 @@ const EntrySupplier = ({
   handleCreateSupplier,
   handleUpdateSupplier,
 }) => {
-  const [imageModalOpen, setImageModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "",
@@ -40,14 +38,6 @@ const EntrySupplier = ({
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleImageSelect = (imageUrl) => {
-    setFormData((prev) => ({
-      ...prev,
-      photo: imageUrl,
-    }));
-    setImageModalOpen(false);
   };
 
   const handleSubmit = () => {
@@ -125,13 +115,6 @@ const EntrySupplier = ({
           </Button>
         </Box>
       </SwipeableDrawer>
-
-      {/* Image Modal */}
-      <ModalMedia
-        opened={imageModalOpen}
-        onClose={() => setImageModalOpen(false)}
-        handleImageSelect={handleImageSelect}
-      />
     </>
   );
 };

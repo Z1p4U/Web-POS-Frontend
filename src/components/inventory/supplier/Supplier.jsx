@@ -1,9 +1,10 @@
 import { BiPlus, BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import { useState } from "react";
-import useSupplier from "../../../redux/hooks/supplier/useSupplier";
+
 import EntrySupplier from "./components/EntrySupplier";
 import SupplierTable from "./components/SupplierTable";
+import useSupplier from "../../../redux/hooks/inventory/supplier/useSupplier";
 
 const Supplier = () => {
   const {

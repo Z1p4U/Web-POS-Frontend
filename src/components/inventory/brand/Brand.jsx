@@ -1,9 +1,9 @@
 import { BiPlus, BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import BrandTable from "./components/BrandTable";
-import useBrand from "../../../redux/hooks/brand/useBrand";
 import { useState } from "react";
 import EntryBrand from "./components/EntryBrand";
+import useBrand from "../../../redux/hooks/inventory/brand/useBrand";
 
 const Brand = () => {
   const {

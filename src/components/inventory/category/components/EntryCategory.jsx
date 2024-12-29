@@ -6,7 +6,6 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import ModalMedia from "../../../ui/model/MediaModel";
 import PropTypes from "prop-types";
 
 const EntryCategory = ({
@@ -17,7 +16,6 @@ const EntryCategory = ({
   handleCreateCategory,
   handleUpdateCategory,
 }) => {
-  const [imageModalOpen, setImageModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     note: "",
@@ -38,14 +36,6 @@ const EntryCategory = ({
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleImageSelect = (imageUrl) => {
-    setFormData((prev) => ({
-      ...prev,
-      photo: imageUrl,
-    }));
-    setImageModalOpen(false);
   };
 
   const handleSubmit = () => {
@@ -112,13 +102,6 @@ const EntryCategory = ({
           </Button>
         </Box>
       </SwipeableDrawer>
-
-      {/* Image Modal */}
-      <ModalMedia
-        opened={imageModalOpen}
-        onClose={() => setImageModalOpen(false)}
-        handleImageSelect={handleImageSelect}
-      />
     </>
   );
 };

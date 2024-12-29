@@ -36,14 +36,6 @@ const Media = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await handleDeletePhoto(id);
-    } catch (error) {
-      console.error("Error uploading photos:", error);
-    }
-  };
-
   const handleDragLeave = (e) => {
     e.preventDefault();
     setHover(false);
@@ -120,7 +112,7 @@ const Media = () => {
         photos={photos}
         pagination={pagination}
         handlePaginate={handlePaginate}
-        handleDelete={handleDelete}
+        handleDeletePhoto={handleDeletePhoto}
       />
       {/* MEdia List */}
     </>

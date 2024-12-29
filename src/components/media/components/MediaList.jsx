@@ -3,21 +3,44 @@ import PropTypes from "prop-types";
 import { Backdrop, Box, Modal, Pagination } from "@mui/material";
 import { useState } from "react";
 import Loader from "../../ui/loader/Loader";
+import ConfirmationModal from "../../ui/model/ConfirmationModal";
 
 const MediaList = ({
   photos,
   pagination,
   handlePaginate,
   pageCount,
-  handleDelete,
+  handleDeletePhoto,
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const handleOpen = (url) => {
     setSelectedImg(url);
     setOpen(true);
   };
+
+  const handleOpenModal = (id) => {
+    setSelectedId(id);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setSelectedId(null);
+    setIsModalOpen(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await handleDeletePhoto(selectedId);
+      setIsModalOpen(false);
+      window.location.reload(); // remove it if needed
+    } catch (error) {
+      console.error("Error deleting the product:", error);
+    }
+  };
+
   const handleClose = () => setOpen(false);
 
   const style = {
@@ -60,7 +83,7 @@ const MediaList = ({
                     />
                     <div className="img_icon flex gap-2">
                       <div
-                        onClick={() => handleDelete(image?.id)}
+                        onClick={() => handleOpenModal(image?.id)}
                         className="h-8 w-10 flex justify-center items-center bg-primary rounded-md group/del-btn"
                       >
                         <BiTrash className=" max-sm:text-[14px] text-[18px] text-white  group-hover/del-btn:text-red-500" />
@@ -79,6 +102,12 @@ const MediaList = ({
               size="large"
               page={pagination.first}
               onChange={handlePaginate}
+            />
+            <ConfirmationModal
+              open={isModalOpen}
+              onClose={handleCloseModal}
+              onConfirm={handleDelete}
+              message="Are you sure you want to delete this product? This action cannot be undone."
             />
           </div>
         </div>
@@ -112,5 +141,5 @@ MediaList.propTypes = {
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
   handlePaginate: PropTypes.any,
-  handleDelete: PropTypes.any,
+  handleDeletePhoto: PropTypes.any,
 };

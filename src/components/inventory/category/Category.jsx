@@ -1,9 +1,10 @@
 import { BiPlus, BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import { useState } from "react";
-import useCategory from "../../../redux/hooks/category/useCategory";
+
 import CategoryTable from "./components/CategoryTable";
 import EntryCategory from "./components/EntryCategory";
+import useCategory from "../../../redux/hooks/inventory/category/useCategory";
 
 const Category = () => {
   const {
