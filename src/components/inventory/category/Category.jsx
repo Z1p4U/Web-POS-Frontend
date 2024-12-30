@@ -9,6 +9,7 @@ import useCategory from "../../../redux/hooks/inventory/category/useCategory";
 const Category = () => {
   const {
     categories,
+    totalRecord,
     pagination,
     pageCount,
     setSearch,
@@ -86,6 +87,7 @@ const Category = () => {
               pageCount={pageCount}
               pagination={pagination}
               handleEdit={handleEdit}
+              totalRecord={totalRecord}
               handlePaginate={handlePaginate}
               handleUpdateCategory={handleUpdateCategory}
               handleDeleteCategory={handleDeleteCategory}

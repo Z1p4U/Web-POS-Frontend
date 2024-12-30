@@ -8,10 +8,11 @@ import useBrand from "../../../redux/hooks/inventory/brand/useBrand";
 const Brand = () => {
   const {
     brands,
-    pagination,
-    setPagination,
     pageCount,
+    totalRecord,
+    pagination,
     setSearch,
+    setPagination,
     handleDeleteBrand,
     handleCreateBrand,
     handleUpdateBrand,
@@ -86,6 +87,7 @@ const Brand = () => {
               pageCount={pageCount}
               pagination={pagination}
               handleEdit={handleEdit}
+              totalRecord={totalRecord}
               handlePaginate={handlePaginate}
               handleUpdateBrand={handleUpdateBrand}
               handleDeleteBrand={handleDeleteBrand}

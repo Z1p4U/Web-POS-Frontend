@@ -19,6 +19,7 @@ const useMedia = () => {
 
   const photos = photoResponse?.photos;
   const pageCount = photoResponse?.lastPage;
+  const totalRecord = photoResponse?.totalRecord;
 
   useEffect(() => {
     if (token) {
@@ -67,6 +68,7 @@ const useMedia = () => {
     photos,
     pageCount,
     pagination,
+    totalRecord,
     setPagination,
     handlePaginate,
     handleCreatePhoto,

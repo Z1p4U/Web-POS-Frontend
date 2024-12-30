@@ -63,6 +63,7 @@ const initialState = {
   status: "idle",
   error: null,
   lastPage: 1,
+  totalRecord: 0,
 };
 
 const categorySlice = createSlice({
@@ -82,6 +83,7 @@ const categorySlice = createSlice({
         state.status = "succeeded";
         state.categories = action.payload.data;
         state.lastPage = action.payload.last_page;
+        state.totalRecord = action.payload.total;
       })
       .addCase(categoryList.rejected, (state, action) => {
         state.status = "failed";
@@ -93,6 +95,7 @@ const categorySlice = createSlice({
       .addCase(categoryCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.categories = [action.payload.data, ...state.categories];
+        state.totalRecord = state.totalRecord + 1;
       })
       .addCase(categoryCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -121,6 +124,7 @@ const categorySlice = createSlice({
         state.categories = state?.categories.filter(
           (item) => item.id !== deletedId
         );
+        state.totalRecord = state.totalRecord - 1;
       })
       .addCase(categoryDelete.rejected, (state, action) => {
         state.status = "failed";

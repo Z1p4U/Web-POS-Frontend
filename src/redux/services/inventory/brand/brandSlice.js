@@ -59,6 +59,7 @@ const initialState = {
   status: "idle",
   error: null,
   lastPage: 1,
+  totalRecord: 0,
 };
 
 const brandSlice = createSlice({
@@ -78,6 +79,7 @@ const brandSlice = createSlice({
         state.status = "succeeded";
         state.brands = action.payload.data;
         state.lastPage = action.payload.last_page;
+        state.totalRecord = action.payload.total;
       })
       .addCase(brandList.rejected, (state, action) => {
         state.status = "failed";
@@ -89,6 +91,7 @@ const brandSlice = createSlice({
       .addCase(brandCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.brands = [action.payload.data, ...state.brands];
+        state.totalRecord = state.totalRecord + 1;
       })
       .addCase(brandCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -115,6 +118,7 @@ const brandSlice = createSlice({
         state.status = "succeeded";
         const deletedId = action?.payload?.data?.id;
         state.brands = state?.brands.filter((item) => item.id !== deletedId);
+        state.totalRecord = state.totalRecord - 1;
       })
       .addCase(brandDelete.rejected, (state, action) => {
         state.status = "failed";

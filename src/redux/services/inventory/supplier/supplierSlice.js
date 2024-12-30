@@ -63,6 +63,7 @@ const initialState = {
   status: "idle",
   error: null,
   lastPage: 1,
+  totalRecord: 0,
 };
 
 const supplierSlice = createSlice({
@@ -82,6 +83,7 @@ const supplierSlice = createSlice({
         state.status = "succeeded";
         state.suppliers = action.payload.data;
         state.lastPage = action.payload.last_page;
+        state.totalRecord = action.payload.total;
       })
       .addCase(supplierList.rejected, (state, action) => {
         state.status = "failed";
@@ -93,6 +95,7 @@ const supplierSlice = createSlice({
       .addCase(supplierCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.suppliers = [action.payload.data, ...state.suppliers];
+        state.totalRecord = state.totalRecord + 1;
       })
       .addCase(supplierCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -121,6 +124,7 @@ const supplierSlice = createSlice({
         state.suppliers = state?.suppliers.filter(
           (item) => item.id !== deletedId
         );
+        state.totalRecord = state.totalRecord - 1;
       })
       .addCase(supplierDelete.rejected, (state, action) => {
         state.status = "failed";

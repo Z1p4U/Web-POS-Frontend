@@ -63,6 +63,7 @@ const initialState = {
   status: "idle",
   error: null,
   lastPage: 1,
+  totalRecord: 0,
 };
 
 const productSlice = createSlice({
@@ -82,6 +83,7 @@ const productSlice = createSlice({
         state.status = "succeeded";
         state.products = action.payload.data;
         state.lastPage = action.payload.last_page;
+        state.totalRecord = action.payload.total;
       })
       .addCase(productList.rejected, (state, action) => {
         state.status = "failed";
@@ -93,6 +95,7 @@ const productSlice = createSlice({
       .addCase(productCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.products = [action.payload.data, ...state.products];
+        state.totalRecord = state.totalRecord + 1;
       })
       .addCase(productCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -121,6 +124,7 @@ const productSlice = createSlice({
         state.products = state?.products.filter(
           (item) => item.id !== deletedId
         );
+        state.totalRecord = state.totalRecord - 1;
       })
       .addCase(productDelete.rejected, (state, action) => {
         state.status = "failed";

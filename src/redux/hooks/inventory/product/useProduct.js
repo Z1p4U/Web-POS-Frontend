@@ -21,6 +21,7 @@ const useProduct = () => {
 
   const products = productResponse?.products;
   const pageCount = productResponse?.lastPage;
+  const totalRecord = productResponse?.totalRecord;
 
   useEffect(() => {
     if (token) {
@@ -93,6 +94,7 @@ const useProduct = () => {
     search,
     pageCount,
     pagination,
+    totalRecord,
     setSearch,
     setPagination,
     refetchProducts,

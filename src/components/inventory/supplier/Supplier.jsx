@@ -9,6 +9,7 @@ import useSupplier from "../../../redux/hooks/inventory/supplier/useSupplier";
 const Supplier = () => {
   const {
     suppliers,
+    totalRecord,
     pagination,
     pageCount,
     setSearch,
@@ -86,6 +87,7 @@ const Supplier = () => {
               pageCount={pageCount}
               pagination={pagination}
               handleEdit={handleEdit}
+              totalRecord={totalRecord}
               handlePaginate={handlePaginate}
               handleUpdateSupplier={handleUpdateSupplier}
               handleDeleteSupplier={handleDeleteSupplier}

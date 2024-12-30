@@ -10,6 +10,7 @@ const Media = () => {
     photos,
     handleCreatePhoto,
     pagination,
+    totalRecord,
     handlePaginate,
     pageCount,
     handleDeletePhoto,
@@ -108,9 +109,10 @@ const Media = () => {
 
       {/* Media List */}
       <MediaList
-        pageCount={pageCount}
         photos={photos}
+        pageCount={pageCount}
         pagination={pagination}
+        totalRecord={totalRecord}
         handlePaginate={handlePaginate}
         handleDeletePhoto={handleDeletePhoto}
       />

@@ -19,6 +19,7 @@ const ProductTable = ({
   products,
   pageCount,
   pagination,
+  totalRecord,
   handlePaginate,
   refetchProducts,
 }) => {
@@ -86,6 +87,8 @@ const ProductTable = ({
             </TableHead>
             <TableBody>
               {products?.map((product, index) => {
+                const rowNumber =
+                  (pagination.page - 1) * pagination.per_page + index + 1;
                 return (
                   <TableRow
                     key={product?.id}
@@ -100,7 +103,7 @@ const ProductTable = ({
                       align="center"
                       sx={{ color: "#fff", padding: "16px" }}
                     >
-                      {index + 1}
+                      {rowNumber}
                     </TableCell>
                     <TableCell align="center" sx={{ padding: "16px" }}>
                       <img
@@ -125,7 +128,7 @@ const ProductTable = ({
                       align="center"
                       sx={{ color: "#fff", padding: "16px" }}
                     >
-                      {product?.sale_price}
+                      {product?.sale_price} Ks
                     </TableCell>
                     <TableCell
                       align="center"
@@ -146,7 +149,7 @@ const ProductTable = ({
 
                     <TableCell align="center" sx={{ padding: "16px" }}>
                       <Link
-                        to={`/product/${product.id}`}
+                        to={`/inventory/product/${product.id}`}
                         className="bg-[#002d5d] text-white py-2 px-4 rounded-lg font-bold inline-block text-center hover:bg-[#001a3d] transition-colors duration-200"
                       >
                         View Detail
@@ -160,12 +163,22 @@ const ProductTable = ({
         </TableContainer>
       )}
 
-      <div className="flex justify-end pr-10 mt-4">
+      {/* Pagination */}
+      <div className="flex justify-between flex-wrap gap-5 items-center pr-10 mt-8">
+        <div>
+          {`Showing ${
+            (pagination.page - 1) * pagination.per_page + 1
+          } to ${Math.min(
+            pagination.page * pagination.per_page,
+            totalRecord
+          )} of ${totalRecord}`}
+        </div>
+
         <Pagination
           count={pageCount}
           shape="rounded"
           size="large"
-          page={pagination.first}
+          page={pagination.page}
           onChange={handlePaginate}
         />
       </div>
@@ -185,11 +198,9 @@ ProductTable.propTypes = {
   products: PropTypes.any.isRequired,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
-  handleEdit: PropTypes.any,
+  totalRecord: PropTypes.any,
   refetchProducts: PropTypes.any,
   handlePaginate: PropTypes.any,
-  handleDeleteProduct: PropTypes.any,
-  handleUpdateProduct: PropTypes.any,
 };
 
 export default ProductTable;

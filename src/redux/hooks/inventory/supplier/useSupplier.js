@@ -21,6 +21,7 @@ const useSupplier = () => {
 
   const suppliers = supplierResponse?.suppliers;
   const pageCount = supplierResponse?.lastPage;
+  const totalRecord = supplierResponse?.totalRecord;
 
   useEffect(() => {
     if (token) {
@@ -86,6 +87,7 @@ const useSupplier = () => {
     search,
     pageCount,
     pagination,
+    totalRecord,
     setSearch,
     setPagination,
     handleUpdateSupplier,

@@ -8,6 +8,7 @@ import ConfirmationModal from "../../ui/model/ConfirmationModal";
 const MediaList = ({
   photos,
   pagination,
+  totalRecord,
   handlePaginate,
   pageCount,
   handleDeletePhoto,
@@ -95,21 +96,32 @@ const MediaList = ({
             </div>
           )}
 
-          <div className=" flex justify-end pr-10">
+          {/* Pagination */}
+          <div className="flex justify-between flex-wrap gap-5 items-center pr-10 mt-8">
+            <div>
+              {`Showing ${
+                (pagination.page - 1) * pagination.per_page + 1
+              } to ${Math.min(
+                pagination.page * pagination.per_page,
+                totalRecord
+              )} of ${totalRecord}`}
+            </div>
+
             <Pagination
               count={pageCount}
               shape="rounded"
               size="large"
-              page={pagination.first}
+              page={pagination.page}
               onChange={handlePaginate}
             />
-            <ConfirmationModal
-              open={isModalOpen}
-              onClose={handleCloseModal}
-              onConfirm={handleDelete}
-              message="Are you sure you want to delete this product? This action cannot be undone."
-            />
           </div>
+
+          <ConfirmationModal
+            open={isModalOpen}
+            onClose={handleCloseModal}
+            onConfirm={handleDelete}
+            message="Are you sure you want to delete this product? This action cannot be undone."
+          />
         </div>
       )}
 
@@ -138,8 +150,9 @@ export default MediaList;
 
 MediaList.propTypes = {
   photos: PropTypes.any.isRequired,
-  pagination: PropTypes.any,
   pageCount: PropTypes.any,
+  pagination: PropTypes.any,
+  totalRecord: PropTypes.any,
   handlePaginate: PropTypes.any,
   handleDeletePhoto: PropTypes.any,
 };

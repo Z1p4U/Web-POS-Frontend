@@ -20,6 +20,7 @@ const BrandTable = ({
   pagination,
   pageCount,
   handleEdit,
+  totalRecord,
   handlePaginate,
   handleDeleteBrand,
 }) => {
@@ -167,12 +168,22 @@ const BrandTable = ({
         </TableContainer>
       )}
 
-      <div className="flex justify-end pr-10 mt-4">
+      {/* Pagination */}
+      <div className="flex justify-between flex-wrap gap-5 items-center pr-10 mt-8">
+        <div>
+          {`Showing ${
+            (pagination.page - 1) * pagination.per_page + 1
+          } to ${Math.min(
+            pagination.page * pagination.per_page,
+            totalRecord
+          )} of ${totalRecord}`}
+        </div>
+
         <Pagination
           count={pageCount}
           shape="rounded"
           size="large"
-          page={pagination.first}
+          page={pagination.page}
           onChange={handlePaginate}
         />
       </div>
@@ -189,6 +200,7 @@ const BrandTable = ({
 
 BrandTable.propTypes = {
   brands: PropTypes.any.isRequired,
+  totalRecord: PropTypes.any,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
   handleEdit: PropTypes.any,

@@ -21,6 +21,7 @@ const useBrand = () => {
 
   const brands = brandResponse?.brands;
   const pageCount = brandResponse?.lastPage;
+  const totalRecord = brandResponse?.totalRecord;
 
   useEffect(() => {
     if (token) {
@@ -86,6 +87,7 @@ const useBrand = () => {
     search,
     pageCount,
     pagination,
+    totalRecord,
     setSearch,
     setPagination,
     handleUpdateBrand,

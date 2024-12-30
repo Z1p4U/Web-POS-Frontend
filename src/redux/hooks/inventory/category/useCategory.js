@@ -21,6 +21,7 @@ const useCategory = () => {
 
   const categories = categoryResponse?.categories;
   const pageCount = categoryResponse?.lastPage;
+  const totalRecord = categoryResponse?.totalRecord;
 
   useEffect(() => {
     if (token) {
@@ -86,6 +87,7 @@ const useCategory = () => {
     search,
     pageCount,
     pagination,
+    totalRecord,
     setSearch,
     setPagination,
     handleUpdateCategory,

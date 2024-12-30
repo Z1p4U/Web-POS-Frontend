@@ -45,6 +45,7 @@ const initialState = {
   status: "idle",
   error: null,
   lastPage: 1,
+  totalRecord: 0,
 };
 
 const photoSlice = createSlice({
@@ -80,6 +81,7 @@ const photoSlice = createSlice({
         state.status = "succeeded";
         state.photos = action.payload.data;
         state.lastPage = action.payload.last_page;
+        state.totalRecord = action.payload.total;
       })
       .addCase(fetchPhotoList.rejected, (state, action) => {
         state.status = "failed";
@@ -91,6 +93,7 @@ const photoSlice = createSlice({
       .addCase(photoCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.photos = [...action.payload.data, ...state.photos];
+        state.totalRecord += action.payload.data.length;
       })
       .addCase(photoCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -108,6 +111,7 @@ const photoSlice = createSlice({
       .addCase(photoDelete.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+        state.totalRecord = state.totalRecord - 1;
       });
   },
 });

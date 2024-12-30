@@ -1,11 +1,11 @@
 import { BiPlus, BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import ProductTable from "./components/ProductTable";
-
 import { useState } from "react";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import TableViewIcon from "@mui/icons-material/TableView";
 import useProduct from "../../../redux/hooks/inventory/product/useProduct";
+import ProductCard from "./components/ProductCard";
 
 const Product = () => {
   const {
@@ -13,6 +13,7 @@ const Product = () => {
     pagination,
     setPagination,
     pageCount,
+    totalRecord,
     setSearch,
     refetchProducts,
   } = useProduct();
@@ -95,6 +96,7 @@ const Product = () => {
                       products={products}
                       pageCount={pageCount}
                       pagination={pagination}
+                      totalRecord={totalRecord}
                       handlePaginate={handlePaginate}
                       refetchProducts={refetchProducts}
                     />
@@ -103,7 +105,14 @@ const Product = () => {
                 ) : (
                   <>
                     {/* table  */}
-                    {/* <ProductCard /> */}
+                    <ProductCard
+                      products={products}
+                      pageCount={pageCount}
+                      pagination={pagination}
+                      totalRecord={totalRecord}
+                      handlePaginate={handlePaginate}
+                      refetchProducts={refetchProducts}
+                    />
                     {/* table  */}
                   </>
                 )}
