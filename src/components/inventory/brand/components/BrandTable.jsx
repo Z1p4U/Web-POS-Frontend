@@ -95,6 +95,8 @@ const BrandTable = ({
             </TableHead>
             <TableBody>
               {brands?.map((brand, index) => {
+                const rowNumber =
+                  (pagination.page - 1) * pagination.per_page + index + 1;
                 return (
                   <TableRow
                     key={brand?.id}
@@ -109,7 +111,7 @@ const BrandTable = ({
                       align="left"
                       sx={{ color: "#fff", padding: "16px" }}
                     >
-                      {index + 1}
+                      {rowNumber}
                     </TableCell>
                     <TableCell align="left" sx={{ padding: "16px" }}>
                       <img

@@ -92,6 +92,8 @@ const SupplierTable = ({
             </TableHead>
             <TableBody>
               {suppliers?.map((supplier, index) => {
+                const rowNumber =
+                  (pagination.page - 1) * pagination.per_page + index + 1;
                 return (
                   <TableRow
                     key={supplier?.id}
@@ -106,7 +108,7 @@ const SupplierTable = ({
                       align="left"
                       sx={{ color: "#fff", padding: "16px" }}
                     >
-                      {index + 1}
+                      {rowNumber}
                     </TableCell>
                     <TableCell
                       align="left"
