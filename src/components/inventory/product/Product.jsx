@@ -6,6 +6,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import TableViewIcon from "@mui/icons-material/TableView";
 import useProduct from "../../../redux/hooks/inventory/product/useProduct";
 import ProductCard from "./components/ProductCard";
+import { Link } from "react-router-dom";
 
 const Product = () => {
   const {
@@ -37,10 +38,13 @@ const Product = () => {
           {/* banner  */}
           <Banner title={"Products"} path1={"Inventory"} />
           {/* banner  */}
-          <div className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300">
+          <Link
+            to={"/inventory/entry-product/"}
+            className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
+          >
             <BiPlus size={20} />
             Add Product
-          </div>
+          </Link>
         </div>
 
         <div className=" flex flex-wrap justify-end md:justify-between  md:items-center gap-3">

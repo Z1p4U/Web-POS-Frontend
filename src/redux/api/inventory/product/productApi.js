@@ -85,9 +85,26 @@ const fetchDeleteProduct = async (id, token) => {
   }
 };
 
+const fetchProductDetail = async (token, id) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const response = await axios.get(`${config.API_URL}/product/show/${id}`, {
+      headers,
+    });
+    // console.log("Fetched Product Detail :", response);
+    return response?.data;
+  } catch (error) {
+    console.log("Failed to fetch Product Detail:", error);
+    throw error;
+  }
+};
+
 export {
   fetchProduct,
   fetchCreateProduct,
   fetchUpdateProduct,
   fetchDeleteProduct,
+  fetchProductDetail,
 };

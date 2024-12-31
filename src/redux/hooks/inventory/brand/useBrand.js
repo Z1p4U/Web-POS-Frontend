@@ -9,15 +9,13 @@ import {
   clearBrandData,
 } from "../../../services/inventory/brand/brandSlice";
 
-const useBrand = () => {
+const useBrand = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
-  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
   const [search, setSearch] = useState("");
 
   const selectBrand = useMemo(() => (state) => state?.brand, []);
-
-  const brandResponse = useSelector(selectBrand, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
+  const brandResponse = useSelector(selectBrand, shallowEqual);
 
   const brands = brandResponse?.brands;
   const pageCount = brandResponse?.lastPage;
@@ -25,11 +23,18 @@ const useBrand = () => {
 
   useEffect(() => {
     if (token) {
-      dispatch(brandList({ token, pagination, search }));
+      const pagination = noPagination ? undefined : { page, per_page };
+      dispatch(
+        brandList({
+          token,
+          pagination,
+          search,
+        })
+      );
     } else {
       dispatch(clearBrandData());
     }
-  }, [token, pagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search]);
 
   const handleCreateBrand = useCallback(
     async (brands) => {
@@ -82,14 +87,13 @@ const useBrand = () => {
     },
     [dispatch, token]
   );
+
   return {
     brands,
     search,
     pageCount,
-    pagination,
     totalRecord,
     setSearch,
-    setPagination,
     handleUpdateBrand,
     handleCreateBrand,
     handleDeleteBrand,

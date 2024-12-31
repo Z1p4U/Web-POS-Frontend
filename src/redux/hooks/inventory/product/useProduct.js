@@ -5,6 +5,7 @@ import {
   clearProductData,
   productCreate,
   productDelete,
+  productDetail,
   productList,
   productUpdate,
 } from "../../../services/inventory/product/productSlice";
@@ -17,11 +18,12 @@ const useProduct = () => {
 
   const selectProduct = useMemo(() => (state) => state?.product, []);
 
-  const productResponse = useSelector(selectProduct, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
+  const productResponse = useSelector(selectProduct, shallowEqual);
 
   const products = productResponse?.products;
   const pageCount = productResponse?.lastPage;
   const totalRecord = productResponse?.totalRecord;
+  const pdDetail = productResponse?.productDetail;
 
   useEffect(() => {
     if (token) {
@@ -83,14 +85,50 @@ const useProduct = () => {
     [dispatch, token]
   );
 
+  const handleProductDetail = useCallback(
+    async (id) => {
+      try {
+        const response = await dispatch(
+          productDetail({
+            id,
+            token,
+          })
+        );
+        return response;
+      } catch (error) {
+        console.error("Failed to delete products:", error);
+      }
+    },
+    [dispatch, token]
+  );
+
   const refetchProducts = useCallback(() => {
     if (token) {
       dispatch(productList({ token, pagination, search }));
     }
   }, [dispatch, token, pagination, search]);
 
+  const fetchAllProducts = useCallback(async () => {
+    try {
+      const perPage = totalRecord || 1000;
+      const response = await dispatch(
+        productList({
+          token,
+          pagination: { page: 1, per_page: perPage },
+          search: "",
+        })
+      );
+
+      return response?.payload?.data || [];
+    } catch (error) {
+      console.error("Failed to fetch all Products:", error);
+      return [];
+    }
+  }, [dispatch, token, totalRecord]);
+
   return {
     products,
+    pdDetail,
     search,
     pageCount,
     pagination,
@@ -100,7 +138,9 @@ const useProduct = () => {
     refetchProducts,
     handleUpdateProduct,
     handleCreateProduct,
+    handleProductDetail,
     handleDeleteProduct,
+    fetchAllProducts,
   };
 };
 

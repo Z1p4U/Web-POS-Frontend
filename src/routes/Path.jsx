@@ -12,6 +12,7 @@ import Category from "../components/inventory/category/Category";
 import Supplier from "../components/inventory/supplier/Supplier";
 import Product from "../components/inventory/product/Product";
 import ProductDetail from "../components/inventory/product/ProductDetail";
+import EntryProduct from "../components/inventory/product/components/EntryProduct";
 
 const Path = () => {
   return (
@@ -34,6 +35,7 @@ const Path = () => {
           <Route path="/inventory/category" element={<Category />} />
           <Route path="/inventory/supplier" element={<Supplier />} />
           <Route path="/inventory/product" element={<Product />} />
+          <Route path="/inventory/entry-product" element={<EntryProduct />} />
           <Route
             path="/inventory/product/:productId"
             element={<ProductDetail />}

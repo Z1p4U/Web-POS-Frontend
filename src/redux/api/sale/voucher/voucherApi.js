@@ -6,12 +6,9 @@ const fetchDailyVoucher = async (token) => {
     Authorization: `Bearer ${token}`,
   };
   try {
-    const response = await axios.get(
-      `${config.API_URL}/voucher/daily?date=2024-12-11`,
-      {
-        headers,
-      }
-    );
+    const response = await axios.get(`${config.API_URL}/voucher/daily`, {
+      headers,
+    });
     // console.log("Fetched Voucher:", response);
     return response?.data;
   } catch (error) {

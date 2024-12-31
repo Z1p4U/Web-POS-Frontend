@@ -29,7 +29,9 @@ const Banner = (props) => {
 
         {path2 ? (
           <>
-            <Link to={`/${path2?.toLowerCase()}`}>{path2}</Link>
+            <Link to={`/${path1?.toLowerCase()}/${path2?.toLowerCase()}`}>
+              {path2}
+            </Link>
             <span> / </span>
             <span className="text-primary">{title}</span>
           </>

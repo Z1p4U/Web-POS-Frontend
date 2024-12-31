@@ -1,7 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import {
-  Backdrop,
   Box,
   Modal,
   Table,
@@ -169,8 +168,8 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
         open={open}
         onClose={handleClose}
         closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{ timeout: 500 }}
+        // BackdropComponent={Backdrop}
+        // BackdropProps={{ timeout: 500 }}
       >
         <Box sx={modalStyle}>
           {selectedVoucher && (

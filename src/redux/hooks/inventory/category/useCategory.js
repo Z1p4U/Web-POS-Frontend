@@ -82,6 +82,25 @@ const useCategory = () => {
     },
     [dispatch, token]
   );
+
+  const fetchAllCategory = useCallback(async () => {
+    try {
+      const perPage = totalRecord || 1000;
+      const response = await dispatch(
+        categoryList({
+          token,
+          pagination: { page: 1, per_page: perPage },
+          search: "",
+        })
+      );
+
+      return response?.payload?.data || [];
+    } catch (error) {
+      console.error("Failed to fetch all categories:", error);
+      return [];
+    }
+  }, [dispatch, token, totalRecord]);
+
   return {
     categories,
     search,
@@ -93,6 +112,7 @@ const useCategory = () => {
     handleUpdateCategory,
     handleCreateCategory,
     handleDeleteCategory,
+    fetchAllCategory,
   };
 };
 

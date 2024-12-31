@@ -11,9 +11,14 @@ export const brandList = createAsyncThunk(
   async ({ token, pagination, search }, { rejectWithValue }) => {
     try {
       const response = await fetchBrand(token, pagination, search);
-      return response?.data;
+      const normalizedData = {
+        brands: pagination ? response?.data?.data : response?.data,
+        lastPage: response?.last_page || 1,
+        totalRecord: response?.total || 0,
+      };
+      return normalizedData;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || "Failed to fetch brands");
     }
   }
 );
@@ -77,9 +82,9 @@ const brandSlice = createSlice({
       })
       .addCase(brandList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.brands = action.payload.data;
-        state.lastPage = action.payload.last_page;
-        state.totalRecord = action.payload.total;
+        state.brands = action.payload.brands;
+        state.lastPage = action.payload.lastPage;
+        state.totalRecord = action.payload.totalRecord;
       })
       .addCase(brandList.rejected, (state, action) => {
         state.status = "failed";

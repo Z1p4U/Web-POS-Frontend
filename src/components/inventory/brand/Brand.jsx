@@ -6,17 +6,17 @@ import EntryBrand from "./components/EntryBrand";
 import useBrand from "../../../redux/hooks/inventory/brand/useBrand";
 
 const Brand = () => {
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+
   const {
     brands,
     pageCount,
     totalRecord,
-    pagination,
     setSearch,
-    setPagination,
     handleDeleteBrand,
     handleCreateBrand,
     handleUpdateBrand,
-  } = useBrand();
+  } = useBrand({ ...pagination });
 
   const [addModal, setAddModal] = useState(false);
   const [editBrand, setEditBrand] = useState(null);

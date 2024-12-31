@@ -4,6 +4,7 @@ import {
   fetchCreateProduct,
   fetchDeleteProduct,
   fetchUpdateProduct,
+  fetchProductDetail,
 } from "../../../api/inventory/product/productApi";
 
 export const productList = createAsyncThunk(
@@ -11,6 +12,18 @@ export const productList = createAsyncThunk(
   async ({ token, pagination, search }, { rejectWithValue }) => {
     try {
       const response = await fetchProduct(token, pagination, search);
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const productDetail = createAsyncThunk(
+  "product/productDetail",
+  async ({ token, id }, { rejectWithValue }) => {
+    try {
+      const response = await fetchProductDetail(token, id);
       return response?.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -60,6 +73,7 @@ export const productDelete = createAsyncThunk(
 
 const initialState = {
   products: [],
+  productDetail: {},
   status: "idle",
   error: null,
   lastPage: 1,
@@ -86,6 +100,17 @@ const productSlice = createSlice({
         state.totalRecord = action.payload.total;
       })
       .addCase(productList.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(productDetail.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(productDetail.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.productDetail = action.payload;
+      })
+      .addCase(productDetail.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
@@ -120,11 +145,10 @@ const productSlice = createSlice({
       })
       .addCase(productDelete.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const deletedId = action?.payload?.data?.id;
-        state.products = state?.products.filter(
-          (item) => item.id !== deletedId
+        state.products = state.products.filter(
+          (item) => item.id !== action.meta.arg.id
         );
-        state.totalRecord = state.totalRecord - 1;
+        state.totalRecord -= 1;
       })
       .addCase(productDelete.rejected, (state, action) => {
         state.status = "failed";

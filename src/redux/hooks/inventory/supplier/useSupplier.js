@@ -82,6 +82,24 @@ const useSupplier = () => {
     },
     [dispatch, token]
   );
+  const fetchAllSuppliers = useCallback(async () => {
+    try {
+      const perPage = totalRecord || 1000;
+      const response = await dispatch(
+        supplierList({
+          token,
+          pagination: { page: 1, per_page: perPage },
+          search: "",
+        })
+      );
+
+      return response?.payload?.data || [];
+    } catch (error) {
+      console.error("Failed to fetch all Suppliers:", error);
+      return [];
+    }
+  }, [dispatch, token, totalRecord]);
+
   return {
     suppliers,
     search,
@@ -93,6 +111,7 @@ const useSupplier = () => {
     handleUpdateSupplier,
     handleCreateSupplier,
     handleDeleteSupplier,
+    fetchAllSuppliers,
   };
 };
 

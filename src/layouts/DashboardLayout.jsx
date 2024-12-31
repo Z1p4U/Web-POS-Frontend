@@ -28,7 +28,7 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const drawerWidth = 320;
 
@@ -82,12 +82,19 @@ const navItems = [
 const DashboardLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [submenuStates, setSubmenuStates] = useState({});
+  const [lastOpenedSubmenu, setLastOpenedSubmenu] = useState(null); // Track the last opened submenu
+  const location = useLocation();
 
   const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
     if (drawerOpen) {
+      setLastOpenedSubmenu(
+        Object.keys(submenuStates).find((key) => submenuStates[key]) // Store the currently open submenu
+      );
       setSubmenuStates({}); // Close all submenus when the drawer closes
+    } else if (lastOpenedSubmenu) {
+      setSubmenuStates({ [lastOpenedSubmenu]: true }); // Reopen the last selected submenu when the drawer reopens
     }
+    setDrawerOpen(!drawerOpen);
   };
 
   const toggleSubmenu = (menuLabel) => {
@@ -104,7 +111,14 @@ const DashboardLayout = () => {
       ),
       [menuLabel]: !prev[menuLabel], // Toggle the selected submenu
     }));
+    if (!submenuStates[menuLabel]) {
+      setLastOpenedSubmenu(menuLabel); // Track the last opened submenu
+    }
   };
+
+  const isActive = (path) => location.pathname === path;
+  const isSubmenuActive = (subItems) =>
+    subItems?.some((subItem) => location.pathname === subItem.path);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -154,10 +168,15 @@ const DashboardLayout = () => {
             >
               {item.subItems ? (
                 <>
-                  {/* Parent Menu Item */}
+                  {/* Parent Menu */}
                   <ListItem disablePadding>
                     <ListItemButton
-                      sx={{ minHeight: 50 }}
+                      sx={{
+                        minHeight: 50,
+                        backgroundColor: isSubmenuActive(item.subItems)
+                          ? "rgba(0, 0, 0, 0.1)"
+                          : "inherit",
+                      }}
                       onClick={() => toggleSubmenu(item.label)}
                     >
                       <ListItemIcon>{item.icon}</ListItemIcon>
@@ -178,8 +197,7 @@ const DashboardLayout = () => {
                         ))}
                     </ListItemButton>
                   </ListItem>
-
-                  {/* Submenu Items */}
+                  {/* Submenu */}
                   <Collapse
                     in={submenuStates[item.label]}
                     timeout="auto"
@@ -192,7 +210,15 @@ const DashboardLayout = () => {
                           disablePadding
                           sx={{ pl: 3 }}
                         >
-                          <ListItemButton component={Link} to={subItem.path}>
+                          <ListItemButton
+                            component={Link}
+                            to={subItem.path}
+                            sx={{
+                              backgroundColor: isActive(subItem.path)
+                                ? "rgba(0, 0, 0, 0.1)"
+                                : "inherit",
+                            }}
+                          >
                             <ListItemIcon>{subItem.icon}</ListItemIcon>
                             {drawerOpen && (
                               <ListItemText
@@ -212,9 +238,15 @@ const DashboardLayout = () => {
                 </>
               ) : (
                 <>
+                  {/* Single Menu Item */}
                   <ListItem disablePadding>
                     <ListItemButton
-                      sx={{ minHeight: 50 }}
+                      sx={{
+                        minHeight: 50,
+                        backgroundColor: isActive(item.path)
+                          ? "rgba(0, 0, 0, 0.1)"
+                          : "inherit",
+                      }}
                       component={Link}
                       to={item.path}
                     >
@@ -250,6 +282,7 @@ const DashboardLayout = () => {
         <Toolbar sx={{ minHeight: 80 }} />
         {/* Renders the child routes */}
         <Outlet />
+        {/* Renders the child routes */}
       </Box>
     </Box>
   );
