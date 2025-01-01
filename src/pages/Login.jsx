@@ -11,8 +11,8 @@ const Login = () => {
   const { login } = useAuth();
 
   const [credentials, setCredentials] = useState({
-    userName: "",
-    password: "",
+    userName: "admin@gmail.com",
+    password: "asdffdsa",
   });
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
