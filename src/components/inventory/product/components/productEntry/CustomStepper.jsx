@@ -1,55 +1,108 @@
-import { Stepper, Step, StepLabel, Box, styled } from "@mui/material";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  styled,
+  useMediaQuery,
+  StepConnector,
+} from "@mui/material";
 import PropTypes from "prop-types";
 
 // Custom styles for the Stepper and Steps
 const CustomStepLabel = styled(StepLabel)(({ theme }) => ({
   "& .MuiStepIcon-root": {
-    width: 48, // Bigger circle size
-    height: 48, // Bigger circle size
-    borderRadius: "50%",
-    color: theme.palette.grey[400],
+    width: 48,
+    height: 48,
+    color: theme.palette.grey[400], // Inactive step color
   },
   "& .MuiStepIcon-text": {
-    fontSize: "1.2rem", // Larger text inside the circle
+    fontSize: "16px", // Text inside the circle
     fontWeight: "bold",
   },
   "&.Mui-active .MuiStepIcon-root": {
-    color: theme.palette.primary.main, // Active step color
-    border: `3px solid ${theme.palette.primary.main}`, // Add a border for the active step
+    color: theme.palette.primary.main, // Active step circle color
   },
   "&.Mui-completed .MuiStepIcon-root": {
-    color: theme.palette.success.main, // Completed step color
+    color: theme.palette.success.main, // Completed step circle color
   },
   "& .MuiStepLabel-label": {
-    marginTop: theme.spacing(1), // Add spacing between the circle and label
-    fontSize: "1rem", // Label font size
+    // marginTop: theme.spacing(1), // Add spacing between the circle and label
+    width: "fit-content",
+    fontSize: "14px",
     fontWeight: "bold",
     color: theme.palette.text.primary,
   },
 }));
 
+// Custom connector with longer lines
+const CustomConnectorVertical = styled(StepConnector)(({ theme }) => ({
+  [`& .MuiStepConnector-line`]: {
+    borderColor: theme.palette.grey[400], // Line color
+    minHeight: 60, // Line length for vertical stepper
+    marginLeft: 12,
+  },
+}));
+
+const CustomConnectorHorizontal = styled(StepConnector)(({ theme }) => ({
+  [`& .MuiStepConnector-line`]: {
+    borderColor: theme.palette.grey[400],
+    minWidth: 80, // Line length for horizontal stepper
+  },
+}));
+
 const CustomStepper = ({ currentStep, steps }) => {
+  const isMobile = useMediaQuery("(min-width:1024px)"); // Check if screen size is below 'lg'
+
   return (
-    <Box className="w-full flex flex-col items-start">
-      <Stepper
-        activeStep={currentStep - 1}
-        orientation="vertical"
-        className="w-full"
-        sx={{ gap: 3 }} // Add more gap between steps
-      >
-        {steps.map((label, index) => (
-          <Step key={index}>
-            <CustomStepLabel>{label}</CustomStepLabel>
-          </Step>
-        ))}
-      </Stepper>
+    <Box className="w-full">
+      {/* Vertical Stepper for larger screens */}
+      <Box className={`w-full mt-10 ${isMobile ? "block" : "hidden"}`}>
+        <Stepper
+          activeStep={currentStep - 1}
+          orientation="vertical"
+          connector={<CustomConnectorVertical />}
+          className="w-full"
+          sx={{ gap: 1 }} // Increase gap between steps to lengthen connectors
+        >
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <CustomStepLabel>{label}</CustomStepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+
+      {/* Horizontal Stepper for mobile screens */}
+      <Box className={`w-full ${isMobile ? "hidden" : "block"}`}>
+        <Stepper
+          activeStep={currentStep - 1}
+          orientation="horizontal"
+          connector={<CustomConnectorHorizontal />}
+          className=""
+          sx={{
+            "& .MuiStep-root": {
+              flex: "1",
+            },
+            gap: 2,
+          }}
+        >
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <CustomStepLabel className=" flex flex-col items-center">
+                {label}
+              </CustomStepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
     </Box>
   );
 };
 
 CustomStepper.propTypes = {
-  steps: PropTypes.any,
-  currentStep: PropTypes.any,
+  steps: PropTypes.array.isRequired,
+  currentStep: PropTypes.number.isRequired,
 };
 
 export default CustomStepper;

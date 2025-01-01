@@ -10,10 +10,9 @@ import {
   productUpdate,
 } from "../../../services/inventory/product/productSlice";
 
-const useProduct = () => {
+const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
-  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
   const [search, setSearch] = useState("");
 
   const selectProduct = useMemo(() => (state) => state?.product, []);
@@ -27,11 +26,18 @@ const useProduct = () => {
 
   useEffect(() => {
     if (token) {
-      dispatch(productList({ token, pagination, search }));
+      const pagination = noPagination ? undefined : { page, per_page };
+      dispatch(
+        productList({
+          token,
+          pagination,
+          search,
+        })
+      );
     } else {
       dispatch(clearProductData());
     }
-  }, [token, pagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search]);
 
   const handleCreateProduct = useCallback(
     async (products) => {
@@ -104,9 +110,11 @@ const useProduct = () => {
 
   const refetchProducts = useCallback(() => {
     if (token) {
+      const pagination = noPagination ? undefined : { page, per_page };
+
       dispatch(productList({ token, pagination, search }));
     }
-  }, [dispatch, token, pagination, search]);
+  }, [dispatch, token, search, page, per_page, noPagination]);
 
   const fetchAllProducts = useCallback(async () => {
     try {
@@ -131,10 +139,8 @@ const useProduct = () => {
     pdDetail,
     search,
     pageCount,
-    pagination,
     totalRecord,
     setSearch,
-    setPagination,
     refetchProducts,
     handleUpdateProduct,
     handleCreateProduct,

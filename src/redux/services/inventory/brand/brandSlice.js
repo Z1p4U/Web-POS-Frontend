@@ -13,8 +13,8 @@ export const brandList = createAsyncThunk(
       const response = await fetchBrand(token, pagination, search);
       const normalizedData = {
         brands: pagination ? response?.data?.data : response?.data,
-        lastPage: response?.last_page || 1,
-        totalRecord: response?.total || 0,
+        lastPage: response?.data?.last_page || 1,
+        totalRecord: response?.data?.total || 0,
       };
       return normalizedData;
     } catch (error) {

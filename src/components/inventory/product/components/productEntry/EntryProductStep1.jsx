@@ -9,17 +9,14 @@ import {
   Chip,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import useBrand from "../../../../../redux/hooks/inventory/brand/useBrand";
-import useCategory from "../../../../../redux/hooks/inventory/category/useCategory";
-import useSupplier from "../../../../../redux/hooks/inventory/supplier/useSupplier";
 
-const EntryProductStep1 = ({ formData, onInputChange }) => {
-  const { brands } = useBrand({ noPagination: true });
-  const { fetchAllCategory } = useCategory();
-  const { fetchAllSuppliers } = useSupplier();
-
-  console.log(brands);
-
+const EntryProductStep1 = ({
+  formData,
+  onInputChange,
+  brands,
+  categories,
+  suppliers,
+}) => {
   // Handle multi-select for categories and suppliers
   const handleCategoryChange = (event) => {
     onInputChange("category_ids", event.target.value);
@@ -43,7 +40,7 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
   return (
     <Box className="flex gap-10">
       {/* Form Fields */}
-      <Box className="w-5/6">
+      <Box className="w-full lg:w-5/6">
         <Box className="border border-gray-400 p-10 flex flex-col gap-6 w-full rounded-md">
           {/* Name */}
           <TextField
@@ -57,7 +54,9 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
 
           {/* Brand */}
           <FormControl fullWidth>
-            <InputLabel id="brand-label">Brand</InputLabel>
+            <InputLabel required id="brand-label">
+              Brand
+            </InputLabel>
             <Select
               labelId="brand-label"
               value={formData.brand_id}
@@ -75,11 +74,14 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
           </FormControl>
 
           {/* Category Multi-Select with Chips */}
-          {/* <FormControl fullWidth>
-            <InputLabel id="category-label">Category</InputLabel>
+          <FormControl fullWidth>
+            <InputLabel required id="category-label">
+              Category
+            </InputLabel>
             <Select
               labelId="category-label"
               multiple
+              required
               value={formData.category_ids || []}
               onChange={handleCategoryChange}
               input={
@@ -88,9 +90,7 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
               renderValue={(selected) => (
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                   {selected.map((id) => {
-                    const category = allCategories?.find(
-                      (cat) => cat.id === id
-                    );
+                    const category = categories?.find((cat) => cat.id === id);
                     return category ? (
                       <Chip key={id} label={category.name} />
                     ) : null;
@@ -99,19 +99,22 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
               )}
               MenuProps={MenuProps}
             >
-              {allCategories?.map((category) => (
+              {categories?.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
                   {category.name}
                 </MenuItem>
               ))}
             </Select>
-          </FormControl> */}
+          </FormControl>
 
           {/* Supplier Multi-Select with Chips */}
-          {/* <FormControl fullWidth>
-            <InputLabel id="supplier-label">Supplier</InputLabel>
+          <FormControl fullWidth>
+            <InputLabel required id="supplier-label">
+              Supplier
+            </InputLabel>
             <Select
               labelId="supplier-label"
+              required
               multiple
               value={formData.supplier_ids || []}
               onChange={handleSupplierChange}
@@ -121,7 +124,7 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
               renderValue={(selected) => (
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                   {selected.map((id) => {
-                    const supplier = allSuppliers?.find((sup) => sup.id === id);
+                    const supplier = suppliers?.find((sup) => sup.id === id);
                     return supplier ? (
                       <Chip key={id} label={supplier.name} />
                     ) : null;
@@ -130,13 +133,13 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
               )}
               MenuProps={MenuProps}
             >
-              {allSuppliers?.map((supplier) => (
+              {suppliers?.map((supplier) => (
                 <MenuItem key={supplier.id} value={supplier.id}>
                   {supplier.name}
                 </MenuItem>
               ))}
             </Select>
-          </FormControl> */}
+          </FormControl>
 
           {/* Unit */}
           <TextField
@@ -148,11 +151,11 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
             required
           />
 
-          {/* More Information */}
+          {/* Description */}
           <TextField
-            label="More Information"
-            value={formData.more_information}
-            onChange={(e) => onInputChange("more_information", e.target.value)}
+            label="Description"
+            value={formData.description}
+            onChange={(e) => onInputChange("description", e.target.value)}
             multiline
             rows={4}
             fullWidth
@@ -167,6 +170,9 @@ const EntryProductStep1 = ({ formData, onInputChange }) => {
 EntryProductStep1.propTypes = {
   formData: PropTypes.any,
   onInputChange: PropTypes.any,
+  brands: PropTypes.any,
+  categories: PropTypes.any,
+  suppliers: PropTypes.any,
 };
 
 export default EntryProductStep1;

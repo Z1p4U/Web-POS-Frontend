@@ -9,10 +9,9 @@ import {
   clearCategoryData,
 } from "../../../services/inventory/category/categorySlice";
 
-const useCategory = () => {
+const useCategory = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
-  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
   const [search, setSearch] = useState("");
 
   const selectCategory = useMemo(() => (state) => state?.category, []);
@@ -25,11 +24,18 @@ const useCategory = () => {
 
   useEffect(() => {
     if (token) {
-      dispatch(categoryList({ token, pagination, search }));
+      const pagination = noPagination ? undefined : { page, per_page };
+      dispatch(
+        categoryList({
+          token,
+          pagination,
+          search,
+        })
+      );
     } else {
       dispatch(clearCategoryData());
     }
-  }, [token, pagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search]);
 
   const handleCreateCategory = useCallback(
     async (categories) => {
@@ -105,10 +111,8 @@ const useCategory = () => {
     categories,
     search,
     pageCount,
-    pagination,
     totalRecord,
     setSearch,
-    setPagination,
     handleUpdateCategory,
     handleCreateCategory,
     handleDeleteCategory,

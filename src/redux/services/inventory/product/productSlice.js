@@ -12,9 +12,18 @@ export const productList = createAsyncThunk(
   async ({ token, pagination, search }, { rejectWithValue }) => {
     try {
       const response = await fetchProduct(token, pagination, search);
-      return response?.data;
+
+      const normalizedData = {
+        products: pagination ? response?.data?.data : response?.data,
+        lastPage: response?.data?.last_page || 1,
+        totalRecord: response?.data?.total || 0,
+      };
+
+      return normalizedData;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch Products"
+      );
     }
   }
 );
@@ -38,6 +47,7 @@ export const productCreate = createAsyncThunk(
       const response = await fetchCreateProduct(products, token);
       return response;
     } catch (error) {
+      console.error("API Error:", error);
       return rejectWithValue(error.response?.data || "Failed to add product");
     }
   }
@@ -95,9 +105,9 @@ const productSlice = createSlice({
       })
       .addCase(productList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.products = action.payload.data;
-        state.lastPage = action.payload.last_page;
-        state.totalRecord = action.payload.total;
+        state.products = action.payload.products;
+        state.lastPage = action.payload.lastPage;
+        state.totalRecord = action.payload.totalRecord;
       })
       .addCase(productList.rejected, (state, action) => {
         state.status = "failed";
@@ -119,8 +129,9 @@ const productSlice = createSlice({
       })
       .addCase(productCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.products = [action.payload.data, ...state.products];
-        state.totalRecord = state.totalRecord + 1;
+        const newProduct = action.payload?.data;
+        state.products = [newProduct, ...state.products];
+        state.totalRecord += 1;
       })
       .addCase(productCreate.rejected, (state, action) => {
         state.status = "failed";

@@ -7,17 +7,17 @@ import EntryCategory from "./components/EntryCategory";
 import useCategory from "../../../redux/hooks/inventory/category/useCategory";
 
 const Category = () => {
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+
   const {
     categories,
     totalRecord,
-    pagination,
     pageCount,
     setSearch,
-    setPagination,
     handleDeleteCategory,
     handleCreateCategory,
     handleUpdateCategory,
-  } = useCategory();
+  } = useCategory({ ...pagination });
   const [addModal, setAddModal] = useState(false);
   const [editCategory, setEditCategory] = useState(null);
 

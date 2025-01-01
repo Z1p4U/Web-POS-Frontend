@@ -11,9 +11,16 @@ export const supplierList = createAsyncThunk(
   async ({ token, pagination, search }, { rejectWithValue }) => {
     try {
       const response = await fetchSupplier(token, pagination, search);
-      return response?.data;
+      const normalizedData = {
+        suppliers: pagination ? response?.data?.data : response?.data,
+        lastPage: response?.data?.last_page || 1,
+        totalRecord: response?.data?.total || 0,
+      };
+      return normalizedData;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch Suppliers"
+      );
     }
   }
 );
@@ -81,9 +88,9 @@ const supplierSlice = createSlice({
       })
       .addCase(supplierList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.suppliers = action.payload.data;
-        state.lastPage = action.payload.last_page;
-        state.totalRecord = action.payload.total;
+        state.suppliers = action.payload.suppliers;
+        state.lastPage = action.payload.lastPage;
+        state.totalRecord = action.payload.totalRecord;
       })
       .addCase(supplierList.rejected, (state, action) => {
         state.status = "failed";

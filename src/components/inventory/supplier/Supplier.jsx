@@ -7,17 +7,18 @@ import SupplierTable from "./components/SupplierTable";
 import useSupplier from "../../../redux/hooks/inventory/supplier/useSupplier";
 
 const Supplier = () => {
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+
   const {
     suppliers,
     totalRecord,
-    pagination,
     pageCount,
     setSearch,
-    setPagination,
     handleDeleteSupplier,
     handleUpdateSupplier,
     handleCreateSupplier,
-  } = useSupplier();
+  } = useSupplier({ ...pagination });
+
   const [addModal, setAddModal] = useState(false);
   const [editSupplier, setEditSupplier] = useState(null);
 

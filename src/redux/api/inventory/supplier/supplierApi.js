@@ -1,20 +1,27 @@
 import axios from "axios";
 import config from "../../../../config/environment";
 
-const fetchSupplier = async (token, pagination, search, columns = "name") => {
+const fetchSupplier = async (
+  token,
+  pagination = {},
+  search,
+  columns = "name"
+) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
   try {
+    const params = {
+      columns,
+      search,
+      ...(pagination || {}),
+    };
+
     const response = await axios.get(`${config.API_URL}/supplier/list`, {
       headers,
-      params: {
-        ...pagination,
-        columns,
-        search,
-      },
+      params,
     });
-    // console.log("Fetched Supplier:", response);
+
     return response?.data;
   } catch (error) {
     console.log("Failed to fetch Supplier:", error);

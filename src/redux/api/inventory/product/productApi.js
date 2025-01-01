@@ -1,20 +1,27 @@
 import axios from "axios";
 import config from "../../../../config/environment";
 
-const fetchProduct = async (token, pagination, search, columns = "name") => {
+const fetchProduct = async (
+  token,
+  pagination = {},
+  search,
+  columns = "name"
+) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
   try {
+    const params = {
+      columns,
+      search,
+      ...(pagination || {}),
+    };
+
     const response = await axios.get(`${config.API_URL}/product/list`, {
       headers,
-      params: {
-        ...pagination,
-        columns,
-        search,
-      },
+      params,
     });
-    // console.log("Fetched Product:", response);
+
     return response?.data;
   } catch (error) {
     console.log("Failed to fetch Product:", error);

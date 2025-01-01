@@ -195,7 +195,7 @@ const ProductTable = ({
 };
 
 ProductTable.propTypes = {
-  products: PropTypes.any.isRequired,
+  products: PropTypes.any,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
   totalRecord: PropTypes.any,

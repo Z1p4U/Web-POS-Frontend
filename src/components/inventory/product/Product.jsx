@@ -9,15 +9,10 @@ import ProductCard from "./components/ProductCard";
 import { Link } from "react-router-dom";
 
 const Product = () => {
-  const {
-    products,
-    pagination,
-    setPagination,
-    pageCount,
-    totalRecord,
-    setSearch,
-    refetchProducts,
-  } = useProduct();
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+
+  const { products, pageCount, totalRecord, setSearch, refetchProducts } =
+    useProduct({ page: 1, per_page: 10 });
 
   const [tableView, setTableView] = useState(true);
 

@@ -1,11 +1,25 @@
 import { useState } from "react";
 import Banner from "../../../ui/banner/Banner";
-import EntryProductStep1 from "./productEntry/EntryProductStep1";
 import { Button, Box } from "@mui/material";
 import CustomStepper from "./productEntry/CustomStepper";
+import EntryProductStep1 from "./productEntry/EntryProductStep1";
+import EntryProductStep2 from "./productEntry/EntryProductStep2";
+import EntryProductStep3 from "./productEntry/EntryProductStep3";
+import EntryProductConfirmation from "./productEntry/EntryProductConfirmation";
+import useProduct from "../../../../redux/hooks/inventory/product/useProduct";
+import useBrand from "../../../../redux/hooks/inventory/brand/useBrand";
+import useCategory from "../../../../redux/hooks/inventory/category/useCategory";
+import useSupplier from "../../../../redux/hooks/inventory/supplier/useSupplier";
+import { useNavigate } from "react-router-dom";
 
 const EntryProduct = () => {
-  const steps = ["Information", "Price", "Photo"];
+  const { handleCreateProduct } = useProduct({ noPagination: true });
+  const { brands } = useBrand({ noPagination: true });
+  const { categories } = useCategory({ noPagination: true });
+  const { suppliers } = useSupplier({ noPagination: true });
+  const nav = useNavigate();
+
+  const steps = ["Information", "Price", "Photo", "Confirmation"];
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +32,20 @@ const EntryProduct = () => {
     description: "",
     photo: "",
   });
+
+  // Validation function
+  const isFormComplete = () => {
+    return (
+      formData.name.trim() &&
+      formData.brand_id &&
+      formData.category_ids.length > 0 &&
+      formData.supplier_ids.length > 0 &&
+      formData.actual_price.trim() &&
+      formData.sale_price.trim() &&
+      formData.unit.trim() &&
+      formData.photo.trim()
+    );
+  };
 
   const handleNext = () => {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
@@ -37,7 +65,10 @@ const EntryProduct = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Final Form Data:", formData);
-    // Proceed with form submission logic
+    const response = handleCreateProduct(formData);
+    if (response) {
+      nav("/inventory/product");
+    }
   };
 
   return (
@@ -65,9 +96,31 @@ const EntryProduct = () => {
                   <EntryProductStep1
                     formData={formData}
                     onInputChange={handleInputChange}
+                    brands={brands}
+                    categories={categories}
+                    suppliers={suppliers}
                   />
                 )}
-                {/* Add other step components (like Step 2, Step 3) here if necessary */}
+                {currentStep === 2 && (
+                  <EntryProductStep2
+                    formData={formData}
+                    onInputChange={handleInputChange}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <EntryProductStep3
+                    formData={formData}
+                    setFormData={setFormData}
+                  />
+                )}
+                {currentStep === 4 && (
+                  <EntryProductConfirmation
+                    formData={formData}
+                    brands={brands}
+                    categories={categories}
+                    suppliers={suppliers}
+                  />
+                )}
               </div>
               {/* Stepper Section */}
               <Box className="w-full col-span-3 lg:col-span-1 order-1 lg:order-2">
@@ -80,7 +133,10 @@ const EntryProduct = () => {
                   variant="contained"
                   color="secondary"
                   disabled={currentStep === 1}
-                  onClick={handleBack}
+                  onClick={(e) => {
+                    e.preventDefault(); // Explicitly prevent form submission
+                    handleBack();
+                  }}
                   fullWidth
                 >
                   Back
@@ -89,7 +145,10 @@ const EntryProduct = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleNext}
+                    onClick={(e) => {
+                      e.preventDefault(); // Explicitly prevent form submission
+                      handleNext();
+                    }}
                     fullWidth
                   >
                     Next
@@ -100,6 +159,7 @@ const EntryProduct = () => {
                     variant="contained"
                     color="success"
                     fullWidth
+                    disabled={!isFormComplete()} // Disable "Create" button if form is incomplete
                   >
                     Create
                   </Button>

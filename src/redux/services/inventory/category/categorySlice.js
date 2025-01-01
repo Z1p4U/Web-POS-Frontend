@@ -11,9 +11,16 @@ export const categoryList = createAsyncThunk(
   async ({ token, pagination, search }, { rejectWithValue }) => {
     try {
       const response = await fetchCategory(token, pagination, search);
-      return response?.data;
+      const normalizedData = {
+        categories: pagination ? response?.data?.data : response?.data,
+        lastPage: response?.data?.last_page || 1,
+        totalRecord: response?.data?.total || 0,
+      };
+      return normalizedData;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch Categories"
+      );
     }
   }
 );
@@ -81,9 +88,9 @@ const categorySlice = createSlice({
       })
       .addCase(categoryList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.categories = action.payload.data;
-        state.lastPage = action.payload.last_page;
-        state.totalRecord = action.payload.total;
+        state.categories = action.payload.categories;
+        state.lastPage = action.payload.lastPage;
+        state.totalRecord = action.payload.totalRecord;
       })
       .addCase(categoryList.rejected, (state, action) => {
         state.status = "failed";

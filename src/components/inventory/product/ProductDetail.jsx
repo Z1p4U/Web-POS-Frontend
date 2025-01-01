@@ -38,7 +38,7 @@ const ProductDetail = () => {
             <div className=" ">
               <div className=" bg-light border-b border-dim rounded-t-lg ">
                 <div className="pb-10 pt-7 mt-[73px] flex items-center relative">
-                  <div className=" absolute top-[-70px] left-[33px]">
+                  <div className=" absolute top-[-70px] left-[33px] bg-primary rounded-full">
                     <img
                       src={pdDetail?.photo ? pdDetail?.photo : <></>}
                       alt=""
