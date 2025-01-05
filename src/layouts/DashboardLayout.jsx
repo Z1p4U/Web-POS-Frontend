@@ -39,6 +39,11 @@ const navItems = [
     path: "/",
   },
   {
+    label: "POS",
+    icon: <PointOfSaleIcon />,
+    path: "/sale/pos",
+  },
+  {
     label: "Inventory",
     icon: <Inventory2Icon />,
     subItems: [
@@ -64,7 +69,6 @@ const navItems = [
     label: "Sale",
     icon: <StorefrontIcon />,
     subItems: [
-      { label: "POS", icon: <PointOfSaleIcon />, path: "/sale/pos" },
       {
         label: "Today Sale Record",
         icon: <ReceiptIcon />,

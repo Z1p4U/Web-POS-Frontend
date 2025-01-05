@@ -1,18 +1,27 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useCallback } from "react";
-import { login, logout, register } from "../../services/auth/authSlice";
+import { useCallback, useEffect } from "react";
+import {
+  login,
+  logout,
+  register,
+  setIsAuthenticated,
+} from "../../services/auth/authSlice";
 
 const useAuth = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  //   const isAuthenticated = true;
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  // Automatically set isAuthenticated based on token presence
+  useEffect(() => {
+    const authToken = sessionStorage.getItem("authToken");
+    dispatch(setIsAuthenticated(Boolean(authToken)));
+  }, [dispatch]);
 
   const handleLogin = useCallback(
     async (email, password) => {
       try {
         const response = await dispatch(login({ email, password })).unwrap();
-        // console.log("Auth Response", response);
         return response;
       } catch (error) {
         console.error("Failed to login:", error);
@@ -57,6 +66,8 @@ const useAuth = () => {
   const handleLogout = useCallback(async () => {
     try {
       await dispatch(logout(token)).unwrap();
+      sessionStorage.removeItem("authToken"); // Clear token
+      dispatch(setIsAuthenticated(false)); // Update state
     } catch (error) {
       console.error("Failed to logout:", error);
     }

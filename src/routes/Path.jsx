@@ -1,18 +1,18 @@
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
 import ScrollToTop from "../components/ScrollToTop";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Media from "../components/media/Media";
 import Login from "../pages/Login";
 import RouteGuard from "../components/RouteGuard";
 import DailyVoucher from "../components/sale/voucher/DailyVoucher";
-import POS from "../components/sale/pos/POS";
 import Brand from "../components/inventory/brand/Brand";
 import Category from "../components/inventory/category/Category";
 import Supplier from "../components/inventory/supplier/Supplier";
 import Product from "../components/inventory/product/Product";
 import ProductDetail from "../components/inventory/product/ProductDetail";
 import EntryProduct from "../components/inventory/product/components/EntryProduct";
+import POS from "../pages/POS";
+import Dashboard from "../components/dashboard/Dashboard";
 
 const Path = () => {
   return (
@@ -43,7 +43,6 @@ const Path = () => {
           {/* Inventory */}
 
           {/* Sale */}
-          <Route path="/sale/pos" element={<POS />} />
           <Route path="/sale/daily-voucher" element={<DailyVoucher />} />
           {/* Sale */}
 
@@ -51,6 +50,10 @@ const Path = () => {
           <Route path="/media" element={<Media />} />
           {/* Media */}
         </Route>
+
+        {/* POS */}
+        <Route path="/sale/pos" element={<POS />} />
+        {/* POS */}
 
         <Route path="/login" element={<Login />} />
       </Routes>
