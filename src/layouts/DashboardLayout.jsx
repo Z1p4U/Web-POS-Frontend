@@ -41,7 +41,7 @@ const navItems = [
   {
     label: "POS",
     icon: <PointOfSaleIcon />,
-    path: "/sale/pos",
+    path: "/pos/casher",
   },
   {
     label: "Inventory",
@@ -143,7 +143,9 @@ const DashboardLayout = () => {
           >
             <MenuIcon />
           </IconButton>
-          <h1>DeepBlue POS</h1>
+          <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
+            DeepBlue POS
+          </h1>
         </Toolbar>
       </AppBar>
 

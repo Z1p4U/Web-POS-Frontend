@@ -11,8 +11,8 @@ import Supplier from "../components/inventory/supplier/Supplier";
 import Product from "../components/inventory/product/Product";
 import ProductDetail from "../components/inventory/product/ProductDetail";
 import EntryProduct from "../components/inventory/product/components/EntryProduct";
-import POS from "../pages/POS";
 import Dashboard from "../components/dashboard/Dashboard";
+import Casher from "../pages/pos/Casher";
 
 const Path = () => {
   return (
@@ -52,7 +52,7 @@ const Path = () => {
         </Route>
 
         {/* POS */}
-        <Route path="/sale/pos" element={<POS />} />
+        <Route path="/pos/casher" element={<Casher />} />
         {/* POS */}
 
         <Route path="/login" element={<Login />} />
