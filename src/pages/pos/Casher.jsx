@@ -5,33 +5,41 @@ import Loader from "../../components/ui/loader/Loader";
 import Banner from "../../components/ui/banner/Banner";
 import ProductCalculator from "./components/ProductCalculator";
 import { useState } from "react";
-import { Check } from "@mui/icons-material";
+import { Check, Close } from "@mui/icons-material";
 
 const Casher = () => {
   const { products, setSearch } = useProduct({ noPagination: true });
   const [selectedProduct, setSelectedProduct] = useState([]);
 
+  console.log(products);
+
   const handleSearch = (e) => {
     e.preventDefault();
     const inputValue = e.target.elements.search.value.trim();
+    console.log(inputValue.length);
     setSearch(inputValue);
-    e.target.reset();
+    // e.target.reset();
   };
 
   const selectProduct = (product) => {
-    setSelectedProduct((prev) => {
-      const existingItem = prev.find((item) => item.product.id === product.id);
-      if (existingItem) {
-        return prev;
-      }
-      return [...prev, { quantity: 1, product }];
-    });
+    if (product.total_stock != 0) {
+      setSelectedProduct((prev) => {
+        const existingItem = prev.find(
+          (item) => item.product.id === product.id
+        );
+        if (existingItem) {
+          return prev;
+          // return prev.filter((item) => item.product.id !== product.id); // This is for toggling select product
+        }
+        return [...prev, { quantity: 0, product }];
+      });
+    }
   };
 
   return (
     <div className="relative">
       {/* Navbar */}
-      <div className="flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0 z-10">
+      <div className=" z-50 flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0 z-10">
         <Link to={"/"}>
           <h1 className="font-semibold tracking-wider text-lg cursor-pointer text-white">
             DeepBlue POS
@@ -44,7 +52,7 @@ const Casher = () => {
           {/* Left content */}
           <div className="col-span-2 flex flex-col gap-5 overflow-y-auto h-screen pt-[80px]">
             {/* Search and Banner */}
-            <div className="flex max-[800px]:flex-col max-[800px]:gap-3 justify-between items-center border-b border-[#3f4245] py-5 px-5">
+            <div className="flex flex-wrap justify-between items-center border-b border-[#3f4245] py-5 px-5">
               <div className="w-[50%] flex gap-4 items-center">
                 <Banner title={"Casher"} path1={"POS"} />
               </div>
@@ -58,36 +66,55 @@ const Casher = () => {
                 <div className="absolute top-[10px] left-[11px]">
                   <BiSearch size={20} />
                 </div>
+
+                <div
+                  onClick={() => setSearch("")}
+                  className="absolute top-[5px] right-[11px] cursor-pointer opacity-60 hover:opacity-100"
+                >
+                  <Close size={20} className="text-red-500" />
+                </div>
               </form>
             </div>
             {/* Product List */}
             <div className="mx-5">
-              <div className="grid grid-cols-4 max-[1110px]:grid-cols-3 max-[840px]:grid-cols-2 max-[665px]:grid-cols-1 gap-5 pb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 pb-5">
                 {!products ? (
                   <div className="col-span-4 h-full min-h-[500px] flex justify-center items-center">
                     <Loader />
                   </div>
                 ) : (
                   products?.map((pd) => {
-                    const isSelected = selectedProduct.some(
-                      (item) => item.product.id === pd.id
+                    const isSelected = selectedProduct?.some(
+                      (item) => item?.product.id === pd?.id
                     );
 
                     return (
                       <div
                         key={pd?.id}
                         onClick={() => selectProduct(pd)}
-                        className={`cursor-pointer rounded-lg ${
-                          isSelected ? " shadow-xl" : ""
-                        }`}
+                        className={` col-span-1 rounded-lg ${
+                          isSelected ? " shadow-md shadow-primary" : ""
+                        }  ${pd?.total_stock == 0 ? " cursor-not-allowed" : " cursor-pointer"}`}
                       >
                         <div
                           className={`aspect-square relative select-none rounded-md shadow-md overflow-hidden`}
                         >
                           <div
-                            className={`absolute top-2 right-2 bg-green-500 rounded-full ${isSelected ? "flex" : "hidden"} justify-center items-center aspect-square w-7 `}
+                            className={`absolute top-2 left-2 bg-green-500 rounded-full ${isSelected ? "flex" : "hidden"} justify-center items-center aspect-square w-7 `}
                           >
                             <Check fontSize="10px" />
+                          </div>
+                          <div
+                            className={`absolute rounded-sm ${pd?.total_stock == 0 ? "flex" : "hidden"} justify-center items-center bg-red-500 opacity-90 text-nowrap w-full h-full z-10 `}
+                          >
+                            <p className=" absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-white border-2 p-2 border-white font-semibold -rotate-12">
+                              Out of stock !
+                            </p>
+                          </div>
+                          <div
+                            className={`absolute top-3 rounded-s-full right-0 px-2 rounded-sm ${pd?.total_stock <= 10 ? "flex" : "hidden"} text-sm text-white justify-center items-center bg-yellow-500 text-nowrap `}
+                          >
+                            <p className="">Low stock!</p>
                           </div>
                           <img
                             src={

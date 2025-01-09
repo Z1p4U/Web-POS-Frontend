@@ -17,7 +17,7 @@ const useCheckout = () => {
           })
         );
 
-        console.log(response);
+        // console.log(response);
         return response?.payload?.message;
       } catch (error) {
         console.error("Failed to add data:", error);

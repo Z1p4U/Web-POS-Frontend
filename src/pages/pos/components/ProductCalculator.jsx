@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import RenderKeypadRow from "./RenderKeypadRow";
 import { Modal, Box, Button } from "@mui/material";
 import ConfirmationModal from "../../../components/ui/model/ConfirmationModal";
 import useCheckout from "../../../redux/hooks/sale/checkout/useCheckout";
+import Swal from "sweetalert2";
 
 const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
   const paymentMethods = [
@@ -14,7 +15,7 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
 
   const { handleCheckout } = useCheckout();
 
-  const [selectReceivePd, setSelectReceivePd] = useState(null);
+  const [selectCalcPd, setSelectCalcPd] = useState(null);
   const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,12 +26,21 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
     payment_type: "",
   });
 
+  console.log(formData);
+
+  const prevLengthRef = useRef(selectedProduct.length);
+
   useEffect(() => {
+    const prevLength = prevLengthRef.current;
+    const currentLength = selectedProduct.length;
+
     if (selectedProduct.length > 0 && !isManuallySelected) {
-      setSelectReceivePd(
-        selectedProduct[selectedProduct.length - 1]?.product?.id
-      );
+      setSelectCalcPd(selectedProduct[selectedProduct.length - 1]?.product?.id);
+    } else if (isManuallySelected && prevLength !== currentLength) {
+      setIsManuallySelected(false);
     }
+
+    prevLengthRef.current = currentLength;
   }, [selectedProduct, isManuallySelected]);
 
   useEffect(() => {
@@ -45,8 +55,8 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
   const handlePayment = () => setModalOpen(true);
 
   const selectReceiveHandler = (id) => {
+    setSelectCalcPd(id);
     setIsManuallySelected(true);
-    setSelectReceivePd(id);
   };
 
   const updateQuantity = (value, id) => {
@@ -55,27 +65,24 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
         item.product.id === id
           ? {
               ...item,
-              quantity: parseInt(`${item.quantity || ""}${value}`, 10) || 1,
+              quantity: Math.max(
+                Math.min(
+                  parseInt(`${item.quantity || ""}${value}`, 10) || 1, // Calculate new quantity
+                  item.product.total_stock // Ensure quantity does not exceed total stock
+                ),
+                0 // Ensure quantity is non-negative
+              ),
             }
           : item
       )
     );
-    setIsManuallySelected(true);
   };
 
-  const deleteProduct = (id) => {
+  const removeProduct = (id) => {
     const updatedSelectedProduct = selectedProduct.filter(
       (item) => item.product.id !== id
     );
     setSelectedProduct(updatedSelectedProduct);
-  };
-
-  const clearQuantity = (id) => {
-    setSelectedProduct((prev) =>
-      prev.map((item) =>
-        item.product.id === id ? { ...item, quantity: 1 } : item
-      )
-    );
   };
 
   const deleteLastDigit = (id) => {
@@ -83,7 +90,7 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
       prev.map((item) => {
         if (item.product.id === id) {
           const newQuantity = item.quantity.toString().slice(0, -1);
-          return { ...item, quantity: parseInt(newQuantity, 10) || 1 };
+          return { ...item, quantity: parseInt(newQuantity, 10) || 0 };
         }
         return item;
       })
@@ -91,36 +98,68 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
   };
 
   const handleKeypadClick = (value) => {
-    if (!selectReceivePd) return;
+    if (!selectCalcPd) return;
 
-    if (typeof value === "number" || value === "00") {
-      updateQuantity(value, selectReceivePd);
-    } else if (value === "DEL") {
-      deleteLastDigit(selectReceivePd);
-    } else if (value === "CLR") {
-      deleteProduct(selectReceivePd);
-    } else if (value === "RESET") {
-      handleOpenConfirm();
-    } else if (value === "CANCEL") {
-      clearQuantity(selectReceivePd);
+    switch (value) {
+      case "DEL":
+        deleteLastDigit(selectCalcPd);
+        break;
+      case "REMOVE":
+        removeProduct(selectCalcPd);
+        break;
+      case "RESET":
+        handleOpenConfirm();
+        break;
+      default:
+        if (typeof value === "number" || value === "00") {
+          updateQuantity(value, selectCalcPd);
+        }
+        break;
     }
   };
 
   const handlePaymentSelect = (method) => {
-    const products = selectedProduct.map((item) => ({
-      product_id: item.product.id,
-      quantity: item.quantity,
-    }));
+    if (selectedProduct.length === 0) {
+      alert("No products selected!");
+      return;
+    }
+
+    // Filter out products with quantity 0
+    const products = selectedProduct
+      .filter((item) => item.quantity > 0) // Keep only items with quantity > 0
+      .map((item) => ({
+        product_id: item.product.id,
+        quantity: item.quantity,
+      }));
+
+    if (products.length === 0) {
+      alert("No products with quantity greater than 0!");
+      return;
+    }
 
     setFormData({
-      products: products,
+      products,
       payment_type: method,
     });
   };
 
-  const checkoutConfirm = (formData) => {
-    handleCheckout(formData);
+  const checkoutConfirm = async (formData) => {
+    const res = await handleCheckout(formData);
+
+    Swal.fire({
+      icon: "success",
+      title: "Success!",
+      text: `${res}`,
+      footer: `<a href="/sale/daily-voucher"> Go to check voucher</a>`,
+    });
+
     setModalOpen(false);
+
+    setSelectedProduct([]);
+    setFormData({
+      products: [],
+      payment_type: "",
+    });
   };
 
   const handleOpenConfirm = () => setIsConfirm(true);
@@ -158,7 +197,7 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
               onClick={() => selectReceiveHandler(data.product.id)}
               key={data.product.id}
               className={`${
-                selectReceivePd === data.product.id ? "bg-[#ffffff15]" : ""
+                selectCalcPd === data.product.id ? "bg-[#ffffff15]" : ""
               } border-b pt-1 border-dim flex justify-between items-center hover:bg-[#ffffff15] cursor-pointer`}
             >
               <div className="px-8 pb-2 flex flex-col">
@@ -207,17 +246,14 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
             onClick={handleKeypadClick}
           />
           <RenderKeypadRow
-            values={[4, 5, 6, "CLR"]}
+            values={[4, 5, 6, "REMOVE"]}
             onClick={handleKeypadClick}
           />
           <RenderKeypadRow
             values={[7, 8, 9, "RESET"]}
             onClick={handleKeypadClick}
           />
-          <RenderKeypadRow
-            values={[0, ".", "00", "CANCEL"]}
-            onClick={handleKeypadClick}
-          />
+          <RenderKeypadRow values={["00", 0, ""]} onClick={handleKeypadClick} />
 
           <button
             onClick={handlePayment}
@@ -273,7 +309,7 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
               }}
               onClick={() => checkoutConfirm(formData)}
             >
-              Export Voucher
+              Checkout
             </Button>
           </div>
         </Box>
