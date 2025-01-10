@@ -6,7 +6,11 @@ import ConfirmationModal from "../../../components/ui/model/ConfirmationModal";
 import useCheckout from "../../../redux/hooks/sale/checkout/useCheckout";
 import Swal from "sweetalert2";
 
-const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
+const ProductCalculator = ({
+  selectedProduct,
+  setSelectedProduct,
+  refetchProducts,
+}) => {
   const paymentMethods = [
     { id: 1, name: "Cash" },
     { id: 2, name: "K Pay" },
@@ -25,8 +29,6 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
     products: [],
     payment_type: "",
   });
-
-  console.log(formData);
 
   const prevLengthRef = useRef(selectedProduct.length);
 
@@ -49,7 +51,7 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
       0
     );
     setTotal(totalAmount);
-    setTax(totalAmount * 0); // Example: 0% tax
+    setTax(totalAmount * 0);
   }, [selectedProduct]);
 
   const handlePayment = () => setModalOpen(true);
@@ -67,10 +69,10 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
               ...item,
               quantity: Math.max(
                 Math.min(
-                  parseInt(`${item.quantity || ""}${value}`, 10) || 1, // Calculate new quantity
-                  item.product.total_stock // Ensure quantity does not exceed total stock
+                  parseInt(`${item.quantity || ""}${value}`, 10) || 1,
+                  item.product.total_stock
                 ),
-                0 // Ensure quantity is non-negative
+                0
               ),
             }
           : item
@@ -124,9 +126,8 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
       return;
     }
 
-    // Filter out products with quantity 0
     const products = selectedProduct
-      .filter((item) => item.quantity > 0) // Keep only items with quantity > 0
+      .filter((item) => item.quantity > 0)
       .map((item) => ({
         product_id: item.product.id,
         quantity: item.quantity,
@@ -146,20 +147,25 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
   const checkoutConfirm = async (formData) => {
     const res = await handleCheckout(formData);
 
-    Swal.fire({
-      icon: "success",
-      title: "Success!",
-      text: `${res}`,
-      footer: `<a href="/sale/daily-voucher"> Go to check voucher</a>`,
-    });
+    if (res) {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: `${res}`,
+        footer: `<a href="/sale/daily-voucher"> Go to check voucher</a>`,
+      });
 
-    setModalOpen(false);
+      setModalOpen(false);
 
-    setSelectedProduct([]);
-    setFormData({
-      products: [],
-      payment_type: "",
-    });
+      setSelectedProduct([]);
+
+      setFormData({
+        products: [],
+        payment_type: "",
+      });
+
+      refetchProducts();
+    }
   };
 
   const handleOpenConfirm = () => setIsConfirm(true);
@@ -321,6 +327,7 @@ const ProductCalculator = ({ selectedProduct, setSelectedProduct }) => {
 ProductCalculator.propTypes = {
   selectedProduct: PropTypes.array,
   setSelectedProduct: PropTypes.func,
+  refetchProducts: PropTypes.func,
 };
 
 export default ProductCalculator;

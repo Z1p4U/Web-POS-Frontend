@@ -8,10 +8,10 @@ import { useState } from "react";
 import { Check, Close } from "@mui/icons-material";
 
 const Casher = () => {
-  const { products, setSearch } = useProduct({ noPagination: true });
+  const { products, refetchProducts, setSearch } = useProduct({
+    noPagination: true,
+  });
   const [selectedProduct, setSelectedProduct] = useState([]);
-
-  console.log(products);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ const Casher = () => {
   return (
     <div className="relative">
       {/* Navbar */}
-      <div className=" z-50 flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0 z-10">
+      <div className=" z-50 flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0">
         <Link to={"/"}>
           <h1 className="font-semibold tracking-wider text-lg cursor-pointer text-white">
             DeepBlue POS
@@ -105,7 +105,7 @@ const Casher = () => {
                             <Check fontSize="10px" />
                           </div>
                           <div
-                            className={`absolute rounded-sm ${pd?.total_stock == 0 ? "flex" : "hidden"} justify-center items-center bg-red-500 opacity-90 text-nowrap w-full h-full z-10 `}
+                            className={`absolute rounded-sm ${pd?.total_stock == 0 ? "flex" : "hidden"} justify-center items-center bg-black opacity-75 text-nowrap w-full h-full z-10 `}
                           >
                             <p className=" absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-white border-2 p-2 border-white font-semibold -rotate-12">
                               Out of stock !
@@ -146,6 +146,7 @@ const Casher = () => {
           <div className="col-span-1 h-screen pt-[80px]">
             <div className="sticky top-0 h-full">
               <ProductCalculator
+                refetchProducts={refetchProducts}
                 selectedProduct={selectedProduct}
                 setSelectedProduct={setSelectedProduct}
               />

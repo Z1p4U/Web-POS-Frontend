@@ -17,10 +17,9 @@ const useCheckout = () => {
           })
         );
 
-        // console.log(response);
         return response?.payload?.message;
       } catch (error) {
-        console.error("Failed to add data:", error);
+        console.error("Failed to Checkout:", error);
       }
     },
     [dispatch, token]
