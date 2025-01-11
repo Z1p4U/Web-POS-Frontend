@@ -1,8 +1,8 @@
 import axios from "axios";
-import { API_URL } from "./env";
+import config from "./environment";
 
 const axiosInstance = axios.create({
-  baseURL: API_URL, // Set the base URL for all requests
+  baseURL: config.API_URL, // Set the base URL for all requests
   headers: {
     "Content-Type": "application/json", // Set the content type for all requests
   },

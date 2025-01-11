@@ -3,7 +3,7 @@ import config from "../../../config/environment";
 
 const fetchLogin = async (email, password) => {
   try {
-    const response = await axios.post(`${config.API_URL}/login/`, {
+    const response = await axios.post(`${config.API_URL}/login`, {
       email,
       password,
     });
