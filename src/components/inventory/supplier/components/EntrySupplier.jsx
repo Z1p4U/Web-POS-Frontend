@@ -18,8 +18,11 @@ const EntrySupplier = ({
 }) => {
   const [formData, setFormData] = useState({
     name: "",
+    company_name: "",
     phone_number: "",
-    note: "",
+    secondary_phone_number: "",
+    email: "",
+    address: "",
   });
 
   const handleModalClose = () => {
@@ -27,8 +30,11 @@ const EntrySupplier = ({
     setEditSupplier(null);
     setFormData({
       name: "",
+      company_name: "",
       phone_number: "",
-      note: "",
+      secondary_phone_number: "",
+      email: "",
+      address: "",
     });
   };
 
@@ -53,7 +59,14 @@ const EntrySupplier = ({
     if (currentSupplier) {
       setFormData(currentSupplier);
     } else {
-      setFormData({ name: "", phone_number: "", note: "" });
+      setFormData({
+        name: "",
+        company_name: "",
+        phone_number: "",
+        secondary_phone_number: "",
+        email: "",
+        address: "",
+      });
     }
   }, [currentSupplier]);
 
@@ -81,23 +94,56 @@ const EntrySupplier = ({
             variant="outlined"
           />
 
-          {/* Phone Number Field */}
+          {/* Company Name Field */}
           <TextField
             fullWidth
-            label="Phone Number"
-            name="phone_number"
-            value={formData.phone}
+            label="Company Name"
+            name="company_name"
+            value={formData.company_name}
             onChange={handleInputChange}
             margin="normal"
             variant="outlined"
           />
 
-          {/* Note Field */}
+          {/* Phone Number Field */}
           <TextField
             fullWidth
-            label="Note"
-            name="note"
-            value={formData.note}
+            label="Phone Number"
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleInputChange}
+            margin="normal"
+            variant="outlined"
+          />
+
+          {/* Secondary Phone Number Field */}
+          <TextField
+            fullWidth
+            label="Secondary Phone Number"
+            name="secondary_phone_number"
+            value={formData.secondary_phone_number}
+            onChange={handleInputChange}
+            margin="normal"
+            variant="outlined"
+          />
+
+          {/* Secondary Phone Number Field */}
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            margin="normal"
+            variant="outlined"
+          />
+
+          {/* Secondary Phone Number Field */}
+          <TextField
+            fullWidth
+            label="Address"
+            name="address"
+            value={formData.address}
             onChange={handleInputChange}
             margin="normal"
             variant="outlined"

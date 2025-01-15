@@ -59,34 +59,80 @@ const SupplierTable = ({
               <TableRow sx={{ backgroundColor: "#002d5d", color: "#fff" }}>
                 <TableCell
                   align="left"
-                  sx={{ padding: "16px", color: "white" }}
+                  sx={{ padding: "16px", color: "white", fontSize: "14px" }}
                 >
                   NO
                 </TableCell>
 
                 <TableCell
                   align="left"
-                  sx={{ padding: "16px", color: "white" }}
+                  sx={{ padding: "16px", color: "white", fontSize: "14px" }}
                 >
                   NAME
                 </TableCell>
-
                 <TableCell
                   align="left"
-                  sx={{ padding: "16px", color: "white", maxWidth: 500 }}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    fontSize: "14px",
+                    maxWidth: 500,
+                  }}
                 >
-                  Phone Number
+                  COMPANY NAME
                 </TableCell>
 
                 <TableCell
                   align="left"
-                  sx={{ padding: "16px", color: "white", maxWidth: 500 }}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    fontSize: "14px",
+                    maxWidth: 500,
+                  }}
                 >
-                  NOTE
+                  PHONE
                 </TableCell>
+
+                <TableCell
+                  align="left"
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    fontSize: "14px",
+                    maxWidth: 500,
+                  }}
+                >
+                  SECONDARY PH
+                </TableCell>
+
+                <TableCell
+                  align="left"
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    fontSize: "14px",
+                    maxWidth: 500,
+                  }}
+                >
+                  EMAIL
+                </TableCell>
+
+                <TableCell
+                  align="left"
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    fontSize: "14px",
+                    maxWidth: 500,
+                  }}
+                >
+                  ADDRESS
+                </TableCell>
+
                 <TableCell
                   align="center"
-                  sx={{ padding: "16px", color: "white" }}
+                  sx={{ padding: "16px", color: "white", fontSize: "14px" }}
                 ></TableCell>
               </TableRow>
             </TableHead>
@@ -120,13 +166,31 @@ const SupplierTable = ({
                       align="left"
                       sx={{ color: "#fff", padding: "16px" }}
                     >
+                      {supplier?.company_name}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
                       {supplier?.phone_number}
                     </TableCell>
                     <TableCell
                       align="left"
                       sx={{ color: "#fff", padding: "16px" }}
                     >
-                      {supplier?.note}
+                      {supplier?.secondary_phone_number}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
+                      {supplier?.email}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ color: "#fff", padding: "16px" }}
+                    >
+                      {supplier?.address}
                     </TableCell>
                     <TableCell align="center" sx={{ padding: "16px" }}>
                       <Box
