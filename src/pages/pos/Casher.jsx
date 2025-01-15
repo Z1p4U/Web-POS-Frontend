@@ -36,13 +36,15 @@ const Casher = () => {
     }
   };
 
+  const posName = localStorage.getItem("pos");
+
   return (
     <div className="relative">
       {/* Navbar */}
       <div className=" z-50 flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0">
         <Link to={"/"}>
           <h1 className="font-semibold tracking-wider text-lg cursor-pointer text-white">
-            DeepBlue POS
+            {posName ? posName : "DeepBlue POS"}
           </h1>
         </Link>
       </div>

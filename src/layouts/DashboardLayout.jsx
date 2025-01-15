@@ -28,7 +28,9 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Logout } from "@mui/icons-material";
+import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 
 const drawerWidth = 320;
 
@@ -87,6 +89,9 @@ const DashboardLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [submenuStates, setSubmenuStates] = useState({});
   const [lastOpenedSubmenu, setLastOpenedSubmenu] = useState(null); // Track the last opened submenu
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const nav = useNavigate();
+
   const location = useLocation();
 
   const toggleDrawer = () => {
@@ -124,6 +129,14 @@ const DashboardLayout = () => {
   const isSubmenuActive = (subItems) =>
     subItems?.some((subItem) => location.pathname === subItem.path);
 
+  const posName = localStorage.getItem("pos");
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("authToken");
+    setDrawerOpen(false);
+    nav("/login");
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -144,7 +157,7 @@ const DashboardLayout = () => {
             <MenuIcon />
           </IconButton>
           <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
-            DeepBlue POS
+            {posName ? posName : "DeepBlue POS"}
           </h1>
         </Toolbar>
       </AppBar>
@@ -273,6 +286,38 @@ const DashboardLayout = () => {
               )}
             </Tooltip>
           ))}
+          <Tooltip
+            title="Logout"
+            placement="right"
+            disableHoverListener={drawerOpen}
+          >
+            <>
+              <ListItem disablePadding>
+                <ListItemButton
+                  sx={{
+                    minHeight: 50,
+                    backgroundColor: "inherit",
+                  }}
+                  component={Link}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <ListItemIcon>
+                    <Logout />
+                  </ListItemIcon>
+                  {drawerOpen && (
+                    <ListItemText
+                      primary="Logout"
+                      primaryTypographyProps={{
+                        fontSize: "15px",
+                      }}
+                      sx={{ marginLeft: -1 }}
+                    />
+                  )}
+                </ListItemButton>
+              </ListItem>
+              <Divider />
+            </>
+          </Tooltip>
         </List>
       </Drawer>
 
@@ -290,6 +335,13 @@ const DashboardLayout = () => {
         <Outlet />
         {/* Renders the child routes */}
       </Box>
+
+      <ConfirmationModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLogout}
+        message="Are you sure you want to logout?"
+      />
     </Box>
   );
 };
