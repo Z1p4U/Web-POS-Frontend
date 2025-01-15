@@ -1,25 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchAddStock } from "../../../api/inventory/stock/stockApi";
+import { fetchControlStock } from "../../../api/inventory/stock/stockApi";
 
-export const addStock = createAsyncThunk(
-  "stock/addStock",
+export const controlStock = createAsyncThunk(
+  "stock/controlStock",
   async ({ stocks, token }, { rejectWithValue }) => {
     try {
-      const response = await fetchAddStock(stocks, token);
+      const response = await fetchControlStock(stocks, token);
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to add stock");
-    }
-  }
-);
-export const adjustStock = createAsyncThunk(
-  "stock/adjustStock",
-  async ({ stocks, token }, { rejectWithValue }) => {
-    try {
-      const response = await fetchAddStock(stocks, token);
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to adjust stock");
+      return rejectWithValue(error.response?.data || "Failed to control stock");
     }
   }
 );
@@ -40,25 +29,14 @@ const stockSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addStock.pending, (state) => {
+      .addCase(controlStock.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(addStock.fulfilled, (state, action) => {
+      .addCase(controlStock.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.stocks = [action.payload.data, ...state.stocks];
       })
-      .addCase(addStock.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-      .addCase(adjustStock.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(adjustStock.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.stocks = [action.payload.data, ...state.stocks];
-      })
-      .addCase(adjustStock.rejected, (state, action) => {
+      .addCase(controlStock.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
