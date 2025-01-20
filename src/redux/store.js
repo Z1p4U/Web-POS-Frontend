@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./services/auth/authSlice";
+import userReducer from "./services/user/userSlice";
 import brandReducer from "./services/inventory/brand/brandSlice";
 import categoryReducer from "./services/inventory/category/categorySlice";
 import supplierReducer from "./services/inventory/supplier/supplierSlice";
@@ -11,6 +12,7 @@ import voucherReducer from "./services/sale/voucher/voucherSlice";
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    user: userReducer,
     brand: brandReducer,
     category: categoryReducer,
     supplier: supplierReducer,

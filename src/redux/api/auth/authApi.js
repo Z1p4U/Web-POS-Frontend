@@ -7,7 +7,6 @@ const fetchLogin = async (email, password) => {
       email,
       password,
     });
-    console.log(response);
     return response?.data;
   } catch (error) {
     console.log("Failed to Login:", error);

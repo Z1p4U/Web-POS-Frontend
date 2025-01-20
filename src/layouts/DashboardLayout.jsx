@@ -29,7 +29,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Logout } from "@mui/icons-material";
+import { Logout, VerifiedUser } from "@mui/icons-material";
 import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 
 const drawerWidth = 320;
@@ -82,6 +82,11 @@ const navItems = [
     label: "Media",
     icon: <MediaIcon />,
     path: "/media",
+  },
+  {
+    label: "User",
+    icon: <VerifiedUser />,
+    path: "/user",
   },
 ];
 
@@ -166,11 +171,19 @@ const DashboardLayout = () => {
         variant="permanent"
         open={drawerOpen}
         sx={{
-          width: drawerOpen ? drawerWidth : 64,
+          width: {
+            xs: drawerOpen ? drawerWidth : 0,
+            sm: drawerOpen ? drawerWidth : 64,
+            md: drawerOpen ? drawerWidth : 64,
+          },
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-            width: drawerOpen ? drawerWidth : 64,
-            transition: "width 0.3s",
+            width: {
+              xs: drawerOpen ? drawerWidth : 0,
+              sm: drawerOpen ? drawerWidth : 64,
+              md: drawerOpen ? drawerWidth : 64,
+            },
+            transition: "width 0.5s",
             overflowX: "hidden",
           },
         }}

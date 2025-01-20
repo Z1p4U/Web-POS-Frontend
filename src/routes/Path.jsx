@@ -13,6 +13,7 @@ import ProductDetail from "../components/inventory/product/ProductDetail";
 import EntryProduct from "../components/inventory/product/components/EntryProduct";
 import Dashboard from "../components/dashboard/Dashboard";
 import Casher from "../pages/pos/Casher";
+import User from "../components/user/User";
 
 const Path = () => {
   return (
@@ -49,6 +50,10 @@ const Path = () => {
           {/* Media */}
           <Route path="/media" element={<Media />} />
           {/* Media */}
+
+          {/* User */}
+          <Route path="/user" element={<User />} />
+          {/* User */}
         </Route>
 
         {/* POS */}
