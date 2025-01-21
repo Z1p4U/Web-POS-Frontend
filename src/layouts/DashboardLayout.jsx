@@ -14,6 +14,9 @@ import {
   Divider,
   Tooltip,
   Collapse,
+  Menu,
+  MenuItem,
+  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -29,7 +32,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Logout, VerifiedUser } from "@mui/icons-material";
+import { Logout, People, Person, Settings } from "@mui/icons-material";
 import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 import useSetting from "../redux/hooks/setting/useSetting";
 
@@ -86,7 +89,7 @@ const navItems = [
   },
   {
     label: "User",
-    icon: <VerifiedUser />,
+    icon: <People />,
     path: "/user",
   },
 ];
@@ -96,7 +99,18 @@ const DashboardLayout = () => {
   const [submenuStates, setSubmenuStates] = useState({});
   const [lastOpenedSubmenu, setLastOpenedSubmenu] = useState(null); // Track the last opened submenu
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const { setting } = useSetting();
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const nav = useNavigate();
 
@@ -152,28 +166,101 @@ const DashboardLayout = () => {
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
-        <Toolbar sx={{ minHeight: 80 }}>
-          {/* Adjust Toolbar height */}
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={toggleDrawer}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Link to={"/"}>
-            {/* <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
-            {setting ? setting?.name : "ANDROMEDA 306"}
-          </h1> */}
+        <Toolbar
+          sx={{
+            minHeight: 80,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Left Section: Menu Icon and Logo */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={toggleDrawer}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Link to={"/"}>
+              <img
+                src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
+                className="aspect-square w-16"
+                alt="logo"
+              />
+            </Link>
+          </Box>
 
-            <img
-              src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
-              className=" aspect-square w-16"
-              alt="logo"
-            />
-          </Link>
+          {/* Right Section: Settings and User Icons */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              onClick={handleClick}
+              size="small"
+              color="inherit"
+              sx={{ ml: 2 }}
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            >
+              <Person />
+            </IconButton>
+          </Box>
         </Toolbar>
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          slotProps={{
+            paper: {
+              elevation: 0,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                mt: 1.5,
+                "& .MuiAvatar-root": {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                "&::before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          <MenuItem onClick={handleClose}>
+            <Avatar /> Profile
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+          <MenuItem onClick={() => setIsModalOpen(true)}>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        </Menu>
       </AppBar>
 
       <Drawer
@@ -224,9 +311,6 @@ const DashboardLayout = () => {
                       {drawerOpen && (
                         <ListItemText
                           primary={item.label}
-                          primaryTypographyProps={{
-                            fontSize: "15px",
-                          }}
                           sx={{ marginLeft: -1 }}
                         />
                       )}
@@ -295,9 +379,6 @@ const DashboardLayout = () => {
                       {drawerOpen && (
                         <ListItemText
                           primary={item.label}
-                          primaryTypographyProps={{
-                            fontSize: "15px",
-                          }}
                           sx={{ marginLeft: -1 }}
                         />
                       )}
@@ -308,38 +389,6 @@ const DashboardLayout = () => {
               )}
             </Tooltip>
           ))}
-          <Tooltip
-            title="Logout"
-            placement="right"
-            disableHoverListener={drawerOpen}
-          >
-            <>
-              <ListItem disablePadding>
-                <ListItemButton
-                  sx={{
-                    minHeight: 50,
-                    backgroundColor: "inherit",
-                  }}
-                  component={Link}
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <ListItemIcon>
-                    <Logout />
-                  </ListItemIcon>
-                  {drawerOpen && (
-                    <ListItemText
-                      primary="Logout"
-                      primaryTypographyProps={{
-                        fontSize: "15px",
-                      }}
-                      sx={{ marginLeft: -1 }}
-                    />
-                  )}
-                </ListItemButton>
-              </ListItem>
-              <Divider />
-            </>
-          </Tooltip>
         </List>
       </Drawer>
 
