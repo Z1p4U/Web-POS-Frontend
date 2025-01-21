@@ -175,7 +175,7 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
           {selectedVoucher && (
             <>
               <Box textAlign="center" mb={2}>
-                <h2 id="voucher-details-title">Deep Blue POS</h2>
+                <h2 id="voucher-details-title">ANDROMEDA 306</h2>
                 <p>
                   Voucher No:{" "}
                   <strong style={{ color: "#002d5d" }}>

@@ -8,6 +8,7 @@ import productReducer from "./services/inventory/product/productSlice";
 import stockReducer from "./services/inventory/stock/stockSlice";
 import mediaReducer from "./services/media/mediaSlice";
 import voucherReducer from "./services/sale/voucher/voucherSlice";
+import settingReducer from "./services/setting/settingSlice";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     stock: stockReducer,
     media: mediaReducer,
     voucher: voucherReducer,
+    setting: settingReducer,
   },
 });
 

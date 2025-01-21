@@ -1,14 +1,19 @@
 import { Link, useParams } from "react-router-dom";
 import useProduct from "../../../redux/hooks/inventory/product/useProduct";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Banner from "../../ui/banner/Banner";
 import Loader from "../../ui/loader/Loader";
 import { BiEdit } from "react-icons/bi";
 import ProductDetailStockMovement from "./components/productDetail/ProductDetailStockMovement";
+import Barcode from "react-barcode";
+import { Box, Modal } from "@mui/material";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const { handleProductDetail, pdDetail } = useProduct();
+  const [openModal, setOpenModal] = useState(false);
+
+  const barcodeRef = useRef();
 
   useEffect(() => {
     if (productId) {
@@ -17,6 +22,27 @@ const ProductDetail = () => {
       });
     }
   }, [handleProductDetail, productId]);
+
+  const handleDownloadBarcode = () => {
+    const svg = barcodeRef.current.querySelector("svg");
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const pngUrl = canvas.toDataURL("image/png");
+
+      const link = document.createElement("a");
+      link.href = pngUrl;
+      link.download = "barcode.png";
+      link.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(svgData);
+  };
 
   return (
     <div className=" w-full flex justify-center">
@@ -75,6 +101,12 @@ const ProductDetail = () => {
                             {pdDetail?.actual_price} Ks
                           </span>
                         </div>
+                      </div>
+                      <div
+                        onClick={() => setOpenModal(true)}
+                        className=" bg-primary text-white flex justify-center items-center rounded-md font-semibold tracking-wide cursor-pointer text-sm w-fit px-3 py-2 mt-3 hover:opacity-80"
+                      >
+                        View Barcode
                       </div>
                     </div>
                   </div>
@@ -168,6 +200,40 @@ const ProductDetail = () => {
                 </div>
               </div>
             </div>
+
+            <Modal
+              open={openModal}
+              onClose={() => setOpenModal(false)}
+              aria-labelledby="barcode-modal-title"
+              aria-describedby="barcode-modal-description"
+              sx={{ border: 0, outline: 0 }}
+            >
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  bgcolor: "background.paper",
+                  boxShadow: 24,
+                  p: 4,
+                  borderRadius: 2,
+                }}
+              >
+                <div ref={barcodeRef}>
+                  <Barcode
+                    value={pdDetail?.id || "DefaultBarcode"}
+                    format="CODE128"
+                  />
+                </div>
+                <div
+                  onClick={() => handleDownloadBarcode()}
+                  className=" bg-primary text-white flex justify-center items-center rounded-md font-semibold tracking-wide cursor-pointer text-sm w-fit px-3 py-2 mt-3 hover:opacity-80 mx-auto"
+                >
+                  Download Barcode
+                </div>
+              </Box>
+            </Modal>
 
             {/* Media Control */}
             <div className="w-full flex items-center justify-between mt-10">

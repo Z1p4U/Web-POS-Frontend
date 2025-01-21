@@ -260,14 +260,14 @@ const UserList = ({
                     </Box>
 
                     {/* Created Time Field */}
-                    {/* <Box display="flex" justifyContent="space-between" mb={1}>
+                    <Box display="flex" justifyContent="space-between" mb={1}>
                       <span style={{ fontWeight: "bold", color: "#555" }}>
                         Created Time:
                       </span>
                       <span style={{ color: "#000" }}>
                         {selectedUser.created_time || "N/A"}
                       </span>
-                    </Box> */}
+                    </Box>
 
                     {/* Additional Notes Field */}
                     {selectedUser.note && (

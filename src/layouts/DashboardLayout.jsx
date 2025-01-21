@@ -31,6 +31,7 @@ import StyleIcon from "@mui/icons-material/Style";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Logout, VerifiedUser } from "@mui/icons-material";
 import ConfirmationModal from "../components/ui/model/ConfirmationModal";
+import useSetting from "../redux/hooks/setting/useSetting";
 
 const drawerWidth = 320;
 
@@ -95,6 +96,8 @@ const DashboardLayout = () => {
   const [submenuStates, setSubmenuStates] = useState({});
   const [lastOpenedSubmenu, setLastOpenedSubmenu] = useState(null); // Track the last opened submenu
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setting } = useSetting();
+
   const nav = useNavigate();
 
   const location = useLocation();
@@ -134,8 +137,6 @@ const DashboardLayout = () => {
   const isSubmenuActive = (subItems) =>
     subItems?.some((subItem) => location.pathname === subItem.path);
 
-  const posName = localStorage.getItem("pos");
-
   const handleLogout = () => {
     sessionStorage.removeItem("authToken");
     setDrawerOpen(false);
@@ -161,9 +162,17 @@ const DashboardLayout = () => {
           >
             <MenuIcon />
           </IconButton>
-          <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
-            {posName ? posName : "DeepBlue POS"}
-          </h1>
+          <Link to={"/"}>
+            {/* <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
+            {setting ? setting?.name : "ANDROMEDA 306"}
+          </h1> */}
+
+            <img
+              src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
+              className=" aspect-square w-16"
+              alt="logo"
+            />
+          </Link>
         </Toolbar>
       </AppBar>
 

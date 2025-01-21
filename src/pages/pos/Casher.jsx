@@ -6,11 +6,14 @@ import Banner from "../../components/ui/banner/Banner";
 import ProductCalculator from "./components/ProductCalculator";
 import { useState } from "react";
 import { Check, Close } from "@mui/icons-material";
+import useSetting from "../../redux/hooks/setting/useSetting";
 
 const Casher = () => {
   const { products, refetchProducts, setSearch } = useProduct({
     noPagination: true,
   });
+  const { setting } = useSetting();
+
   const [selectedProduct, setSelectedProduct] = useState([]);
 
   const handleSearch = (e) => {
@@ -36,16 +39,20 @@ const Casher = () => {
     }
   };
 
-  const posName = localStorage.getItem("pos");
-
   return (
     <div className="relative">
       {/* Navbar */}
       <div className=" z-50 flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0">
         <Link to={"/"}>
-          <h1 className="font-semibold tracking-wider text-lg cursor-pointer text-white">
-            {posName ? posName : "DeepBlue POS"}
-          </h1>
+          {/* <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
+            {setting ? setting?.name : "ANDROMEDA 306"}
+          </h1> */}
+
+          <img
+            src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
+            className=" aspect-square w-16"
+            alt="logo"
+          />
         </Link>
       </div>
 
