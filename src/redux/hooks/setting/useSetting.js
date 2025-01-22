@@ -14,7 +14,7 @@ const useSetting = () => {
   const selectSetting = useMemo(() => (state) => state?.setting, []);
   const settingResponse = useSelector(selectSetting, shallowEqual);
 
-  const setting = settingResponse?.setting;
+  const setting = settingResponse?.setting?.data;
   const status = settingResponse?.status;
   const error = settingResponse?.error;
 

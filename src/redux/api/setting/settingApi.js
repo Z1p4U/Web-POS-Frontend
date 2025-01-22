@@ -21,6 +21,7 @@ const fetchUpdateSetting = async (setting, token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
+
   try {
     const response = await axios.put(
       `${config.API_URL}/setting/update`,

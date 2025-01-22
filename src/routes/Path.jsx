@@ -14,6 +14,7 @@ import EntryProduct from "../components/inventory/product/components/EntryProduc
 import Dashboard from "../components/dashboard/Dashboard";
 import Casher from "../pages/pos/Casher";
 import User from "../components/user/User";
+import Setting from "../components/setting/Setting";
 
 const Path = () => {
   return (
@@ -54,6 +55,10 @@ const Path = () => {
           {/* User */}
           <Route path="/user" element={<User />} />
           {/* User */}
+
+          {/* Setting */}
+          <Route path="/setting" element={<Setting />} />
+          {/* Settings */}
         </Route>
 
         {/* POS */}

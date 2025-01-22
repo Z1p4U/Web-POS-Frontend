@@ -248,7 +248,7 @@ const DashboardLayout = () => {
             <Avatar /> Profile
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={() => nav("/setting")}>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
@@ -279,7 +279,7 @@ const DashboardLayout = () => {
               sm: drawerOpen ? drawerWidth : 64,
               md: drawerOpen ? drawerWidth : 64,
             },
-            transition: "width 0.5s",
+            transition: "width 0.3s",
             overflowX: "hidden",
           },
         }}
