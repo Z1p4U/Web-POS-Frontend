@@ -5,6 +5,7 @@ import { Modal, Box, Button } from "@mui/material";
 import ConfirmationModal from "../../../components/ui/model/ConfirmationModal";
 import useCheckout from "../../../redux/hooks/sale/checkout/useCheckout";
 import Swal from "sweetalert2";
+import useVoucher from "../../../redux/hooks/sale/voucher/useVoucher";
 
 const ProductCalculator = ({
   selectedProduct,
@@ -16,8 +17,8 @@ const ProductCalculator = ({
     { id: 2, name: "K Pay" },
     { id: 3, name: "Wave Money" },
   ];
-
   const { handleCheckout } = useCheckout();
+  const { exportVoucher } = useVoucher();
 
   const [selectCalcPd, setSelectCalcPd] = useState(null);
   const [total, setTotal] = useState(0);
@@ -147,13 +148,15 @@ const ProductCalculator = ({
   const checkoutConfirm = async (formData) => {
     const res = await handleCheckout(formData);
 
-    if (res) {
+    if (res?.message === "Checkout completed successfully.") {
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: `${res}`,
+        text: `${res?.message}`,
         footer: `<a href="/sale/daily-voucher"> Go to check voucher</a>`,
       });
+
+      exportVoucher(res?.data?.id);
 
       setModalOpen(false);
 
@@ -163,6 +166,16 @@ const ProductCalculator = ({
         products: [],
         payment_type: "",
       });
+
+      refetchProducts();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: `${res?.message}`,
+      });
+
+      setModalOpen(false);
 
       refetchProducts();
     }

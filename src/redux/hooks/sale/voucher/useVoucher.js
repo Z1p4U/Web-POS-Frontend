@@ -38,7 +38,7 @@ const useVoucher = () => {
             id,
           })
         );
-        console.log(response.payload.data);
+        // console.log(response.payload.data);
         return response.payload.data;
       } catch (error) {
         console.error("Failed to get Voucher Detail", error);
@@ -56,6 +56,7 @@ const useVoucher = () => {
             id,
           })
         );
+        // console.log(response.payload.message);
         return response.payload.message;
       } catch (error) {
         console.error("Failed to get Voucher Detail", error);

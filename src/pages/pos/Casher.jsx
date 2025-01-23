@@ -19,9 +19,9 @@ const Casher = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const inputValue = e.target.elements.search.value.trim();
-    console.log(inputValue.length);
+    // console.log(inputValue.length);
     setSearch(inputValue);
-    // e.target.reset();
+    e.target.reset();
   };
 
   const selectProduct = (product) => {
