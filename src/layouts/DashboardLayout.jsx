@@ -244,7 +244,7 @@ const DashboardLayout = () => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={() => nav("/user-profile")}>
             <Avatar /> Profile
           </MenuItem>
           <Divider />

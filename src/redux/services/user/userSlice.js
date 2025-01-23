@@ -39,12 +39,12 @@ export const userRegister = createAsyncThunk(
   }
 );
 
-export const profile = createAsyncThunk(
-  "user/profile",
+export const ownProfile = createAsyncThunk(
+  "user/ownProfile",
   async (token, { rejectWithValue }) => {
     try {
       const response = await fetchProfile(token);
-      return response?.data;
+      return response?.data[0];
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch profile");
     }
@@ -93,8 +93,8 @@ export const editUserProfile = createAsyncThunk(
 
 const initialState = {
   users: [],
-  profile: {},
-  userProfile: {},
+  ownProfile: null,
+  userProfile: null,
   status: "idle",
   error: null,
   lastPage: 1,
@@ -124,14 +124,14 @@ const userSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-      .addCase(profile.pending, (state) => {
+      .addCase(ownProfile.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(profile.fulfilled, (state, action) => {
+      .addCase(ownProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.profile = action.payload;
+        state.ownProfile = action.payload;
       })
-      .addCase(profile.rejected, (state, action) => {
+      .addCase(ownProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
@@ -166,7 +166,7 @@ const userSlice = createSlice({
         state.status = "succeeded";
 
         Object.keys(action.payload.data).forEach((key) => {
-          state.profile[key] = action.payload.data[key];
+          state.ownProfile[key] = action.payload.data[key];
         });
       })
       .addCase(editProfile.rejected, (state, action) => {

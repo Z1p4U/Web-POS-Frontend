@@ -13,11 +13,13 @@ import {
 import PropTypes from "prop-types";
 import { useState } from "react";
 import SouthIcon from "@mui/icons-material/South";
+import useSetting from "../../../../../redux/hooks/setting/useSetting";
 
 const ProductDetailStockMovement = ({ stockRecord }) => {
   const [visibleRecords, setVisibleRecords] = useState(5); // Number of records to show
   const [selectedRecord, setSelectedRecord] = useState({});
   const [open, setOpen] = useState(false);
+  const { setting } = useSetting();
 
   const handleOpen = (record) => {
     setSelectedRecord(record);
@@ -273,7 +275,7 @@ const ProductDetailStockMovement = ({ stockRecord }) => {
                     color: "#333",
                   }}
                 >
-                  Deep Blue POS
+                  {setting?.name ? setting?.name : "ANDROMEDA 306"}
                 </h2>
               </Box>
 

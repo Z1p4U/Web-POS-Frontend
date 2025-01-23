@@ -8,6 +8,7 @@ import {
   userProfile,
   editProfile,
   editUserProfile,
+  ownProfile,
 } from "../../services/user/userSlice";
 
 const useUser = ({ page, per_page, noPagination = false } = {}) => {
@@ -19,7 +20,7 @@ const useUser = ({ page, per_page, noPagination = false } = {}) => {
   const userResponse = useSelector(selectUser, shallowEqual);
 
   const users = userResponse?.users;
-  const profile = userResponse?.profile;
+  const profile = userResponse?.ownProfile;
   const userProfileData = userResponse?.userProfile;
   const pageCount = userResponse?.lastPage;
   const totalRecord = userResponse?.totalRecord;
@@ -34,6 +35,7 @@ const useUser = ({ page, per_page, noPagination = false } = {}) => {
           search,
         })
       );
+      dispatch(ownProfile(token));
     } else {
       dispatch(clearUserData());
     }
