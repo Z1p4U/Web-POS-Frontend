@@ -161,9 +161,8 @@ const productSlice = createSlice({
         );
         state.totalRecord -= 1;
       })
-      .addCase(productDelete.rejected, (state, action) => {
+      .addCase(productDelete.rejected, (state) => {
         state.status = "failed";
-        state.error = action.payload;
       });
   },
 });

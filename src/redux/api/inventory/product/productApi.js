@@ -108,10 +108,56 @@ const fetchProductDetail = async (token, id) => {
   }
 };
 
+const fetchExportExcel = async (token) => {
+  try {
+    const response = await axios.get(`${config.API_URL}/product/excel`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "blob", // Important: Treat the response as binary data
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "Products.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Failed to export Excel:", error);
+    throw error;
+  }
+};
+
+const fetchExportCsv = async (token) => {
+  try {
+    const response = await axios.get(`${config.API_URL}/product/csv`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "blob", // Important: Tell axios to treat the response as a blob
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "Products.csv");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Failed to export CSV:", error);
+    throw error;
+  }
+};
+
 export {
   fetchProduct,
   fetchCreateProduct,
   fetchUpdateProduct,
   fetchDeleteProduct,
   fetchProductDetail,
+  fetchExportExcel,
+  fetchExportCsv,
 };

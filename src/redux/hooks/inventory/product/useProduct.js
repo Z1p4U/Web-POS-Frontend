@@ -9,6 +9,10 @@ import {
   productList,
   productUpdate,
 } from "../../../services/inventory/product/productSlice";
+import {
+  fetchExportCsv,
+  fetchExportExcel,
+} from "../../../api/inventory/product/productApi";
 
 const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
@@ -134,6 +138,22 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     }
   }, [dispatch, token, totalRecord]);
 
+  const handleExportExcel = useCallback(async () => {
+    try {
+      await fetchExportExcel(token);
+    } catch (error) {
+      console.error("Failed to export Excel:", error);
+    }
+  }, [token]);
+
+  const handleExportCsv = useCallback(async () => {
+    try {
+      await fetchExportCsv(token);
+    } catch (error) {
+      console.error("Failed to export CSV:", error);
+    }
+  }, [token]);
+
   return {
     products,
     pdDetail,
@@ -146,7 +166,9 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     handleCreateProduct,
     handleProductDetail,
     handleDeleteProduct,
+    handleExportExcel,
     fetchAllProducts,
+    handleExportCsv,
   };
 };
 

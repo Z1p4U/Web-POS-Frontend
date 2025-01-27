@@ -105,7 +105,10 @@ const ProductTable = ({
                     >
                       {rowNumber}
                     </TableCell>
-                    <TableCell align="center" sx={{ padding: "16px" }}>
+                    <TableCell
+                      align="center"
+                      sx={{ padding: "16px", maxWidth: "80px" }}
+                    >
                       <img
                         src={product?.photo}
                         className="object-contain aspect-square w-20"

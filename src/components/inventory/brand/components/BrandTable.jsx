@@ -113,7 +113,10 @@ const BrandTable = ({
                     >
                       {rowNumber}
                     </TableCell>
-                    <TableCell align="left" sx={{ padding: "16px" }}>
+                    <TableCell
+                      align="left"
+                      sx={{ padding: "16px", maxWidth: "150px" }}
+                    >
                       <img
                         src={brand?.photo}
                         className="object-contain aspect-square w-40"
