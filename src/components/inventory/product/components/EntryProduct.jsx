@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Banner from "../../../ui/banner/Banner";
 import { Button, Box } from "@mui/material";
 import CustomStepper from "./productEntry/CustomStepper";
@@ -10,14 +10,18 @@ import useProduct from "../../../../redux/hooks/inventory/product/useProduct";
 import useBrand from "../../../../redux/hooks/inventory/brand/useBrand";
 import useCategory from "../../../../redux/hooks/inventory/category/useCategory";
 import useSupplier from "../../../../redux/hooks/inventory/supplier/useSupplier";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const EntryProduct = () => {
-  const { handleCreateProduct } = useProduct({ noPagination: true });
+  const { handleCreateProduct, handleUpdateProduct } = useProduct({
+    noPagination: true,
+  });
   const { brands } = useBrand({ noPagination: true });
   const { categories } = useCategory({ noPagination: true });
   const { suppliers } = useSupplier({ noPagination: true });
   const nav = useNavigate();
+  const location = useLocation();
+  const product = location.state?.product;
 
   const steps = ["Information", "Price", "Photo", "Confirmation"];
   const [currentStep, setCurrentStep] = useState(1);
@@ -33,6 +37,35 @@ const EntryProduct = () => {
     photo: "",
   });
 
+  // Prefill the form data if a product is passed
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name || "",
+        brand_id: product.brand_id || "",
+        category_ids: product.category_ids || [],
+        supplier_ids: product.supplier_ids || [],
+        actual_price: product.actual_price || "",
+        sale_price: product.sale_price || "",
+        unit: product.unit || "",
+        description: product.description || "",
+        photo: product.photo || "",
+      });
+    } else {
+      setFormData({
+        name: "",
+        brand_id: "",
+        category_ids: [],
+        supplier_ids: [],
+        actual_price: "",
+        sale_price: "",
+        unit: "",
+        description: "",
+        photo: "",
+      });
+    }
+  }, [product]);
+
   // Validation function
   const isFormComplete = () => {
     return (
@@ -40,8 +73,8 @@ const EntryProduct = () => {
       formData.brand_id &&
       formData.category_ids.length > 0 &&
       formData.supplier_ids.length > 0 &&
-      formData.actual_price.trim() &&
-      formData.sale_price.trim() &&
+      formData.actual_price &&
+      formData.sale_price &&
       formData.unit.trim() &&
       formData.photo.trim()
     );
@@ -65,9 +98,18 @@ const EntryProduct = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Final Form Data:", formData);
-    const response = handleCreateProduct(formData);
-    if (response) {
-      nav("/inventory/product");
+
+    if (product) {
+      // Update product
+      const response = handleUpdateProduct(product?.id, formData);
+      if (response) {
+        nav("/inventory/product");
+      }
+    } else {
+      const response = handleCreateProduct(formData);
+      if (response) {
+        nav("/inventory/product");
+      }
     }
   };
 
@@ -77,7 +119,7 @@ const EntryProduct = () => {
         {/* Banner */}
         <Box className="col-span-3">
           <Banner
-            title={`Entry Product`}
+            title={product ? "Update Product" : "Entry Product"}
             path1={"Inventory"}
             path2={"Product"}
           />
@@ -134,7 +176,7 @@ const EntryProduct = () => {
                   color="secondary"
                   disabled={currentStep === 1}
                   onClick={(e) => {
-                    e.preventDefault(); // Explicitly prevent form submission
+                    e.preventDefault();
                     handleBack();
                   }}
                   fullWidth
@@ -146,7 +188,7 @@ const EntryProduct = () => {
                     variant="contained"
                     color="primary"
                     onClick={(e) => {
-                      e.preventDefault(); // Explicitly prevent form submission
+                      e.preventDefault();
                       handleNext();
                     }}
                     fullWidth
@@ -159,9 +201,9 @@ const EntryProduct = () => {
                     variant="contained"
                     color="success"
                     fullWidth
-                    disabled={!isFormComplete()} // Disable "Create" button if form is incomplete
+                    disabled={!isFormComplete()}
                   >
-                    Create
+                    {product ? "Update" : "Create"}
                   </Button>
                 )}
               </Box>

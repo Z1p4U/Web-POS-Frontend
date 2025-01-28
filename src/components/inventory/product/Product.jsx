@@ -23,8 +23,8 @@ const Product = () => {
     totalRecord,
     setSearch,
     refetchProducts,
-    handleExportCsv,
-    handleExportExcel,
+    handleExportProducts,
+    handleImportProducts,
   } = useProduct({ page: 1, per_page: 10 });
 
   const openExportMenu = (event) => setExportAnchorEl(event.currentTarget);
@@ -32,17 +32,44 @@ const Product = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    const maxFileSize = 5 * 1024 * 1024; // 5MB
-    if (file && file.size > maxFileSize) {
-      alert("File size exceeds 5MB. Please select a smaller file.");
-      return;
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    const allowedFileTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/csv",
+    ];
+
+    if (file) {
+      // Validate file size
+      if (file.size > maxFileSize) {
+        alert("File size exceeds 5MB. Please select a smaller file.");
+        return;
+      }
+
+      // Validate file type
+      if (!allowedFileTypes.includes(file.type)) {
+        alert("Invalid file type. Please select a .csv or .xlsx file.");
+        return;
+      }
+
+      // Set the file if valid
+      setSelectedFile(file);
     }
-    setSelectedFile(file);
   };
 
   const handleImportModalClose = () => {
     setSelectedFile(null);
     setImportModalOpen(false);
+  };
+
+  const handleImportSubmit = async () => {
+    if (!selectedFile) return;
+    try {
+      await handleImportProducts(selectedFile);
+      refetchProducts();
+      setImportModalOpen(false);
+    } catch (error) {
+      console.error("Import Error:", error);
+    }
   };
 
   const handlePaginate = (e, value) => {
@@ -120,7 +147,7 @@ const Product = () => {
                 >
                   <MenuItem
                     onClick={() => {
-                      handleExportCsv();
+                      handleExportProducts("csv");
                       closeExportMenu();
                     }}
                   >
@@ -128,7 +155,7 @@ const Product = () => {
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      handleExportExcel();
+                      handleExportProducts("excel");
                       closeExportMenu();
                     }}
                   >
@@ -265,12 +292,7 @@ const Product = () => {
           />
           <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
             <Button
-              onClick={() => {
-                if (selectedFile) {
-                  // Import logic here
-                }
-                setImportModalOpen(false);
-              }}
+              onClick={handleImportSubmit}
               sx={{
                 backgroundColor: "#22c55e",
                 color: "white",

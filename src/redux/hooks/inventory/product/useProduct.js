@@ -8,11 +8,9 @@ import {
   productDetail,
   productList,
   productUpdate,
+  productImport,
 } from "../../../services/inventory/product/productSlice";
-import {
-  fetchExportCsv,
-  fetchExportExcel,
-} from "../../../api/inventory/product/productApi";
+import { fetchExportProducts } from "../../../api/inventory/product/productApi";
 
 const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
@@ -138,21 +136,41 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     }
   }, [dispatch, token, totalRecord]);
 
-  const handleExportExcel = useCallback(async () => {
-    try {
-      await fetchExportExcel(token);
-    } catch (error) {
-      console.error("Failed to export Excel:", error);
+  const handleFileValidation = (file) => {
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxFileSize) {
+      throw new Error("File size exceeds the maximum limit of 5MB.");
     }
-  }, [token]);
+  };
 
-  const handleExportCsv = useCallback(async () => {
-    try {
-      await fetchExportCsv(token);
-    } catch (error) {
-      console.error("Failed to export CSV:", error);
-    }
-  }, [token]);
+  const handleImportProducts = useCallback(
+    async (file) => {
+      try {
+        handleFileValidation(file);
+        const response = await dispatch(
+          productImport({
+            file,
+            token,
+          })
+        );
+        return response?.payload?.message;
+      } catch (error) {
+        console.error("Failed to import products:", error);
+      }
+    },
+    [dispatch, token]
+  );
+
+  const handleExportProducts = useCallback(
+    async (type) => {
+      try {
+        await fetchExportProducts(token, type);
+      } catch (error) {
+        console.error("Failed to export Excel:", error);
+      }
+    },
+    [token]
+  );
 
   return {
     products,
@@ -166,9 +184,9 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     handleCreateProduct,
     handleProductDetail,
     handleDeleteProduct,
-    handleExportExcel,
     fetchAllProducts,
-    handleExportCsv,
+    handleExportProducts,
+    handleImportProducts,
   };
 };
 

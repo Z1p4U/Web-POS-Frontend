@@ -73,8 +73,11 @@ const ProductDetail = () => {
                   </div>
 
                   <Link
-                    to={"/"}
-                    className=" absolute top-5 right-5 bg-primary text-light hover:opacity-75 transition-all duration-200 cursor-pointer rounded-full aspect-square w-10 flex justify-center items-center"
+                    to={{
+                      pathname: "/inventory/entry-product/", // Target route
+                    }}
+                    state={{ product: pdDetail }} // Pass the product as state
+                    className="absolute top-5 right-5 bg-primary text-light hover:opacity-75 transition-all duration-200 cursor-pointer rounded-full aspect-square w-10 flex justify-center items-center"
                   >
                     <BiEdit />
                   </Link>
@@ -222,7 +225,7 @@ const ProductDetail = () => {
               >
                 <div ref={barcodeRef}>
                   <Barcode
-                    value={pdDetail?.id || "DefaultBarcode"}
+                    value={pdDetail?.id?.toString() || "DefaultBarcode"}
                     format="CODE128"
                   />
                 </div>

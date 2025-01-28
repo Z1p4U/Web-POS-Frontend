@@ -65,7 +65,7 @@ const fetchUpdateProduct = async (id, products, token) => {
         headers,
       }
     );
-    // console.log("Product Updated", response);
+    console.log("Product Updated", response);
     return response?.data;
   } catch (error) {
     console.log("Failed to update product data:", error);
@@ -108,46 +108,70 @@ const fetchProductDetail = async (token, id) => {
   }
 };
 
-const fetchExportExcel = async (token) => {
+const fetchExportProducts = async (token, type) => {
   try {
-    const response = await axios.get(`${config.API_URL}/product/excel`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      responseType: "blob", // Important: Treat the response as binary data
-    });
+    // Validate type to ensure only 'excel' or 'csv' are allowed
+    if (!["excel", "csv"].includes(type)) {
+      throw new Error(
+        "Invalid file type. Allowed types are 'excel' and 'csv'."
+      );
+    }
 
+    // Make the API request to download the file
+    const response = await axios.get(
+      `${config.API_URL}/product/export/${type}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the authorization token
+        },
+        responseType: "blob", // Fetch the response as binary data
+      }
+    );
+
+    // Create a URL for the blob response
     const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Dynamically set the file name based on the type
+    const fileName = `Products.${type === "excel" ? "xlsx" : "csv"}`;
+
+    // Create a hidden anchor element to trigger the download
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", "Products.xlsx");
+    link.setAttribute("download", fileName);
+
+    // Append the anchor to the document, trigger click, and clean up
     document.body.appendChild(link);
     link.click();
     link.remove();
+
+    // Revoke the blob URL after use to free memory
+    setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+
+    console.log("File downloaded successfully:", fileName);
   } catch (error) {
-    console.error("Failed to export Excel:", error);
-    throw error;
+    console.error("Failed to export the file:", error);
+    throw new Error("Failed to export the file. Please try again.");
   }
 };
 
-const fetchExportCsv = async (token) => {
-  try {
-    const response = await axios.get(`${config.API_URL}/product/csv`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      responseType: "blob", // Important: Tell axios to treat the response as a blob
-    });
+const fetchImportProducts = async (file, token) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "multipart/form-data",
+  };
 
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "Products.csv");
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await axios.post(
+      `${config.API_URL}/product/import`,
+      formData,
+      { headers }
+    );
+    return response?.data;
   } catch (error) {
-    console.error("Failed to export CSV:", error);
+    console.error("Failed to add product data:", error);
     throw error;
   }
 };
@@ -158,6 +182,6 @@ export {
   fetchUpdateProduct,
   fetchDeleteProduct,
   fetchProductDetail,
-  fetchExportExcel,
-  fetchExportCsv,
+  fetchExportProducts,
+  fetchImportProducts,
 };

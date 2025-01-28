@@ -5,6 +5,7 @@ import {
   fetchDeleteProduct,
   fetchUpdateProduct,
   fetchProductDetail,
+  fetchImportProducts,
 } from "../../../api/inventory/product/productApi";
 
 export const productList = createAsyncThunk(
@@ -76,6 +77,21 @@ export const productDelete = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to delete product"
+      );
+    }
+  }
+);
+
+export const productImport = createAsyncThunk(
+  "product/productImport",
+  async ({ file, token }, { rejectWithValue }) => {
+    try {
+      const response = await fetchImportProducts(file, token);
+      return response;
+    } catch (error) {
+      console.error("API Error:", error);
+      return rejectWithValue(
+        error.response?.data || "Failed to import product"
       );
     }
   }
@@ -163,6 +179,19 @@ const productSlice = createSlice({
       })
       .addCase(productDelete.rejected, (state) => {
         state.status = "failed";
+      })
+      .addCase(productImport.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(productImport.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const newProducts = action.payload?.data || [];
+        state.products = [...newProducts, ...state.products];
+        state.totalRecord += newProducts.length;
+      })
+      .addCase(productImport.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
   },
 });
