@@ -3,6 +3,8 @@ import {
   fetchTodayVoucher,
   fetchPrintVoucher,
   fetchVoucherDetail,
+  fetchMonthlyVoucher,
+  fetchYearlyVoucher,
 } from "../../../api/sale/voucher/voucherApi";
 
 export const todayVoucherList = createAsyncThunk(
@@ -10,6 +12,30 @@ export const todayVoucherList = createAsyncThunk(
   async ({ token, date }, { rejectWithValue }) => {
     try {
       const response = await fetchTodayVoucher(token, date);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const monthlyVoucherList = createAsyncThunk(
+  "voucher/monthlyVoucherList",
+  async ({ token, month }, { rejectWithValue }) => {
+    try {
+      const response = await fetchMonthlyVoucher(token, month);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const yearlyVoucherList = createAsyncThunk(
+  "voucher/yearlyVoucherList",
+  async ({ token, year }, { rejectWithValue }) => {
+    try {
+      const response = await fetchYearlyVoucher(token, year);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -67,6 +93,30 @@ const voucherSlice = createSlice({
         state.dailyTotalSale = action.payload.daily_total_sale;
       })
       .addCase(todayVoucherList.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(monthlyVoucherList.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(monthlyVoucherList.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.vouchers = action.payload.data;
+        state.monthlyTotalSale = action.payload.monthly_total_sale;
+      })
+      .addCase(monthlyVoucherList.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(yearlyVoucherList.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(yearlyVoucherList.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.vouchers = action.payload.data;
+        state.yearlyTotalSale = action.payload.yearly_total_sale;
+      })
+      .addCase(yearlyVoucherList.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })

@@ -4,30 +4,30 @@ import useVoucher from "../../../redux/hooks/sale/voucher/useVoucher";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
 import { useEffect } from "react";
+import dayjs from "dayjs";
 
-const DailyVoucher = () => {
+const YearlyVoucher = () => {
   const {
     vouchers,
-    dailyTotalSale,
+    yearlyTotalSale,
     printVoucher,
-    selectedDay,
+    selectedYear,
+    setSelectedYear,
     activeFilter,
-    setSelectedDay,
     setActiveFilter,
   } = useVoucher();
 
-  const handleDayChange = (newValue) => {
+  const handleYearChange = (newValue) => {
     if (newValue) {
-      const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
-      setSelectedDay(formattedDate);
+      const formattedYear = dayjs(newValue).format("YYYY");
+      setSelectedYear(formattedYear);
     }
   };
 
   useEffect(() => {
-    if (activeFilter != "day") {
-      setActiveFilter("day");
+    if (activeFilter != "year") {
+      setActiveFilter("year");
     }
   }, [activeFilter, setActiveFilter]);
 
@@ -36,18 +36,18 @@ const DailyVoucher = () => {
       <div className="w-full flex justify-center">
         <div className="w-[95%] my-6 flex flex-col gap-8">
           {/* banner  */}
-          <Banner title={"Today Sales Overview"} path1={"Sale"} />
+          <Banner title={"Yearly Sales Overview"} path1={"Sale"} />
           {/* banner  */}
 
           <div className="flex flex-col gap-3">
             <div className=" flex items-center max-[680px]:flex-col max-[680px]:items-start max-[680px]:gap-3">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Select Day"
-                  value={selectedDay ? dayjs(selectedDay) : null} // Use selectedDay directly
-                  onChange={handleDayChange} // Call handler to update both states
-                  format="YYYY-MM-DD"
-                  views={["year", "month", "day"]}
+                  label="Select Year"
+                  value={selectedYear ? dayjs(selectedYear) : null} // Use selectedYear directly
+                  onChange={handleYearChange}
+                  format="YYYY"
+                  views={["year"]}
                 />
               </LocalizationProvider>
             </div>
@@ -74,7 +74,7 @@ const DailyVoucher = () => {
                       Total Vouchers
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wide font-semibold">
-                      {dailyTotalSale?.total_voucher}
+                      {yearlyTotalSale?.total_voucher}
                     </p>
                   </div>
 
@@ -83,7 +83,7 @@ const DailyVoucher = () => {
                       Total Cash
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
-                      {dailyTotalSale?.total_cash}
+                      {yearlyTotalSale?.total_cash}
                     </p>
                   </div>
 
@@ -92,7 +92,7 @@ const DailyVoucher = () => {
                       Total Tax
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
-                      {dailyTotalSale?.total_tax}
+                      {yearlyTotalSale?.total_tax}
                     </p>
                   </div>
 
@@ -101,7 +101,7 @@ const DailyVoucher = () => {
                       Total
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
-                      {dailyTotalSale?.total}
+                      {yearlyTotalSale?.total}
                     </p>
                   </div>
                 </div>
@@ -114,4 +114,4 @@ const DailyVoucher = () => {
   );
 };
 
-export default DailyVoucher;
+export default YearlyVoucher;

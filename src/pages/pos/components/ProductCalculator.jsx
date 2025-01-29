@@ -18,7 +18,7 @@ const ProductCalculator = ({
     { id: 3, name: "Wave Money" },
   ];
   const { handleCheckout } = useCheckout();
-  const { exportVoucher } = useVoucher();
+  const { printVoucher } = useVoucher();
 
   const [selectCalcPd, setSelectCalcPd] = useState(null);
   const [total, setTotal] = useState(0);
@@ -156,7 +156,7 @@ const ProductCalculator = ({
         footer: `<a href="/sale/daily-voucher"> Go to check voucher</a>`,
       });
 
-      exportVoucher(res?.data?.id);
+      printVoucher(res?.data?.id);
 
       setModalOpen(false);
 

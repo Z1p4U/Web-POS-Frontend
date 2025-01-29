@@ -16,6 +16,8 @@ import Casher from "../pages/pos/Casher";
 import User from "../components/user/User";
 import Setting from "../components/setting/Setting";
 import UserProfile from "../components/user/UserProfile";
+import MonthlyVoucher from "../components/sale/voucher/MonthlyVoucher";
+import YearlyVoucher from "../components/sale/voucher/YearlyVoucher";
 
 const Path = () => {
   return (
@@ -47,6 +49,8 @@ const Path = () => {
 
           {/* Sale */}
           <Route path="/sale/daily-voucher" element={<DailyVoucher />} />
+          <Route path="/sale/monthly-voucher" element={<MonthlyVoucher />} />
+          <Route path="/sale/yearly-voucher" element={<YearlyVoucher />} />
           {/* Sale */}
 
           {/* Media */}

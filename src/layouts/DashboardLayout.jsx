@@ -80,6 +80,16 @@ const navItems = [
         icon: <ReceiptIcon />,
         path: "/sale/daily-voucher",
       },
+      {
+        label: "Monthly Record",
+        icon: <ReceiptIcon />,
+        path: "/sale/monthly-voucher",
+      },
+      {
+        label: "Yearly Record",
+        icon: <ReceiptIcon />,
+        path: "/sale/yearly-voucher",
+      },
     ],
   },
   {
