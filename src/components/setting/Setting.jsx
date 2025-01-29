@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSetting from "../../redux/hooks/setting/useSetting";
 import { Box, TextField, Typography } from "@mui/material";
 import ModalMedia from "../ui/model/MediaModel";
@@ -6,17 +6,19 @@ import { useNavigate } from "react-router-dom";
 
 const Setting = () => {
   const { setting, handleUpdateSetting } = useSetting();
-  const [formData, setFormData] = useState({
-    name: setting?.name || "ANDROMEDA 306",
-    logo: setting?.logo || "/logo/logo.png",
-  });
+
   const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    logo: "",
+    phone: "",
+    address: "",
+  });
 
   const nav = useNavigate();
 
   const handleUpdate = () => {
     handleUpdateSetting(formData);
-
     nav("/");
   };
 
@@ -35,6 +37,24 @@ const Setting = () => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    if (setting) {
+      setFormData({
+        name: setting.name || "ANDROMEDA 306",
+        logo: setting.logo || "/logo/logo.png",
+        phone: setting.phone || "",
+        address: setting.address || "",
+      });
+    } else {
+      setFormData({
+        name: "ANDROMEDA 306",
+        logo: "/logo/logo.png",
+        phone: "",
+        address: "",
+      });
+    }
+  }, [setting]);
 
   return (
     <div className="p-4">
@@ -83,6 +103,28 @@ const Setting = () => {
           label="Name"
           name="name"
           value={formData?.name}
+          onChange={handleInputChange}
+          margin="normal"
+          variant="outlined"
+          sx={{ maxWidth: 500 }}
+        />
+
+        <TextField
+          fullWidth
+          label="Phone Number"
+          name="phone"
+          value={formData?.phone}
+          onChange={handleInputChange}
+          margin="normal"
+          variant="outlined"
+          sx={{ maxWidth: 500 }}
+        />
+
+        <TextField
+          fullWidth
+          label="Address"
+          name="address"
+          value={formData?.address}
           onChange={handleInputChange}
           margin="normal"
           variant="outlined"
