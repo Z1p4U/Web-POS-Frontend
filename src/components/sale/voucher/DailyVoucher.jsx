@@ -1,10 +1,31 @@
-import { BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import VoucherTable from "./components/VoucherTable";
 import useVoucher from "../../../redux/hooks/sale/voucher/useVoucher";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useState } from "react";
+import dayjs from "dayjs";
 
 const DailyVoucher = () => {
-  const { vouchers, dailyTotalSale, exportVoucher } = useVoucher();
+  const {
+    vouchers,
+    dailyTotalSale,
+    printVoucher,
+    selectedDate,
+    setSelectedDate,
+  } = useVoucher();
+  const [dateValue, setDateValue] = useState(
+    selectedDate ? dayjs(selectedDate) : null
+  );
+
+  const handleDateChange = (newValue) => {
+    if (newValue) {
+      const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
+      setDateValue(newValue);
+      setSelectedDate(formattedDate);
+    }
+  };
 
   return (
     <>
@@ -15,20 +36,16 @@ const DailyVoucher = () => {
           {/* banner  */}
 
           <div className="flex flex-col gap-3">
-            <div className=" flex justify-between items-center max-[680px]:flex-col max-[680px]:items-start max-[680px]:gap-3">
-              <form className="relative">
-                <input
-                  //   onChange={(e) =>
-                  //     dispatch(setSearchRecentVoucher(e.target.value))
-                  //   }
-                  type="text"
-                  placeholder="Search"
-                  className=" border-2 border-[#E8EAED] py-[6px] pr-5 pl-10 rounded-md outline-none focus:border-primary duration-300 font-medium placeholder:tracking-wider"
+            <div className=" flex items-center max-[680px]:flex-col max-[680px]:items-start max-[680px]:gap-3">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Select Date"
+                  value={dateValue}
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
+                  slotProps={{ textField: { fullWidth: false } }}
                 />
-                <div className=" absolute top-[10px] left-[11px]">
-                  <BiSearch size={20} />
-                </div>
-              </form>
+              </LocalizationProvider>
             </div>
           </div>
           {vouchers?.length == 0 ? (
@@ -40,7 +57,7 @@ const DailyVoucher = () => {
           ) : (
             <div className="flex flex-col gap-8">
               {/* table  */}
-              <VoucherTable vouchers={vouchers} exportVoucher={exportVoucher} />
+              <VoucherTable vouchers={vouchers} printVoucher={printVoucher} />
               {/* table  */}
 
               <div

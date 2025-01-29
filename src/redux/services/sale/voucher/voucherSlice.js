@@ -1,21 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  fetchDailyVoucher,
-  fetchExportVoucher,
+  fetchTodayVoucher,
+  fetchPrintVoucher,
   fetchVoucherDetail,
 } from "../../../api/sale/voucher/voucherApi";
 
-export const dailyVoucherList = createAsyncThunk(
-  "voucher/dailyVoucherList",
-  async ({ token }, { rejectWithValue }) => {
+export const todayVoucherList = createAsyncThunk(
+  "voucher/todayVoucherList",
+  async ({ token, date }, { rejectWithValue }) => {
     try {
-      const response = await fetchDailyVoucher(token);
+      const response = await fetchTodayVoucher(token, date);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
 export const voucherDetailData = createAsyncThunk(
   "voucher/voucherDetailData",
   async ({ token, id }, { rejectWithValue }) => {
@@ -28,11 +29,11 @@ export const voucherDetailData = createAsyncThunk(
   }
 );
 
-export const exportVoucherData = createAsyncThunk(
-  "voucher/exportVoucherData",
+export const printVoucherData = createAsyncThunk(
+  "voucher/printVoucherData",
   async ({ token, id }, { rejectWithValue }) => {
     try {
-      const response = await fetchExportVoucher(token, id);
+      const response = await fetchPrintVoucher(token, id);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -57,15 +58,15 @@ const voucherSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(dailyVoucherList.pending, (state) => {
+      .addCase(todayVoucherList.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(dailyVoucherList.fulfilled, (state, action) => {
+      .addCase(todayVoucherList.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.vouchers = action.payload.data;
         state.dailyTotalSale = action.payload.daily_total_sale;
       })
-      .addCase(dailyVoucherList.rejected, (state, action) => {
+      .addCase(todayVoucherList.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
@@ -80,14 +81,14 @@ const voucherSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-      .addCase(exportVoucherData.pending, (state) => {
+      .addCase(printVoucherData.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(exportVoucherData.fulfilled, (state) => {
+      .addCase(printVoucherData.fulfilled, (state) => {
         state.status = "succeeded";
         // state.vouchers = action.payload.data;
       })
-      .addCase(exportVoucherData.rejected, (state, action) => {
+      .addCase(printVoucherData.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

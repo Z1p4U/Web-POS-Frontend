@@ -13,8 +13,11 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
+import useSetting from "../../../../redux/hooks/setting/useSetting";
 
-const VoucherTable = ({ exportVoucher, vouchers }) => {
+const VoucherTable = ({ printVoucher, vouchers }) => {
+  const { setting } = useSetting();
+
   const [open, setOpen] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
 
@@ -26,6 +29,13 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
   const handleClose = () => {
     setOpen(false);
     setSelectedVoucher(null);
+  };
+
+  const handlePrintVoucher = async (id) => {
+    const response = await printVoucher(id);
+
+    window.alert(response);
+    handleClose();
   };
 
   const modalStyle = {
@@ -168,25 +178,35 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
         open={open}
         onClose={handleClose}
         closeAfterTransition
-        // BackdropComponent={Backdrop}
-        // BackdropProps={{ timeout: 500 }}
       >
         <Box sx={modalStyle}>
           {selectedVoucher && (
             <>
               <Box textAlign="center" mb={2}>
-                <h2 id="voucher-details-title">ANDROMEDA 306</h2>
+                <h2 id="voucher-details-title">
+                  {setting?.name ? setting?.name : "ANDROMEDA 306"}
+                </h2>
                 <p>
                   Voucher No:{" "}
                   <strong style={{ color: "#002d5d" }}>
                     {selectedVoucher.voucher_number}
                   </strong>
                 </p>
+                <p>
+                  Address:{" "}
+                  {setting?.address ? (
+                    <strong style={{ color: "#002d5d" }}>
+                      {setting?.address}
+                    </strong>
+                  ) : (
+                    <></>
+                  )}
+                </p>
               </Box>
               <Box display="flex" justifyContent="space-between" mb={2}>
                 <Box>
                   <p>Cashier: {selectedVoucher.user_name || "N/A"}</p>
-                  <p>Phone: {selectedVoucher.user_phone || "N/A"}</p>
+                  <p>Phone: {setting.phone || "N/A"}</p>
                 </Box>
                 <Box textAlign="right">
                   <p>Date: {selectedVoucher.created_at}</p>
@@ -250,7 +270,7 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
                     textTransform: "none",
                     fontWeight: "bold",
                   }}
-                  onClick={() => exportVoucher(selectedVoucher.id)}
+                  onClick={() => handlePrintVoucher(selectedVoucher.id)}
                 >
                   Export Voucher
                 </Button>
@@ -264,7 +284,7 @@ const VoucherTable = ({ exportVoucher, vouchers }) => {
 };
 
 VoucherTable.propTypes = {
-  exportVoucher: PropTypes.func.isRequired,
+  printVoucher: PropTypes.func.isRequired,
   vouchers: PropTypes.array.isRequired,
 };
 

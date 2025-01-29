@@ -1,33 +1,31 @@
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useAuth from "../../auth/useAuth";
 import {
   clearVoucherData,
-  dailyVoucherList,
-  exportVoucherData,
+  todayVoucherList,
+  printVoucherData,
   voucherDetailData,
 } from "../../../services/sale/voucher/voucherSlice";
 
 const useVoucher = () => {
   const dispatch = useDispatch();
   const { token } = useAuth();
+  const [selectedDate, setSelectedDate] = useState("");
 
   const selectVouchers = useMemo(() => (state) => state?.voucher, []);
-
-  const voucherResponse = useSelector(selectVouchers, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
+  const voucherResponse = useSelector(selectVouchers, shallowEqual);
 
   const vouchers = voucherResponse?.vouchers;
   const dailyTotalSale = voucherResponse?.dailyTotalSale;
 
-  // console.log(voucherResponse);
-
   useEffect(() => {
     if (token) {
-      dispatch(dailyVoucherList({ token }));
+      dispatch(todayVoucherList({ token, date: selectedDate || null })); // Send date if available, otherwise use today
     } else {
       dispatch(clearVoucherData());
     }
-  }, [token, dispatch]);
+  }, [token, selectedDate, dispatch]);
 
   const getVoucherDetail = useCallback(
     async (id) => {
@@ -38,7 +36,6 @@ const useVoucher = () => {
             id,
           })
         );
-        // console.log(response.payload.data);
         return response.payload.data;
       } catch (error) {
         console.error("Failed to get Voucher Detail", error);
@@ -47,16 +44,15 @@ const useVoucher = () => {
     [dispatch, token]
   );
 
-  const exportVoucher = useCallback(
+  const printVoucher = useCallback(
     async (id) => {
       try {
         const response = await dispatch(
-          exportVoucherData({
+          printVoucherData({
             token,
             id,
           })
         );
-        // console.log(response.payload.message);
         return response.payload.message;
       } catch (error) {
         console.error("Failed to get Voucher Detail", error);
@@ -69,7 +65,9 @@ const useVoucher = () => {
     vouchers,
     dailyTotalSale,
     getVoucherDetail,
-    exportVoucher,
+    printVoucher,
+    selectedDate,
+    setSelectedDate, // Expose function to update date
   };
 };
 
