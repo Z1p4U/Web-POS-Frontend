@@ -35,6 +35,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Logout, People, Person, Settings } from "@mui/icons-material";
 import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 import useSetting from "../redux/hooks/setting/useSetting";
+import Marquee from "react-fast-marquee";
 
 const drawerWidth = 320;
 
@@ -181,6 +182,7 @@ const DashboardLayout = () => {
             minHeight: 80,
             display: "flex",
             justifyContent: "space-between",
+            gap: "20px",
           }}
         >
           {/* Left Section: Menu Icon and Logo */}
@@ -196,19 +198,21 @@ const DashboardLayout = () => {
             <Link to={"/"}>
               <img
                 src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
-                className="aspect-square w-16"
+                className="aspect-square !w-20"
                 alt="logo"
               />
             </Link>
           </Box>
 
+          <Box sx={{ width: "100%", backgroundColor: "#00000030", px: "20px" }}>
+            <Marquee>Hello! This is Marquee</Marquee>
+          </Box>
           {/* Right Section: Settings and User Icons */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               onClick={handleClick}
               size="small"
               color="inherit"
-              sx={{ ml: 2 }}
               aria-controls={open ? "account-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
