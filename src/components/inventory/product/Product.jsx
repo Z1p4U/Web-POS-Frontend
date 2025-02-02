@@ -21,6 +21,8 @@ const Product = () => {
     products,
     pageCount,
     totalRecord,
+    filter,
+    setFilter,
     setSearch,
     refetchProducts,
     handleExportProducts,
@@ -127,46 +129,64 @@ const Product = () => {
               >
                 Import
               </Button>
-              <div>
-                <Button
-                  onClick={openExportMenu}
-                  className=" py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
-                  sx={{
-                    backgroundColor: "#3b82f6",
-                    color: "white",
-                    px: 2,
-                    py: 1,
+              <Button
+                onClick={openExportMenu}
+                className=" py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
+                sx={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  px: 2,
+                  py: 1,
+                }}
+              >
+                Export
+              </Button>
+              <Menu
+                anchorEl={exportAnchorEl}
+                open={Boolean(exportAnchorEl)}
+                onClose={closeExportMenu}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleExportProducts("csv");
+                    closeExportMenu();
                   }}
                 >
-                  Export
-                </Button>
-                <Menu
-                  anchorEl={exportAnchorEl}
-                  open={Boolean(exportAnchorEl)}
-                  onClose={closeExportMenu}
+                  Export as CSV
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleExportProducts("excel");
+                    closeExportMenu();
+                  }}
                 >
-                  <MenuItem
-                    onClick={() => {
-                      handleExportProducts("csv");
-                      closeExportMenu();
-                    }}
-                  >
-                    Export as CSV
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      handleExportProducts("excel");
-                      closeExportMenu();
-                    }}
-                  >
-                    Export as Excel
-                  </MenuItem>
-                </Menu>
-              </div>
+                  Export as Excel
+                </MenuItem>
+              </Menu>
             </div>
           </div>
 
-          <div className=" flex flex-wrap justify-end md:items-center gap-3">
+          <div className=" flex flex-wrap justify-between md:items-center gap-3">
+            <div className=" flex items-center">
+              <div
+                className={` ${filter == "All" ? "bg-primary text-white border-primary pointer-events-none" : "text-black border-[#7E7F80]"} text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-l-md border border-r-0`}
+                onClick={() => setFilter("All")}
+              >
+                All
+              </div>
+              <div
+                className={` ${filter == "Low" ? "bg-primary text-white border-primary pointer-events-none" : "text-black border-[#7E7F80]"} text-sm cursor-pointer px-3 flex justify-center items-center h-10 border border-r-0`}
+                onClick={() => setFilter("Low")}
+              >
+                Low Stock
+              </div>
+              <div
+                className={` ${filter == "Out" ? "bg-primary text-white border-primary pointer-events-none" : "text-black border-[#7E7F80]"} text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-r-md border`}
+                onClick={() => setFilter("Out")}
+              >
+                Out Of Stock
+              </div>
+            </div>
             <div className="flex ">
               <button
                 aria-label="Switch to Table View"

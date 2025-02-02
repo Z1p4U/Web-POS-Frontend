@@ -5,15 +5,21 @@ const fetchProduct = async (
   token,
   pagination = {},
   search,
-  columns = "name"
+  filterProperties,
+  column = "name",
+  columns = "total_stock"
 ) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
   try {
+    console.log(filterProperties);
+
     const params = {
-      columns,
+      column,
       search,
+      columns,
+      ...(filterProperties || {}),
       ...(pagination || {}),
     };
 

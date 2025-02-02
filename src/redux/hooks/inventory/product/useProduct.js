@@ -16,6 +16,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("All");
+  const [filterProperties, setFilterProperties] = useState({});
 
   const selectProduct = useMemo(() => (state) => state?.product, []);
 
@@ -27,6 +29,16 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const pdDetail = productResponse?.productDetail;
 
   useEffect(() => {
+    if (filter == "Low") {
+      setFilterProperties({ operator: "<=", value: 10 });
+    } else if (filter == "Out") {
+      setFilterProperties({ operator: "=", value: 0 });
+    } else {
+      setFilterProperties({ operator: null, value: null });
+    }
+  }, [filter]);
+
+  useEffect(() => {
     if (token) {
       const pagination = noPagination ? undefined : { page, per_page };
       dispatch(
@@ -34,12 +46,13 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
           token,
           pagination,
           search,
+          filterProperties,
         })
       );
     } else {
       dispatch(clearProductData());
     }
-  }, [token, page, per_page, noPagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search, filterProperties]);
 
   const handleCreateProduct = useCallback(
     async (products) => {
@@ -178,6 +191,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     search,
     pageCount,
     totalRecord,
+    filter,
+    setFilter,
     setSearch,
     refetchProducts,
     handleUpdateProduct,

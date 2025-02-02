@@ -10,9 +10,17 @@ import {
 
 export const productList = createAsyncThunk(
   "product/productList",
-  async ({ token, pagination, search }, { rejectWithValue }) => {
+  async (
+    { token, pagination, search, filterProperties },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await fetchProduct(token, pagination, search);
+      const response = await fetchProduct(
+        token,
+        pagination,
+        search,
+        filterProperties
+      );
 
       const normalizedData = {
         products: pagination ? response?.data?.data : response?.data,
