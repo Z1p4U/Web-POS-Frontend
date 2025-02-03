@@ -1,12 +1,12 @@
 import { BiPlus, BiSearch } from "react-icons/bi";
 import Banner from "../../ui/banner/Banner";
 import ProductTable from "./components/ProductTable";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import TableViewIcon from "@mui/icons-material/TableView";
 import useProduct from "../../../redux/hooks/inventory/product/useProduct";
 import ProductCard from "./components/ProductCard";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Box, Button, Menu, MenuItem, Modal, Typography } from "@mui/material";
 
 const Product = () => {
@@ -16,6 +16,8 @@ const Product = () => {
   const [tableView, setTableView] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const location = useLocation();
+  const initialFilter = location?.state?.filter;
 
   const {
     products,
@@ -27,7 +29,13 @@ const Product = () => {
     refetchProducts,
     handleExportProducts,
     handleImportProducts,
-  } = useProduct({ page: 1, per_page: 10 });
+  } = useProduct({ ...pagination });
+
+  useEffect(() => {
+    if (initialFilter) {
+      setFilter(initialFilter);
+    }
+  }, [initialFilter, setFilter]);
 
   const openExportMenu = (event) => setExportAnchorEl(event.currentTarget);
   const closeExportMenu = () => setExportAnchorEl(null);
@@ -43,7 +51,7 @@ const Product = () => {
     if (file) {
       // Validate file size
       if (file.size > maxFileSize) {
-        alert("File size exceeds 5MB. Please select a smaller file.");
+        alert("File size exceeds 10MB. Please select a smaller file.");
         return;
       }
 
@@ -170,19 +178,28 @@ const Product = () => {
             <div className=" flex items-center">
               <div
                 className={` ${filter == "All" ? "bg-primary text-white border-primary pointer-events-none" : "text-black border-[#7E7F80]"} text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-l-md border border-r-0`}
-                onClick={() => setFilter("All")}
+                onClick={() => {
+                  setFilter("All");
+                  setPagination({ page: 1, per_page: 10 });
+                }}
               >
                 All
               </div>
               <div
                 className={` ${filter == "Low" ? "bg-primary text-white border-primary pointer-events-none" : "text-black border-[#7E7F80]"} text-sm cursor-pointer px-3 flex justify-center items-center h-10 border border-r-0`}
-                onClick={() => setFilter("Low")}
+                onClick={() => {
+                  setFilter("Low");
+                  setPagination({ page: 1, per_page: 10 });
+                }}
               >
                 Low Stock
               </div>
               <div
                 className={` ${filter == "Out" ? "bg-primary text-white border-primary pointer-events-none" : "text-black border-[#7E7F80]"} text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-r-md border`}
-                onClick={() => setFilter("Out")}
+                onClick={() => {
+                  setFilter("Out");
+                  setPagination({ page: 1, per_page: 10 });
+                }}
               >
                 Out Of Stock
               </div>

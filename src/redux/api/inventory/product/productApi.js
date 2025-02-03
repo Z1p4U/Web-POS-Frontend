@@ -13,8 +13,6 @@ const fetchProduct = async (
     Authorization: `Bearer ${token}`,
   };
   try {
-    console.log(filterProperties);
-
     const params = {
       column,
       search,

@@ -17,6 +17,7 @@ import {
   Menu,
   MenuItem,
   Avatar,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -32,10 +33,18 @@ import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Logout, People, Person, Settings } from "@mui/icons-material";
+import {
+  Error,
+  Inventory2,
+  Logout,
+  People,
+  Person,
+  Settings,
+} from "@mui/icons-material";
 import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 import useSetting from "../redux/hooks/setting/useSetting";
 import Marquee from "react-fast-marquee";
+import useProduct from "../redux/hooks/inventory/product/useProduct";
 
 const drawerWidth = 320;
 
@@ -106,21 +115,34 @@ const navItems = [
 ];
 
 const DashboardLayout = () => {
+  const { hasLowStock, hasOutOfStock } = useProduct({
+    noPagination: true,
+  });
+
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [submenuStates, setSubmenuStates] = useState({});
   const [lastOpenedSubmenu, setLastOpenedSubmenu] = useState(null); // Track the last opened submenu
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl2, setAnchorEl2] = useState(null);
 
   const { setting } = useSetting();
 
   const open = Boolean(anchorEl);
+  const open2 = Boolean(anchorEl2);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClick2 = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorEl2(null);
   };
 
   const nav = useNavigate();
@@ -195,86 +217,177 @@ const DashboardLayout = () => {
             >
               <MenuIcon />
             </IconButton>
-            <Link to={"/"}>
-              <img
-                src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
-                className="aspect-square !w-20"
-                alt="logo"
-              />
-            </Link>
+            <Box sx={{ width: "72px" }}>
+              <Link to={"/"}>
+                <img
+                  src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
+                  className="aspect-square !w-20"
+                  alt="logo"
+                />
+              </Link>
+            </Box>
           </Box>
 
           <Box sx={{ width: "100%", backgroundColor: "#00000030", px: "20px" }}>
             <Marquee>Hello! This is Marquee</Marquee>
           </Box>
           {/* Right Section: Settings and User Icons */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton
-              onClick={handleClick}
-              size="small"
-              color="inherit"
-              aria-controls={open ? "account-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
+          <Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton
+                onClick={handleClick2}
+                size="small"
+                color="inherit"
+                aria-controls={open ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+              >
+                <Badge
+                  color="warning"
+                  variant="dot"
+                  invisible={!hasLowStock && !hasOutOfStock}
+                >
+                  <Error />
+                </Badge>
+              </IconButton>
+            </Box>
+            <Menu
+              anchorEl={anchorEl2}
+              id="account-menu"
+              open={open2}
+              onClose={handleClose2}
+              onClick={handleClose2}
+              slotProps={{
+                paper: {
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&::before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <Person />
-            </IconButton>
+              <MenuItem
+                onClick={() =>
+                  nav("/inventory/product", { state: { filter: "Low" } })
+                }
+              >
+                <ListItemIcon>
+                  <Badge color="warning" variant="dot" invisible={!hasLowStock}>
+                    <Inventory2 fontSize="small" />
+                  </Badge>
+                </ListItemIcon>
+                Low stock items
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={() =>
+                  nav("/inventory/product", { state: { filter: "Out" } })
+                }
+              >
+                <ListItemIcon>
+                  <Badge
+                    color="warning"
+                    variant="dot"
+                    invisible={!hasOutOfStock}
+                  >
+                    <Inventory2 fontSize="small" />
+                  </Badge>
+                </ListItemIcon>
+                Out of stock items
+              </MenuItem>
+            </Menu>
+          </Box>
+          <Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                color="inherit"
+                aria-controls={open ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+              >
+                <Person />
+              </IconButton>
+            </Box>
+            <Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={open}
+              onClose={handleClose}
+              onClick={handleClose}
+              slotProps={{
+                paper: {
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&::before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <MenuItem onClick={() => nav("/user-profile")}>
+                <Avatar /> Profile
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={() => nav("/setting")}>
+                <ListItemIcon>
+                  <Settings fontSize="small" />
+                </ListItemIcon>
+                Settings
+              </MenuItem>
+              <MenuItem onClick={() => setIsModalOpen(true)}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          slotProps={{
-            paper: {
-              elevation: 0,
-              sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                "&::before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        >
-          <MenuItem onClick={() => nav("/user-profile")}>
-            <Avatar /> Profile
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={() => nav("/setting")}>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
-          <MenuItem onClick={() => setIsModalOpen(true)}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
       </AppBar>
 
       <Drawer

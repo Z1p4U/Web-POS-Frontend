@@ -112,6 +112,8 @@ const initialState = {
   error: null,
   lastPage: 1,
   totalRecord: 0,
+  hasLowStock: false,
+  hasOutOfStock: false,
 };
 
 const productSlice = createSlice({
@@ -132,6 +134,14 @@ const productSlice = createSlice({
         state.products = action.payload.products;
         state.lastPage = action.payload.lastPage;
         state.totalRecord = action.payload.totalRecord;
+
+        state.hasLowStock = action.payload.products.some(
+          (product) => product.total_stock > 0 && product.total_stock < 11
+        );
+
+        state.hasOutOfStock = action.payload.products.some(
+          (product) => product.total_stock === 0
+        );
       })
       .addCase(productList.rejected, (state, action) => {
         state.status = "failed";

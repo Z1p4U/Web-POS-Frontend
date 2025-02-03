@@ -27,10 +27,12 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const pageCount = productResponse?.lastPage;
   const totalRecord = productResponse?.totalRecord;
   const pdDetail = productResponse?.productDetail;
+  const hasLowStock = productResponse?.hasLowStock;
+  const hasOutOfStock = productResponse?.hasOutOfStock;
 
   useEffect(() => {
     if (filter == "Low") {
-      setFilterProperties({ operator: "<=", value: 10 });
+      setFilterProperties({ operator: "between", value: "1|10" });
     } else if (filter == "Out") {
       setFilterProperties({ operator: "=", value: 0 });
     } else {
@@ -192,6 +194,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     pageCount,
     totalRecord,
     filter,
+    hasLowStock,
+    hasOutOfStock,
     setFilter,
     setSearch,
     refetchProducts,

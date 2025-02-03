@@ -138,7 +138,7 @@ const ProductTable = ({
                       sx={{ color: "#fff", padding: "16px" }}
                     >
                       <div
-                        className={`mx-auto pl-2 pr-1 py-1 rounded-full flex justify-center items-center w-fit gap-2 text-primary ${product?.total_stock < 11 ? " bg-red-300" : " bg-green-300"}`}
+                        className={`mx-auto pl-2 pr-1 py-1 rounded-full flex justify-center items-center w-fit gap-2 text-primary ${product?.total_stock === 0 ? " bg-red-300" : product?.total_stock < 11 ? " bg-yellow-300" : " bg-green-300"}`}
                       >
                         {product?.total_stock}
                         <div
