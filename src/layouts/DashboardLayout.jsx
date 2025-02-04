@@ -227,98 +227,103 @@ const DashboardLayout = () => {
               </Link>
             </Box>
           </Box>
-
           <Box sx={{ width: "100%", backgroundColor: "#00000030", px: "20px" }}>
             <Marquee>Hello! This is Marquee</Marquee>
           </Box>
           {/* Right Section: Settings and User Icons */}
-          <Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton
-                onClick={handleClick2}
-                size="small"
-                color="inherit"
-                aria-controls={open ? "account-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-              >
-                <Badge
-                  color="warning"
-                  variant="dot"
-                  invisible={!hasLowStock && !hasOutOfStock}
+          {location.pathname !== "/inventory/product" && (
+            <Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <IconButton
+                  onClick={handleClick2}
+                  size="small"
+                  color="inherit"
+                  aria-controls={open ? "account-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
                 >
-                  <Error />
-                </Badge>
-              </IconButton>
-            </Box>
-            <Menu
-              anchorEl={anchorEl2}
-              id="account-menu"
-              open={open2}
-              onClose={handleClose2}
-              onClick={handleClose2}
-              slotProps={{
-                paper: {
-                  elevation: 0,
-                  sx: {
-                    overflow: "visible",
-                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                    mt: 1.5,
-                    "& .MuiAvatar-root": {
-                      width: 32,
-                      height: 32,
-                      ml: -0.5,
-                      mr: 1,
-                    },
-                    "&::before": {
-                      content: '""',
-                      display: "block",
-                      position: "absolute",
-                      top: 0,
-                      right: 14,
-                      width: 10,
-                      height: 10,
-                      bgcolor: "background.paper",
-                      transform: "translateY(-50%) rotate(45deg)",
-                      zIndex: 0,
-                    },
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <MenuItem
-                onClick={() =>
-                  nav("/inventory/product", { state: { filter: "Low" } })
-                }
-              >
-                <ListItemIcon>
-                  <Badge color="warning" variant="dot" invisible={!hasLowStock}>
-                    <Inventory2 fontSize="small" />
-                  </Badge>
-                </ListItemIcon>
-                Low stock items
-              </MenuItem>
-              <Divider />
-              <MenuItem
-                onClick={() =>
-                  nav("/inventory/product", { state: { filter: "Out" } })
-                }
-              >
-                <ListItemIcon>
                   <Badge
                     color="warning"
                     variant="dot"
-                    invisible={!hasOutOfStock}
+                    invisible={!hasLowStock && !hasOutOfStock}
                   >
-                    <Inventory2 fontSize="small" />
+                    <Error />
                   </Badge>
-                </ListItemIcon>
-                Out of stock items
-              </MenuItem>
-            </Menu>
-          </Box>
+                </IconButton>
+              </Box>
+              <Menu
+                anchorEl={anchorEl2}
+                id="account-menu"
+                open={open2}
+                onClose={handleClose2}
+                onClick={handleClose2}
+                slotProps={{
+                  paper: {
+                    elevation: 0,
+                    sx: {
+                      overflow: "visible",
+                      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                      mt: 1.5,
+                      "& .MuiAvatar-root": {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      "&::before": {
+                        content: '""',
+                        display: "block",
+                        position: "absolute",
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: "background.paper",
+                        transform: "translateY(-50%) rotate(45deg)",
+                        zIndex: 0,
+                      },
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              >
+                <MenuItem
+                  onClick={() =>
+                    nav("/inventory/product", { state: { filter: "Low" } })
+                  }
+                >
+                  <ListItemIcon>
+                    <Badge
+                      color="warning"
+                      variant="dot"
+                      invisible={!hasLowStock}
+                    >
+                      <Inventory2 fontSize="small" />
+                    </Badge>
+                  </ListItemIcon>
+                  Low stock items
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                  onClick={() =>
+                    nav("/inventory/product", { state: { filter: "Out" } })
+                  }
+                >
+                  <ListItemIcon>
+                    <Badge
+                      color="warning"
+                      variant="dot"
+                      invisible={!hasOutOfStock}
+                    >
+                      <Inventory2 fontSize="small" />
+                    </Badge>
+                  </ListItemIcon>
+                  Out of stock items
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
           <Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton

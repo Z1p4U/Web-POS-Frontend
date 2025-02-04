@@ -17,3 +17,8 @@
 .img_div:hover .img_icon {
   transform: translateY(0%);
 }
+
+.glass_bg {
+  background: #ffffff36;
+  backdrop-filter: blur(6.2px);
+}

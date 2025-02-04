@@ -130,6 +130,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
       const pagination = noPagination ? undefined : { page, per_page };
 
       dispatch(productList({ token, pagination, search }));
+
+      setFilter("All");
     }
   }, [dispatch, token, search, page, per_page, noPagination]);
 
