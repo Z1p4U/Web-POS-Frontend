@@ -67,6 +67,50 @@ const fetchYearlyVoucher = async (token, year) => {
   }
 };
 
+const fetchDaysInMonth = async (token, month) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const response = await axios.post(
+      `${config.API_URL}/voucher/monthly-day`,
+      {
+        month,
+      },
+      {
+        headers,
+      }
+    );
+    // console.log("Fetched Voucher:", response);
+    return response?.data;
+  } catch (error) {
+    console.log("Failed to fetch Voucher:", error);
+    throw error;
+  }
+};
+
+const fetchMonthsInYear = async (token, year) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const response = await axios.post(
+      `${config.API_URL}/voucher/yearly-month`,
+      {
+        year,
+      },
+      {
+        headers,
+      }
+    );
+    // console.log("Fetched Voucher:", response);
+    return response?.data;
+  } catch (error) {
+    console.log("Failed to fetch Voucher:", error);
+    throw error;
+  }
+};
+
 const fetchVoucherDetail = async (token, id) => {
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -109,4 +153,6 @@ export {
   fetchYearlyVoucher,
   fetchPrintVoucher,
   fetchVoucherDetail,
+  fetchDaysInMonth,
+  fetchMonthsInYear,
 };

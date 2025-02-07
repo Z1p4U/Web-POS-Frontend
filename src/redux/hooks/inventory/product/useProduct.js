@@ -29,6 +29,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const pdDetail = productResponse?.productDetail;
   const hasLowStock = productResponse?.hasLowStock;
   const hasOutOfStock = productResponse?.hasOutOfStock;
+  const lowStockItemCount = productResponse?.lowStockItemCount;
+  const outOfStockItemCount = productResponse?.outOfStockItemCount;
 
   useEffect(() => {
     if (filter == "Low") {
@@ -198,6 +200,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     filter,
     hasLowStock,
     hasOutOfStock,
+    lowStockItemCount,
+    outOfStockItemCount,
     setFilter,
     setSearch,
     refetchProducts,

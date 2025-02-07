@@ -8,6 +8,8 @@ import {
   yearlyVoucherList,
   printVoucherData,
   voucherDetailData,
+  daysInMonth,
+  monthsInYear,
 } from "../../../services/sale/voucher/voucherSlice";
 import dayjs from "dayjs";
 
@@ -27,6 +29,12 @@ const useVoucher = () => {
   const dailyTotalSale = voucherResponse?.dailyTotalSale;
   const monthlyTotalSale = voucherResponse?.monthlyTotalSale;
   const yearlyTotalSale = voucherResponse?.yearlyTotalSale;
+  const dailyRecordsInMonth = voucherResponse?.dailyRecordsInMonth;
+  const monthlyRecordsInYear = voucherResponse?.monthlyRecordsInYear;
+
+  console.log("activeFilter", activeFilter);
+  console.log("dailyRecordsInMonth", dailyRecordsInMonth);
+  // console.log("monthlyRecordsInYear", monthlyRecordsInYear);
 
   useEffect(() => {
     if (!token) {
@@ -47,18 +55,22 @@ const useVoucher = () => {
       case "month":
         if (selectedMonth) {
           dispatch(monthlyVoucherList({ token, month: selectedMonth }));
+          dispatch(daysInMonth({ token, month: selectedMonth }));
         } else {
           const currentMonth = dayjs().format("YYYY-MM");
           dispatch(monthlyVoucherList({ token, month: currentMonth }));
+          dispatch(daysInMonth({ token, month: currentMonth }));
         }
         break;
 
       case "year":
         if (selectedYear) {
           dispatch(yearlyVoucherList({ token, year: selectedYear }));
+          dispatch(monthsInYear({ token, year: selectedYear }));
         } else {
           const currentYear = dayjs().format("YYYY");
           dispatch(yearlyVoucherList({ token, year: currentYear }));
+          dispatch(monthsInYear({ token, year: currentYear }));
         }
         break;
 
@@ -106,6 +118,8 @@ const useVoucher = () => {
     dailyTotalSale,
     monthlyTotalSale,
     yearlyTotalSale,
+    dailyRecordsInMonth,
+    monthlyRecordsInYear,
     getVoucherDetail,
     printVoucher,
     selectedDay,
