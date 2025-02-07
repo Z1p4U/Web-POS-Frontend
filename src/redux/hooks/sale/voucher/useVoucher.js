@@ -32,10 +32,6 @@ const useVoucher = () => {
   const dailyRecordsInMonth = voucherResponse?.dailyRecordsInMonth;
   const monthlyRecordsInYear = voucherResponse?.monthlyRecordsInYear;
 
-  console.log("activeFilter", activeFilter);
-  console.log("dailyRecordsInMonth", dailyRecordsInMonth);
-  // console.log("monthlyRecordsInYear", monthlyRecordsInYear);
-
   useEffect(() => {
     if (!token) {
       dispatch(clearVoucherData());

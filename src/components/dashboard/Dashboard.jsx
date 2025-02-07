@@ -46,22 +46,47 @@ const Dashboard = () => {
     // DAILY VIEW:
     // Group today's vouchers by their created hour.
     // Here we assume each voucher has a valid "createdAt" property.
-    const hourlyCounts = Array(24).fill(0);
+    const hourlySales = Array(24).fill(0);
+    const hourlyVouchers = Array(24).fill(0);
+
     vouchers.forEach((voucher) => {
       const hour = dayjs(voucher.createdAt).hour(); // returns 0-23
-      hourlyCounts[hour] += 1; // Count each voucher (or sum totals if needed)
+      hourlySales[hour] += voucher.total || 0; // Sum total sales amount
+      hourlyVouchers[hour] += 1; // Count vouchers
     });
     labels = Array.from({ length: 24 }, (_, i) => `${i + 1}h`);
-    dataValues = hourlyCounts;
+    dataValues = [
+      {
+        label: "Total Sales",
+        data: hourlySales,
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+      },
+      {
+        label: "Voucher Count",
+        data: hourlyVouchers,
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+      },
+    ];
   } else if (activeFilter === "month") {
     // MONTHLY VIEW:
     // Use dailyRecordsInMonth array where each record is in the form:
     // { day: "yyyy-mm-dd", total, total_cash, total_tax, total_voucher }
     // For the x-axis, we display the day number (e.g., 1, 2, 3, ...)
     labels = dailyRecordsInMonth?.map((record) =>
-      dayjs(record.day).format("D")
+      dayjs(record.day).format("D MMM")
     );
-    dataValues = dailyRecordsInMonth?.map((record) => record?.total);
+    dataValues = [
+      {
+        label: "Total Sales",
+        data: dailyRecordsInMonth.map((r) => r.total),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+      },
+      {
+        label: "Voucher Count",
+        data: dailyRecordsInMonth.map((r) => r.total_voucher),
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+      },
+    ];
   } else if (activeFilter === "year") {
     // YEARLY VIEW:
     // Use monthlyRecordsInYear array where each record is in the form:
@@ -70,20 +95,23 @@ const Dashboard = () => {
     labels = monthlyRecordsInYear.map((record) =>
       dayjs(record.month, "YYYY-MM").format("MMM")
     );
-    dataValues = monthlyRecordsInYear.map((record) => record?.total);
+    dataValues = [
+      {
+        label: "Total Sales",
+        data: monthlyRecordsInYear.map((r) => r.total),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+      },
+      {
+        label: "Voucher Count",
+        data: monthlyRecordsInYear.map((r) => r.total_voucher),
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+      },
+    ];
   }
 
   const chartData = {
     labels,
-    datasets: [
-      {
-        label: "Voucher Sales",
-        data: dataValues,
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-      },
-    ],
+    datasets: dataValues,
   };
 
   // Chart options
