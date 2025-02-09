@@ -276,7 +276,7 @@ const ProductCalculator = ({
 
           <button
             onClick={handlePayment}
-            className="border-t hover:bg-[#ffffff15] border-dim py-5 text-[#8ab4f8] font-medium tracking-wider flex justify-center items-center gap-2 uppercase select-none"
+            className="border-t hover:bg-[#ffffff15] border-dim py-8 text-[#8ab4f8] font-medium tracking-wider flex justify-center items-center gap-2 uppercase select-none"
           >
             Checkout
           </button>

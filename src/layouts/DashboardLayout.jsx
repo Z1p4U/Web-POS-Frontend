@@ -228,7 +228,9 @@ const DashboardLayout = () => {
             </Box>
           </Box>
           <Box sx={{ width: "100%", backgroundColor: "#00000030", px: "20px" }}>
-            <Marquee>Hello! This is Marquee</Marquee>
+            <Marquee>
+              {setting?.marquee ? setting?.marquee : "Hello! This is Marquee"}
+            </Marquee>
           </Box>
           {/* Right Section: Settings and User Icons */}
           {location.pathname !== "/inventory/product" && (
@@ -401,14 +403,12 @@ const DashboardLayout = () => {
         sx={{
           width: {
             xs: drawerOpen ? drawerWidth : 0,
-            sm: drawerOpen ? drawerWidth : 64,
             md: drawerOpen ? drawerWidth : 64,
           },
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             width: {
               xs: drawerOpen ? drawerWidth : 0,
-              sm: drawerOpen ? drawerWidth : 64,
               md: drawerOpen ? drawerWidth : 64,
             },
             transition: "width 0.3s",

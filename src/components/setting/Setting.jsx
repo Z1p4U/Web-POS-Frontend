@@ -13,6 +13,7 @@ const Setting = () => {
     logo: "",
     phone: "",
     address: "",
+    marquee: "",
   });
 
   const nav = useNavigate();
@@ -45,6 +46,7 @@ const Setting = () => {
         logo: setting.logo || "/logo/logo.png",
         phone: setting.phone || "",
         address: setting.address || "",
+        marquee: setting.marquee || "",
       });
     } else {
       setFormData({
@@ -52,6 +54,7 @@ const Setting = () => {
         logo: "/logo/logo.png",
         phone: "",
         address: "",
+        marquee: "",
       });
     }
   }, [setting]);
@@ -109,6 +112,7 @@ const Setting = () => {
           sx={{ maxWidth: 500 }}
         />
 
+        {/* Phone Field */}
         <TextField
           fullWidth
           label="Phone Number"
@@ -120,6 +124,7 @@ const Setting = () => {
           sx={{ maxWidth: 500 }}
         />
 
+        {/* Address Field */}
         <TextField
           fullWidth
           label="Address"
@@ -129,6 +134,20 @@ const Setting = () => {
           margin="normal"
           variant="outlined"
           sx={{ maxWidth: 500 }}
+        />
+
+        {/* Marquee Field */}
+        <TextField
+          fullWidth
+          label="Marquee Text"
+          name="marquee"
+          value={formData?.marquee}
+          onChange={handleInputChange}
+          margin="normal"
+          multiline
+          rows={4}
+          variant="outlined"
+          sx={{ maxWidth: 1000 }}
         />
 
         {/* Update Button */}

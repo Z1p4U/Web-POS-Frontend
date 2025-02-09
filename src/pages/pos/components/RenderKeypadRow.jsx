@@ -6,7 +6,7 @@ const RenderKeypadRow = ({ values, onClick }) => (
       <div
         key={index}
         onClick={() => onClick(value)}
-        className={`w-[25%] hover:bg-light cursor-pointer border-r-2 border-dim text-white py-3 font-medium text-center select-none ${
+        className={`w-[25%] hover:bg-light cursor-pointer border-r-2 border-dim text-white py-5 font-medium text-center select-none ${
           index === values.length - 1 ? "border-r-0" : ""
         }`}
       >
