@@ -16,6 +16,7 @@ import ConfirmationModal from "../../../ui/model/ConfirmationModal";
 import { useState } from "react";
 
 const CategoryTable = ({
+  isAdmin,
   categories,
   pagination,
   totalRecord,
@@ -79,7 +80,11 @@ const CategoryTable = ({
                 </TableCell>
                 <TableCell
                   align="center"
-                  sx={{ padding: "16px", color: "white" }}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    display: isAdmin ? "table-cell" : "none", // Hide when isAdmin is false
+                  }}
                 ></TableCell>
               </TableRow>
             </TableHead>
@@ -115,7 +120,13 @@ const CategoryTable = ({
                     >
                       {category?.note}
                     </TableCell>
-                    <TableCell align="center" sx={{ padding: "16px" }}>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        padding: "16px",
+                        display: isAdmin ? "table-cell" : "none", // Hide when isAdmin is false
+                      }}
+                    >
                       <Box
                         sx={{
                           display: "flex",
@@ -182,6 +193,7 @@ CategoryTable.propTypes = {
   totalRecord: PropTypes.any,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
+  isAdmin: PropTypes.bool,
   handleEdit: PropTypes.any,
   handlePaginate: PropTypes.any,
   handleDeleteCategory: PropTypes.any,

@@ -99,6 +99,7 @@ const initialState = {
   error: null,
   lastPage: 1,
   totalRecord: 0,
+  isAdmin: false,
 };
 
 const userSlice = createSlice({
@@ -130,6 +131,12 @@ const userSlice = createSlice({
       .addCase(ownProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.ownProfile = action.payload;
+
+        if (action?.payload?.role === "admin") {
+          state.isAdmin = true;
+        } else {
+          state.isAdmin = false;
+        }
       })
       .addCase(ownProfile.rejected, (state, action) => {
         state.status = "failed";

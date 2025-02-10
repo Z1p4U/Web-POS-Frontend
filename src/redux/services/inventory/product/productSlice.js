@@ -133,20 +133,19 @@ const productSlice = createSlice({
       })
       .addCase(productList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.products = action.payload.products;
-        state.lastPage = action.payload.lastPage;
-        state.totalRecord = action.payload.totalRecord;
-        state.hasLowStock = action.payload.products.some(
+        state.products = action?.payload?.products;
+        state.lastPage = action?.payload?.lastPage;
+        state.totalRecord = action?.payload?.totalRecord;
+        state.hasLowStock = action?.payload?.products?.some(
           (product) => product.total_stock > 0 && product.total_stock < 11
         );
-        state.lowStockItemCount = action.payload.products.filter(
+        state.lowStockItemCount = action?.payload?.products.filter(
           (product) => product.total_stock > 0 && product.total_stock < 11
         ).length;
-
-        state.hasOutOfStock = action.payload.products.some(
+        state.hasOutOfStock = action?.payload?.products.some(
           (product) => product.total_stock === 0
         );
-        state.outOfStockItemCount = action.payload.products.filter(
+        state.outOfStockItemCount = action?.payload?.products.filter(
           (product) => product.total_stock === 0
         ).length;
       })

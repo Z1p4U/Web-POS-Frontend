@@ -5,6 +5,7 @@ import { useState } from "react";
 import EntrySupplier from "./components/EntrySupplier";
 import SupplierTable from "./components/SupplierTable";
 import useSupplier from "../../../redux/hooks/inventory/supplier/useSupplier";
+import useUserProfile from "../../../redux/hooks/user/useUserProfile";
 
 const Supplier = () => {
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
@@ -18,6 +19,7 @@ const Supplier = () => {
     handleUpdateSupplier,
     handleCreateSupplier,
   } = useSupplier({ ...pagination });
+  const { isAdmin } = useUserProfile();
 
   const [addModal, setAddModal] = useState(false);
   const [editSupplier, setEditSupplier] = useState(null);
@@ -44,21 +46,28 @@ const Supplier = () => {
           {/* banner  */}
           <Banner title={"Suppliers"} path1={"Inventory"} />
           {/* banner  */}
-          <div
-            onClick={() => setAddModal(true)}
-            className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
-          >
-            <BiPlus size={20} />
-            Add Supplier
-          </div>
-          <EntrySupplier
-            addModal={addModal}
-            currentSupplier={editSupplier}
-            setAddModal={setAddModal}
-            handleCreateSupplier={handleCreateSupplier}
-            handleUpdateSupplier={handleUpdateSupplier}
-            setEditSupplier={setEditSupplier}
-          />
+
+          {isAdmin ? (
+            <>
+              <div
+                onClick={() => setAddModal(true)}
+                className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
+              >
+                <BiPlus size={20} />
+                Add Supplier
+              </div>
+              <EntrySupplier
+                addModal={addModal}
+                currentSupplier={editSupplier}
+                setAddModal={setAddModal}
+                handleCreateSupplier={handleCreateSupplier}
+                handleUpdateSupplier={handleUpdateSupplier}
+                setEditSupplier={setEditSupplier}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -84,6 +93,7 @@ const Supplier = () => {
           <div className="flex flex-col gap-8">
             {/* table  */}
             <SupplierTable
+              isAdmin={isAdmin}
               suppliers={suppliers}
               pageCount={pageCount}
               pagination={pagination}

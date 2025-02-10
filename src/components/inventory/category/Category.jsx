@@ -5,6 +5,7 @@ import { useState } from "react";
 import CategoryTable from "./components/CategoryTable";
 import EntryCategory from "./components/EntryCategory";
 import useCategory from "../../../redux/hooks/inventory/category/useCategory";
+import useUserProfile from "../../../redux/hooks/user/useUserProfile";
 
 const Category = () => {
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
@@ -18,6 +19,8 @@ const Category = () => {
     handleCreateCategory,
     handleUpdateCategory,
   } = useCategory({ ...pagination });
+  const { isAdmin } = useUserProfile();
+
   const [addModal, setAddModal] = useState(false);
   const [editCategory, setEditCategory] = useState(null);
 
@@ -43,21 +46,27 @@ const Category = () => {
           {/* banner  */}
           <Banner title={"Categories"} path1={"Inventory"} />
           {/* banner  */}
-          <div
-            onClick={() => setAddModal(true)}
-            className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
-          >
-            <BiPlus size={20} />
-            Add Category
-          </div>
-          <EntryCategory
-            addModal={addModal}
-            currentCategory={editCategory}
-            setAddModal={setAddModal}
-            handleCreateCategory={handleCreateCategory}
-            handleUpdateCategory={handleUpdateCategory}
-            setEditCategory={setEditCategory}
-          />
+          {isAdmin ? (
+            <>
+              <div
+                onClick={() => setAddModal(true)}
+                className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
+              >
+                <BiPlus size={20} />
+                Add Category
+              </div>
+              <EntryCategory
+                addModal={addModal}
+                currentCategory={editCategory}
+                setAddModal={setAddModal}
+                handleCreateCategory={handleCreateCategory}
+                handleUpdateCategory={handleUpdateCategory}
+                setEditCategory={setEditCategory}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -83,10 +92,11 @@ const Category = () => {
           <div className="flex flex-col gap-8">
             {/* table  */}
             <CategoryTable
-              categories={categories}
+              isAdmin={isAdmin}
               pageCount={pageCount}
-              pagination={pagination}
+              categories={categories}
               handleEdit={handleEdit}
+              pagination={pagination}
               totalRecord={totalRecord}
               handlePaginate={handlePaginate}
               handleUpdateCategory={handleUpdateCategory}

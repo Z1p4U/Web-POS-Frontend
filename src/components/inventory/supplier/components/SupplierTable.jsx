@@ -16,6 +16,7 @@ import ConfirmationModal from "../../../ui/model/ConfirmationModal";
 import { useState } from "react";
 
 const SupplierTable = ({
+  isAdmin,
   suppliers,
   pagination,
   totalRecord,
@@ -132,7 +133,12 @@ const SupplierTable = ({
 
                 <TableCell
                   align="center"
-                  sx={{ padding: "16px", color: "white", fontSize: "14px" }}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    fontSize: "14px",
+                    display: isAdmin ? "table-cell" : "none", // Hide when isAdmin is false
+                  }}
                 ></TableCell>
               </TableRow>
             </TableHead>
@@ -192,7 +198,13 @@ const SupplierTable = ({
                     >
                       {supplier?.address}
                     </TableCell>
-                    <TableCell align="center" sx={{ padding: "16px" }}>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        padding: "16px",
+                        display: isAdmin ? "table-cell" : "none", // Hide when isAdmin is false
+                      }}
+                    >
                       <Box
                         sx={{
                           display: "flex",
@@ -259,6 +271,7 @@ SupplierTable.propTypes = {
   totalRecord: PropTypes.any,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
+  isAdmin: PropTypes.bool,
   handleEdit: PropTypes.any,
   handlePaginate: PropTypes.any,
   handleDeleteSupplier: PropTypes.any,

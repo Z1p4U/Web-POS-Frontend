@@ -45,10 +45,11 @@ import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 import useSetting from "../redux/hooks/setting/useSetting";
 import Marquee from "react-fast-marquee";
 import useProduct from "../redux/hooks/inventory/product/useProduct";
+import useUserProfile from "../redux/hooks/user/useUserProfile";
 
 const drawerWidth = 320;
 
-const navItems = [
+const baseNavItems = [
   {
     label: "Dashboard",
     icon: <DashboardIcon />,
@@ -94,11 +95,13 @@ const navItems = [
         label: "Monthly Record",
         icon: <ReceiptIcon />,
         path: "/sale/monthly-voucher",
+        adminOnly: true,
       },
       {
         label: "Yearly Record",
         icon: <ReceiptIcon />,
         path: "/sale/yearly-voucher",
+        adminOnly: true,
       },
     ],
   },
@@ -111,6 +114,7 @@ const navItems = [
     label: "User",
     icon: <People />,
     path: "/user",
+    adminOnly: true,
   },
 ];
 
@@ -118,6 +122,7 @@ const DashboardLayout = () => {
   const { hasLowStock, hasOutOfStock } = useProduct({
     noPagination: true,
   });
+  const { isAdmin } = useUserProfile();
 
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [submenuStates, setSubmenuStates] = useState({});
@@ -189,6 +194,24 @@ const DashboardLayout = () => {
     setDrawerOpen(false);
     nav("/login");
   };
+
+  const filteredNavItems = baseNavItems
+    .filter((item) => {
+      // If item is marked adminOnly and the user isn't admin, don't include it.
+      if (item.adminOnly && !isAdmin) return false;
+      return true;
+    })
+    .map((item) => {
+      // If the item has subItems, filter those as well.
+      if (item.subItems) {
+        const filteredSubItems = item.subItems.filter((sub) => {
+          if (sub.adminOnly && !isAdmin) return false;
+          return true;
+        });
+        return { ...item, subItems: filteredSubItems };
+      }
+      return item;
+    });
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -376,11 +399,14 @@ const DashboardLayout = () => {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem onClick={() => nav("/user-profile")}>
+              <MenuItem onClick={() => nav("/profile")}>
                 <Avatar /> Profile
               </MenuItem>
               <Divider />
-              <MenuItem onClick={() => nav("/setting")}>
+              <MenuItem
+                onClick={() => nav("/setting")}
+                sx={{ display: isAdmin ? "flex" : "none" }}
+              >
                 <ListItemIcon>
                   <Settings fontSize="small" />
                 </ListItemIcon>
@@ -419,7 +445,7 @@ const DashboardLayout = () => {
         <Toolbar />
         {/* Dynamic Navigation */}
         <List>
-          {navItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <Tooltip
               key={item.label}
               title={item.label}

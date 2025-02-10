@@ -7,10 +7,13 @@ import { BiEdit } from "react-icons/bi";
 import ProductDetailStockMovement from "./components/productDetail/ProductDetailStockMovement";
 import Barcode from "react-barcode";
 import { Box, Modal } from "@mui/material";
+import useUserProfile from "../../../redux/hooks/user/useUserProfile";
 
 const ProductDetail = () => {
   const { productId } = useParams();
-  const { handleProductDetail, pdDetail } = useProduct();
+  const { handleProductDetail, pdDetail } = useProduct({ noPagination: true });
+  const { isAdmin } = useUserProfile();
+
   const [openModal, setOpenModal] = useState(false);
 
   const barcodeRef = useRef();
@@ -72,15 +75,19 @@ const ProductDetail = () => {
                     />
                   </div>
 
-                  <Link
-                    to={{
-                      pathname: "/inventory/entry-product/", // Target route
-                    }}
-                    state={{ product: pdDetail }} // Pass the product as state
-                    className="absolute top-5 right-5 bg-primary text-light hover:opacity-75 transition-all duration-200 cursor-pointer rounded-full aspect-square w-10 flex justify-center items-center"
-                  >
-                    <BiEdit />
-                  </Link>
+                  {isAdmin ? (
+                    <Link
+                      to={{
+                        pathname: "/inventory/entry-product/", // Target route
+                      }}
+                      state={{ product: pdDetail }} // Pass the product as state
+                      className="absolute top-5 right-5 bg-primary text-light hover:opacity-75 transition-all duration-200 cursor-pointer rounded-full aspect-square w-10 flex justify-center items-center"
+                    >
+                      <BiEdit />
+                    </Link>
+                  ) : (
+                    <></>
+                  )}
 
                   <div className=" flex w-full">
                     <div className="flex flex-col gap-3 ml-[213px]">

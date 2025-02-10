@@ -20,6 +20,7 @@ const BrandTable = ({
   pagination,
   pageCount,
   handleEdit,
+  isAdmin,
   totalRecord,
   handlePaginate,
   handleDeleteBrand,
@@ -89,7 +90,11 @@ const BrandTable = ({
                 </TableCell>
                 <TableCell
                   align="center"
-                  sx={{ padding: "16px", color: "white" }}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    display: isAdmin ? "table-cell" : "none", // Hide when isAdmin is false
+                  }}
                 ></TableCell>
               </TableRow>
             </TableHead>
@@ -141,7 +146,13 @@ const BrandTable = ({
                     >
                       {brand?.note}
                     </TableCell>
-                    <TableCell align="center" sx={{ padding: "16px" }}>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        padding: "16px",
+                        display: isAdmin ? "table-cell" : "none",
+                      }}
+                    >
                       <Box
                         sx={{
                           display: "flex",
@@ -208,6 +219,7 @@ BrandTable.propTypes = {
   totalRecord: PropTypes.any,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
+  isAdmin: PropTypes.bool,
   handleEdit: PropTypes.any,
   handlePaginate: PropTypes.any,
   handleDeleteBrand: PropTypes.any,

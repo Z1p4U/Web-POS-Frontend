@@ -18,6 +18,7 @@ import Setting from "../components/setting/Setting";
 import UserProfile from "../components/user/UserProfile";
 import MonthlyVoucher from "../components/sale/voucher/MonthlyVoucher";
 import YearlyVoucher from "../components/sale/voucher/YearlyVoucher";
+import AuthGuard from "../components/AuthGuard";
 
 const Path = () => {
   return (
@@ -40,7 +41,14 @@ const Path = () => {
           <Route path="/inventory/category" element={<Category />} />
           <Route path="/inventory/supplier" element={<Supplier />} />
           <Route path="/inventory/product" element={<Product />} />
-          <Route path="/inventory/entry-product" element={<EntryProduct />} />
+          <Route
+            path="/inventory/entry-product"
+            element={
+              <AuthGuard>
+                <EntryProduct />
+              </AuthGuard>
+            }
+          />
           <Route
             path="/inventory/product/:productId"
             element={<ProductDetail />}
@@ -49,8 +57,22 @@ const Path = () => {
 
           {/* Sale */}
           <Route path="/sale/daily-voucher" element={<DailyVoucher />} />
-          <Route path="/sale/monthly-voucher" element={<MonthlyVoucher />} />
-          <Route path="/sale/yearly-voucher" element={<YearlyVoucher />} />
+          <Route
+            path="/sale/monthly-voucher"
+            element={
+              <AuthGuard>
+                <MonthlyVoucher />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/sale/yearly-voucher"
+            element={
+              <AuthGuard>
+                <YearlyVoucher />
+              </AuthGuard>
+            }
+          />
           {/* Sale */}
 
           {/* Media */}
@@ -58,12 +80,27 @@ const Path = () => {
           {/* Media */}
 
           {/* User */}
-          <Route path="/user" element={<User />} />
-          <Route path="/user-profile" element={<UserProfile />} />
+
+          <Route
+            path="/user"
+            element={
+              <AuthGuard>
+                <User />
+              </AuthGuard>
+            }
+          />
+          <Route path="/profile" element={<UserProfile />} />
           {/* User */}
 
           {/* Setting */}
-          <Route path="/setting" element={<Setting />} />
+          <Route
+            path="/setting"
+            element={
+              <AuthGuard>
+                <Setting />
+              </AuthGuard>
+            }
+          />
           {/* Settings */}
         </Route>
 

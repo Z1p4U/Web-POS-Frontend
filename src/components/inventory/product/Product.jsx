@@ -8,6 +8,7 @@ import useProduct from "../../../redux/hooks/inventory/product/useProduct";
 import ProductCard from "./components/ProductCard";
 import { Link, useLocation } from "react-router-dom";
 import { Box, Button, Menu, MenuItem, Modal, Typography } from "@mui/material";
+import useUserProfile from "../../../redux/hooks/user/useUserProfile";
 
 const Product = () => {
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
@@ -30,6 +31,7 @@ const Product = () => {
     handleExportProducts,
     handleImportProducts,
   } = useProduct({ ...pagination });
+  const { isAdmin } = useUserProfile();
 
   useEffect(() => {
     if (initialFilter) {
@@ -100,13 +102,17 @@ const Product = () => {
             {/* banner  */}
             <Banner title={"Products"} path1={"Inventory"} />
             {/* banner  */}
-            <Link
-              to={"/inventory/entry-product/"}
-              className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
-            >
-              <BiPlus size={20} />
-              Add Product
-            </Link>
+            {isAdmin ? (
+              <Link
+                to={"/inventory/entry-product/"}
+                className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
+              >
+                <BiPlus size={20} />
+                Add Product
+              </Link>
+            ) : (
+              <></>
+            )}
           </div>
 
           <div className=" flex flex-wrap justify-end md:justify-between  md:items-center gap-3">
@@ -124,54 +130,58 @@ const Product = () => {
               </form>
             </div>
 
-            <div className=" flex justify-end items-center gap-5">
-              <Button
-                onClick={() => setImportModalOpen(true)}
-                className="py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
-                sx={{
-                  backgroundColor: "#22c55e",
-                  color: "white",
-                  px: 2,
-                  py: 1,
-                }}
-              >
-                Import
-              </Button>
-              <Button
-                onClick={openExportMenu}
-                className=" py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
-                sx={{
-                  backgroundColor: "#3b82f6",
-                  color: "white",
-                  px: 2,
-                  py: 1,
-                }}
-              >
-                Export
-              </Button>
-              <Menu
-                anchorEl={exportAnchorEl}
-                open={Boolean(exportAnchorEl)}
-                onClose={closeExportMenu}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleExportProducts("csv");
-                    closeExportMenu();
+            {isAdmin ? (
+              <div className=" flex justify-end items-center gap-5">
+                <Button
+                  onClick={() => setImportModalOpen(true)}
+                  className="py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
+                  sx={{
+                    backgroundColor: "#22c55e",
+                    color: "white",
+                    px: 2,
+                    py: 1,
                   }}
                 >
-                  Export as CSV
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleExportProducts("excel");
-                    closeExportMenu();
+                  Import
+                </Button>
+                <Button
+                  onClick={openExportMenu}
+                  className=" py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
+                  sx={{
+                    backgroundColor: "#3b82f6",
+                    color: "white",
+                    px: 2,
+                    py: 1,
                   }}
                 >
-                  Export as Excel
-                </MenuItem>
-              </Menu>
-            </div>
+                  Export
+                </Button>
+                <Menu
+                  anchorEl={exportAnchorEl}
+                  open={Boolean(exportAnchorEl)}
+                  onClose={closeExportMenu}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      handleExportProducts("csv");
+                      closeExportMenu();
+                    }}
+                  >
+                    Export as CSV
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleExportProducts("excel");
+                      closeExportMenu();
+                    }}
+                  >
+                    Export as Excel
+                  </MenuItem>
+                </Menu>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
 
           <div className=" flex flex-wrap justify-between md:items-center gap-3">

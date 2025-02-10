@@ -109,24 +109,42 @@ const useVoucher = () => {
     [dispatch, token]
   );
 
-  return {
-    vouchers,
-    dailyTotalSale,
-    monthlyTotalSale,
-    yearlyTotalSale,
-    dailyRecordsInMonth,
-    monthlyRecordsInYear,
-    getVoucherDetail,
-    printVoucher,
-    selectedDay,
-    setSelectedDay,
-    selectedMonth,
-    setSelectedMonth,
-    selectedYear,
-    setSelectedYear,
-    activeFilter,
-    setActiveFilter,
-  };
+  const voucherData = useMemo(
+    () => ({
+      vouchers,
+      dailyTotalSale,
+      monthlyTotalSale,
+      yearlyTotalSale,
+      dailyRecordsInMonth,
+      monthlyRecordsInYear,
+      selectedDay,
+      selectedMonth,
+      selectedYear,
+      activeFilter,
+      getVoucherDetail,
+      printVoucher,
+      setSelectedDay,
+      setSelectedMonth,
+      setSelectedYear,
+      setActiveFilter,
+    }),
+    [
+      vouchers,
+      dailyTotalSale,
+      monthlyTotalSale,
+      yearlyTotalSale,
+      dailyRecordsInMonth,
+      monthlyRecordsInYear,
+      selectedDay,
+      selectedMonth,
+      selectedYear,
+      activeFilter,
+      getVoucherDetail,
+      printVoucher,
+    ]
+  );
+
+  return voucherData;
 };
 
 export default useVoucher;

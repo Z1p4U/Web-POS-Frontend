@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Inventory, Money, ShoppingBag } from "@mui/icons-material";
-import useUser from "../../redux/hooks/user/useUser";
 import useSetting from "../../redux/hooks/setting/useSetting";
 import { useNavigate } from "react-router-dom";
 import useProduct from "../../redux/hooks/inventory/product/useProduct";
@@ -10,16 +9,17 @@ import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import useSupplier from "../../redux/hooks/inventory/supplier/useSupplier";
 import useStock from "../../redux/hooks/inventory/stock/useStock";
+import useUserProfile from "../../redux/hooks/user/useUserProfile";
 
 // Register all necessary Chart.js components
 Chart.register(...registerables);
 
 const Dashboard = () => {
-  const { profile } = useUser({ noPagination: true });
   const { lowStockItemCount, outOfStockItemCount, products } = useProduct({
     noPagination: true,
   });
   const { suppliers } = useSupplier({ noPagination: true });
+  const { isAdmin } = useUserProfile();
   const { setting } = useSetting();
   const { stockInCount, stockOutCount } = useStock();
 
@@ -145,9 +145,7 @@ const Dashboard = () => {
         {/* Welcome Card */}
         <div className="flex justify-between p-5 rounded relative shadow h-[150px] bg-[#e0eafc]">
           <div className="flex flex-col gap-2">
-            <p className="text-blue-500 font-bold">
-              Welcome Back, {profile?.name}!
-            </p>
+            <p className="text-blue-500 font-bold">Welcome Back!</p>
             <p className="text-blue-500 text-sm font-medium">{setting?.name}</p>
           </div>
           <div>
@@ -242,9 +240,11 @@ const Dashboard = () => {
 
       {/* Chart Section with Filter & Dataset Selection */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-8">
-        <div className="col-span-1 flex flex-col gap-5">
+        <div
+          className={`${isAdmin ? "col-span-1 flex-col" : "col-span-3 flex-row"} flex gap-5`}
+        >
           {/* Supplier Card */}
-          <div className="flex justify-between p-5 rounded shadow bg-white h-full min-h-[150px]">
+          <div className="flex justify-between p-5 w-full rounded shadow bg-white h-full min-h-[150px]">
             <div className="flex flex-col justify-between">
               <div>
                 <p className="font-bold text-3xl">{suppliers?.length}</p>
@@ -267,7 +267,7 @@ const Dashboard = () => {
           </div>
 
           {/* Product Card */}
-          <div className="flex justify-between p-5 rounded shadow bg-white h-full min-h-[150px]">
+          <div className="flex justify-between p-5 w-full rounded shadow bg-white h-full min-h-[150px]">
             <div className="flex flex-col justify-between">
               <div>
                 <p className="font-bold text-3xl">{products?.length}</p>
@@ -290,7 +290,7 @@ const Dashboard = () => {
           </div>
 
           {/* Stock In/Out Card */}
-          <div className="flex justify-between p-5 rounded shadow bg-white h-full min-h-[150px]">
+          <div className="flex justify-between p-5 w-full rounded shadow bg-white h-full min-h-[150px]">
             <div className="flex flex-col justify-between">
               <p>Today Stock In/Out Record</p>
               <div className=" flex items-center gap-5 text-green-500 ">
@@ -313,61 +313,68 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
-        <div className="p-5 min-h-[300px] bg-white shadow rounded col-span-1 lg:col-span-2">
-          {/* Period Filter */}
-          <div className="flex items-center">
+        {isAdmin ? (
+          <>
             <div
-              className={`${
-                activeFilter === "day"
-                  ? "bg-primary text-white border-primary pointer-events-none"
-                  : "text-black border-[#7E7F80]"
-              } text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-l-md border border-r-0`}
-              onClick={() => setActiveFilter("day")}
+              className={` col-span-1 lg:col-span-2 p-5 min-h-[300px] bg-white shadow rounded`}
             >
-              Today
-            </div>
-            <div
-              className={`${
-                activeFilter === "month"
-                  ? "bg-primary text-white border-primary pointer-events-none"
-                  : "text-black border-[#7E7F80]"
-              } text-sm cursor-pointer px-3 flex justify-center items-center h-10 border border-r-0`}
-              onClick={() => setActiveFilter("month")}
-            >
-              This Month
-            </div>
-            <div
-              className={`${
-                activeFilter === "year"
-                  ? "bg-primary text-white border-primary pointer-events-none"
-                  : "text-black border-[#7E7F80]"
-              } text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-r-md border`}
-              onClick={() => setActiveFilter("year")}
-            >
-              This Year
-            </div>
-          </div>
+              {/* Period Filter */}
+              <div className="flex items-center">
+                <div
+                  className={`${
+                    activeFilter === "day"
+                      ? "bg-primary text-white border-primary pointer-events-none"
+                      : "text-black border-[#7E7F80]"
+                  } text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-l-md border border-r-0`}
+                  onClick={() => setActiveFilter("day")}
+                >
+                  Today
+                </div>
+                <div
+                  className={`${
+                    activeFilter === "month"
+                      ? "bg-primary text-white border-primary pointer-events-none"
+                      : "text-black border-[#7E7F80]"
+                  } text-sm cursor-pointer px-3 flex justify-center items-center h-10 border border-r-0`}
+                  onClick={() => setActiveFilter("month")}
+                >
+                  This Month
+                </div>
+                <div
+                  className={`${
+                    activeFilter === "year"
+                      ? "bg-primary text-white border-primary pointer-events-none"
+                      : "text-black border-[#7E7F80]"
+                  } text-sm cursor-pointer px-3 flex justify-center items-center h-10 rounded-r-md border`}
+                  onClick={() => setActiveFilter("year")}
+                >
+                  This Year
+                </div>
+              </div>
 
-          {/* Dataset Selection */}
-          <div className="flex items-center gap-2 mt-4">
-            <label htmlFor="dataset" className="font-medium">
-              Select Data:
-            </label>
-            <select
-              id="dataset"
-              value={selectedDataset}
-              onChange={(e) => setSelectedDataset(e.target.value)}
-              className="border rounded p-1"
-            >
-              <option value="total">Total Sales</option>
-              <option value="voucher">Voucher Count</option>
-            </select>
-          </div>
+              {/* Dataset Selection */}
+              <div className="flex items-center gap-2 mt-4">
+                <label htmlFor="dataset" className="font-medium">
+                  Select Data:
+                </label>
+                <select
+                  id="dataset"
+                  value={selectedDataset}
+                  onChange={(e) => setSelectedDataset(e.target.value)}
+                  className="border rounded p-1"
+                >
+                  <option value="total">Total Sales</option>
+                  <option value="voucher">Voucher Count</option>
+                </select>
+              </div>
 
-          {/* Chart */}
-          <Bar className="h-full" data={chartData} options={chartOptions} />
-        </div>
+              {/* Chart */}
+              <Bar className="h-full" data={chartData} options={chartOptions} />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className=" grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">

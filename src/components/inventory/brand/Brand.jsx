@@ -4,6 +4,7 @@ import BrandTable from "./components/BrandTable";
 import { useState } from "react";
 import EntryBrand from "./components/EntryBrand";
 import useBrand from "../../../redux/hooks/inventory/brand/useBrand";
+import useUserProfile from "../../../redux/hooks/user/useUserProfile";
 
 const Brand = () => {
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
@@ -17,6 +18,7 @@ const Brand = () => {
     handleCreateBrand,
     handleUpdateBrand,
   } = useBrand({ ...pagination });
+  const { isAdmin } = useUserProfile();
 
   const [addModal, setAddModal] = useState(false);
   const [editBrand, setEditBrand] = useState(null);
@@ -43,21 +45,27 @@ const Brand = () => {
           {/* banner  */}
           <Banner title={"Brands"} path1={"Inventory"} />
           {/* banner  */}
-          <div
-            onClick={() => setAddModal(true)}
-            className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
-          >
-            <BiPlus size={20} />
-            Add Brand
-          </div>
-          <EntryBrand
-            addModal={addModal}
-            currentBrand={editBrand}
-            setAddModal={setAddModal}
-            handleCreateBrand={handleCreateBrand}
-            handleUpdateBrand={handleUpdateBrand}
-            setEditBrand={setEditBrand}
-          />
+          {isAdmin ? (
+            <>
+              <div
+                onClick={() => setAddModal(true)}
+                className="px-5 py-3 flex justify-center items-center gap-3 rounded-lg bg-primary text-center text-white cursor-pointer hover:opacity-80 transition-colors duration-300"
+              >
+                <BiPlus size={20} />
+                Add Brand
+              </div>
+              <EntryBrand
+                addModal={addModal}
+                currentBrand={editBrand}
+                setAddModal={setAddModal}
+                handleCreateBrand={handleCreateBrand}
+                handleUpdateBrand={handleUpdateBrand}
+                setEditBrand={setEditBrand}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -88,6 +96,7 @@ const Brand = () => {
               pagination={pagination}
               handleEdit={handleEdit}
               totalRecord={totalRecord}
+              isAdmin={isAdmin}
               handlePaginate={handlePaginate}
               handleUpdateBrand={handleUpdateBrand}
               handleDeleteBrand={handleDeleteBrand}

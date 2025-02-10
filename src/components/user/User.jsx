@@ -61,7 +61,7 @@ const User = () => {
           />
         </div>
 
-        <div className=" flex flex-wrap justify-end gap-3">
+        <div className=" flex flex-wrap gap-3">
           <div className="flex flex-col gap-3 w-full md:w-fit ">
             <form onSubmit={handleSearch} className="relative">
               <input

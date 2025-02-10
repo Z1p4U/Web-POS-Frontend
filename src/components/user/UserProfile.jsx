@@ -1,13 +1,11 @@
-import useUser from "../../redux/hooks/user/useUser";
 import { Person, VerifiedUser } from "@mui/icons-material";
 import { useState } from "react";
+import useUserProfile from "../../redux/hooks/user/useUserProfile";
 
 const UserProfile = () => {
   const [show, setShow] = useState("Personal");
 
-  const { profile } = useUser({
-    noPagination: true,
-  });
+  const { profile } = useUserProfile();
 
   return (
     <div>
