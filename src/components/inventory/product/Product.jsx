@@ -7,7 +7,15 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import useProduct from "../../../redux/hooks/inventory/product/useProduct";
 import ProductCard from "./components/ProductCard";
 import { Link, useLocation } from "react-router-dom";
-import { Box, Button, Menu, MenuItem, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Menu,
+  MenuItem,
+  Modal,
+  Typography,
+} from "@mui/material";
 import useUserProfile from "../../../redux/hooks/user/useUserProfile";
 
 const Product = () => {
@@ -25,6 +33,7 @@ const Product = () => {
     pageCount,
     totalRecord,
     filter,
+    status,
     setFilter,
     setSearch,
     refetchProducts,
@@ -93,6 +102,17 @@ const Product = () => {
     const inputValue = e.target.elements.search.value;
     setSearch(inputValue);
   };
+
+  if (status === "loading") {
+    return (
+      <Box className="w-full flex justify-center items-center h-screen">
+        <CircularProgress />
+        <Typography variant="subtitle1" sx={{ ml: 2 }}>
+          Loading Products...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>

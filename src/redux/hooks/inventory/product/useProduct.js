@@ -17,31 +17,32 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const { token } = useAuth();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const [filterProperties, setFilterProperties] = useState({});
 
+  // Create a memoized selector to prevent unnecessary re-renders.
   const selectProduct = useMemo(() => (state) => state?.product, []);
-
   const productResponse = useSelector(selectProduct, shallowEqual);
 
   const products = productResponse?.products;
+  const status = productResponse?.status;
   const pageCount = productResponse?.lastPage;
   const totalRecord = productResponse?.totalRecord;
-  const pdDetail = productResponse?.productDetail;
   const hasLowStock = productResponse?.hasLowStock;
   const hasOutOfStock = productResponse?.hasOutOfStock;
+  const pdDetail = productResponse?.productDetail;
   const lowStockItemCount = productResponse?.lowStockItemCount;
   const outOfStockItemCount = productResponse?.outOfStockItemCount;
 
-  useEffect(() => {
-    if (filter == "Low") {
-      setFilterProperties({ operator: "between", value: "1|10" });
-    } else if (filter == "Out") {
-      setFilterProperties({ operator: "=", value: 0 });
+  const filterProperties = useMemo(() => {
+    if (filter === "Low") {
+      return { operator: "between", value: "1|10" };
+    } else if (filter === "Out") {
+      return { operator: "=", value: 0 };
     } else {
-      setFilterProperties({ operator: null, value: null });
+      return { operator: null, value: null };
     }
   }, [filter]);
 
+  // Single useEffect that fetches data using the computed filterProperties.
   useEffect(() => {
     if (token) {
       const pagination = noPagination ? undefined : { page, per_page };
@@ -191,10 +192,13 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     [token]
   );
 
+  console.log(products);
+
   return {
     products,
     pdDetail,
     search,
+    status,
     pageCount,
     totalRecord,
     filter,
