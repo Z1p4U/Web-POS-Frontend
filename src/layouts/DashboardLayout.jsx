@@ -3,7 +3,6 @@ import { Box, CssBaseline, Toolbar } from "@mui/material";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import ConfirmationModal from "../components/ui/model/ConfirmationModal";
 import useSetting from "../redux/hooks/setting/useSetting";
-import useProduct from "../redux/hooks/inventory/product/useProduct";
 import useUserProfile from "../redux/hooks/user/useUserProfile";
 import DashboardAppBar from "./components/DashboardAppBar";
 import DashboardDrawer from "./components/DashboardDrawer";
@@ -18,6 +17,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
 import People from "@mui/icons-material/People";
+import useCustomProduct from "../redux/hooks/inventory/product/useCustomProduct";
 
 const drawerWidth = 320;
 
@@ -92,7 +92,7 @@ const baseNavItems = [
 ];
 
 const DashboardLayout = () => {
-  const { hasLowStock, hasOutOfStock } = useProduct({ noPagination: true });
+  const { hasLowStock, hasOutOfStock } = useCustomProduct();
   const { isAdmin } = useUserProfile();
   const { setting } = useSetting();
 
@@ -104,7 +104,6 @@ const DashboardLayout = () => {
   const nav = useNavigate();
   const location = useLocation();
 
-  // Toggle the entire drawer. Also, store/restore the last opened submenu.
   const toggleDrawer = () => {
     if (drawerOpen) {
       setLastOpenedSubmenu(

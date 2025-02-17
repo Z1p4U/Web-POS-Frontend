@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Inventory, Money, ShoppingBag } from "@mui/icons-material";
 import useSetting from "../../redux/hooks/setting/useSetting";
 import { useNavigate } from "react-router-dom";
-import useProduct from "../../redux/hooks/inventory/product/useProduct";
 import useVoucher from "../../redux/hooks/sale/voucher/useVoucher";
 import dayjs from "dayjs";
 import { Bar } from "react-chartjs-2";
@@ -10,14 +9,14 @@ import { Chart, registerables } from "chart.js";
 import useSupplier from "../../redux/hooks/inventory/supplier/useSupplier";
 import useStock from "../../redux/hooks/inventory/stock/useStock";
 import useUserProfile from "../../redux/hooks/user/useUserProfile";
+import useCustomProduct from "../../redux/hooks/inventory/product/useCustomProduct";
 
 // Register all necessary Chart.js components
 Chart.register(...registerables);
 
 const Dashboard = () => {
-  const { lowStockItemCount, outOfStockItemCount, products } = useProduct({
-    noPagination: true,
-  });
+  const { lowStockItemCount, outOfStockItemCount, totalProducts } =
+    useCustomProduct();
   const { suppliers } = useSupplier({ noPagination: true });
   const { isAdmin } = useUserProfile();
   const { setting } = useSetting();
@@ -270,7 +269,7 @@ const Dashboard = () => {
           <div className="flex justify-between p-5 w-full rounded shadow bg-white h-full min-h-[150px]">
             <div className="flex flex-col justify-between">
               <div>
-                <p className="font-bold text-3xl">{products?.length}</p>
+                <p className="font-bold text-3xl">{totalProducts}</p>
                 <p className="text-slate-500 text-sm font-medium mt-1">
                   Total Products
                 </p>

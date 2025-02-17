@@ -6,6 +6,7 @@ import {
   fetchUpdateProduct,
   fetchProductDetail,
   fetchImportProducts,
+  fetchProductStatus,
 } from "../../../api/inventory/product/productApi";
 
 export const productList = createAsyncThunk(
@@ -105,6 +106,21 @@ export const productImport = createAsyncThunk(
   }
 );
 
+export const productStatus = createAsyncThunk(
+  "product/productStatus",
+  async ({ token }, { rejectWithValue }) => {
+    try {
+      const response = await fetchProductStatus(token);
+
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch Products status"
+      );
+    }
+  }
+);
+
 const initialState = {
   products: [],
   productDetail: {},
@@ -112,10 +128,11 @@ const initialState = {
   error: null,
   lastPage: 1,
   totalRecord: 0,
-  hasLowStock: false,
-  hasOutOfStock: false,
+  totalProducts: 0, // you can use total record but i want to prevent 2 api call
   lowStockItemCount: 0,
   outOfStockItemCount: 0,
+  hasLowStock: false,
+  hasOutOfStock: false,
 };
 
 const productSlice = createSlice({
@@ -136,18 +153,6 @@ const productSlice = createSlice({
         state.products = action?.payload?.products;
         state.lastPage = action?.payload?.lastPage;
         state.totalRecord = action?.payload?.totalRecord;
-        state.hasLowStock = action?.payload?.products?.some(
-          (product) => product.total_stock > 0 && product.total_stock < 11
-        );
-        state.lowStockItemCount = action?.payload?.products.filter(
-          (product) => product.total_stock > 0 && product.total_stock < 11
-        ).length;
-        state.hasOutOfStock = action?.payload?.products.some(
-          (product) => product.total_stock === 0
-        );
-        state.outOfStockItemCount = action?.payload?.products.filter(
-          (product) => product.total_stock === 0
-        ).length;
       })
       .addCase(productList.rejected, (state, action) => {
         state.status = "failed";
@@ -214,6 +219,21 @@ const productSlice = createSlice({
         state.totalRecord += newProducts.length;
       })
       .addCase(productImport.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(productStatus.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(productStatus.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.totalProducts = action?.payload?.total_products;
+        state.lowStockItemCount = action?.payload?.low_stock_count;
+        state.outOfStockItemCount = action?.payload?.out_of_stock_count;
+        state.hasLowStock = action?.payload?.low_stock_count > 0;
+        state.hasOutOfStock = action?.payload?.out_of_stock_count > 0;
+      })
+      .addCase(productStatus.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

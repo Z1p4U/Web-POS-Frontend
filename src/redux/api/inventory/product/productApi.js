@@ -180,6 +180,22 @@ const fetchImportProducts = async (file, token) => {
   }
 };
 
+const fetchProductStatus = async (token) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const response = await axios.get(`${config.API_URL}/product/status`, {
+      headers,
+    });
+
+    return response?.data;
+  } catch (error) {
+    console.log("Failed to fetch Product Status:", error);
+    throw error;
+  }
+};
+
 export {
   fetchProduct,
   fetchCreateProduct,
@@ -188,4 +204,5 @@ export {
   fetchProductDetail,
   fetchExportProducts,
   fetchImportProducts,
+  fetchProductStatus,
 };

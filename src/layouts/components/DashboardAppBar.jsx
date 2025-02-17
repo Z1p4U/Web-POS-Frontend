@@ -53,7 +53,10 @@ const DashboardAppBar = React.memo(
     return (
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: "#002d5d",
+        }}
       >
         <Toolbar
           sx={{
@@ -85,12 +88,19 @@ const DashboardAppBar = React.memo(
           </Box>
 
           {/* Center Section: Marquee */}
-          <Box sx={{ width: "100%", backgroundColor: "#00000030", px: "20px" }}>
+          <Box
+            sx={{
+              width: "100%",
+              backgroundColor: "#00000030",
+              px: "20px",
+              borderRadius: "5px",
+            }}
+          >
             <Marquee>{setting?.marquee || "Hello! This is Marquee"}</Marquee>
           </Box>
 
           {/* Right Section: Notification and User Menus */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
             {location.pathname !== "/inventory/product" && (
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <IconButton

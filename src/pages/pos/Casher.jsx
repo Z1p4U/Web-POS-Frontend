@@ -9,7 +9,7 @@ import { Check, Close } from "@mui/icons-material";
 import useSetting from "../../redux/hooks/setting/useSetting";
 
 const Casher = () => {
-  const { products, refetchProducts, setSearch } = useProduct({
+  const { products, refetchProducts, setSearch, status } = useProduct({
     noPagination: true,
   });
   const { setting } = useSetting();
@@ -41,25 +41,21 @@ const Casher = () => {
 
   return (
     <div className="relative">
-      {/* Navbar */}
-      <div className=" z-50 flex justify-between items-center min-h-[80px] bg-[#1976d2] px-5 py-3 w-full fixed top-0 right-0 left-0">
-        <Link to={"/"}>
-          {/* <h1 className=" font-semibold tracking-wider text-lg cursor-pointer">
-            {setting ? setting?.name : "ANDROMEDA 306"}
-          </h1> */}
-
-          <img
-            src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
-            className=" aspect-square w-16"
-            alt="logo"
-          />
-        </Link>
-      </div>
-
       <div>
         <div className="grid grid-cols-3">
           {/* Left content */}
-          <div className="col-span-2 flex flex-col gap-5 overflow-y-auto h-screen pt-[80px]">
+          <div className="col-span-2 flex flex-col gap-5 overflow-y-auto h-screen relative pt-[80px]">
+            {/* Navbar */}
+            <div className=" z-40 flex justify-between items-center min-h-[80px] bg-primary px-5 py-3 w-full fixed top-0 left-0">
+              <Link to={"/"}>
+                <img
+                  src={`${setting?.logo ? setting?.logo : "/logo/logo.png"}`}
+                  className=" aspect-square w-16"
+                  alt="logo"
+                />
+              </Link>
+            </div>
+
             {/* Search and Banner */}
             <div className="flex flex-wrap justify-between items-center border-b border-[#3f4245] py-5 px-5">
               <div className="w-[50%] flex gap-4 items-center">
@@ -87,7 +83,7 @@ const Casher = () => {
             {/* Product List */}
             <div className="mx-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 pb-5">
-                {!products ? (
+                {status === "loading" ? (
                   <div className="col-span-4 h-full min-h-[500px] flex justify-center items-center">
                     <Loader />
                   </div>
@@ -152,7 +148,7 @@ const Casher = () => {
           </div>
 
           {/* Sticky Sidebar */}
-          <div className="col-span-1 h-screen pt-[80px]">
+          <div className="col-span-1 h-screen z-50">
             <div className="sticky top-0 h-full">
               <ProductCalculator
                 refetchProducts={refetchProducts}
