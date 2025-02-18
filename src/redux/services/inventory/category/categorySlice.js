@@ -8,15 +8,26 @@ import {
 
 export const categoryList = createAsyncThunk(
   "category/categoryList",
-  async ({ token, pagination, search }, { rejectWithValue }) => {
+  async ({ token, pagination, search, categorySort }, { rejectWithValue }) => {
     try {
-      const response = await fetchCategory(token, pagination, search);
-      const normalizedData = {
-        categories: pagination ? response?.data?.data : response?.data,
-        lastPage: response?.data?.last_page || 1,
-        totalRecord: response?.data?.total || 0,
-      };
-      return normalizedData;
+      const response = await fetchCategory(
+        token,
+        pagination,
+        search,
+        categorySort
+      );
+
+      if (categorySort && Object.keys(categorySort).length > 0) {
+        return {
+          sortedCategories: pagination ? response?.data?.data : response?.data,
+        };
+      } else {
+        return {
+          categories: pagination ? response?.data?.data : response?.data,
+          lastPage: response?.data?.last_page || 1,
+          totalRecord: response?.data?.total || 0,
+        };
+      }
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to fetch Categories"
@@ -67,6 +78,7 @@ export const categoryDelete = createAsyncThunk(
 
 const initialState = {
   categories: [],
+  sortedCategories: [],
   status: "idle",
   error: null,
   lastPage: 1,
@@ -88,9 +100,16 @@ const categorySlice = createSlice({
       })
       .addCase(categoryList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.categories = action.payload.categories;
-        state.lastPage = action.payload.lastPage;
-        state.totalRecord = action.payload.totalRecord;
+
+        const catSort = action.meta.arg.categorySort;
+
+        if (catSort && Object.keys(catSort).length > 0) {
+          state.sortedCategories = action.payload.sortedCategories;
+        } else {
+          state.categories = action.payload.categories;
+          state.lastPage = action.payload.lastPage;
+          state.totalRecord = action.payload.totalRecord;
+        }
       })
       .addCase(categoryList.rejected, (state, action) => {
         state.status = "failed";

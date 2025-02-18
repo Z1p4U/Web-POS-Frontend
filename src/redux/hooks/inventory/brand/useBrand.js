@@ -13,11 +13,13 @@ const useBrand = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
   const [search, setSearch] = useState("");
+  const [brandSort, setBrandSort] = useState({});
 
   const selectBrand = useMemo(() => (state) => state?.brand, []);
   const brandResponse = useSelector(selectBrand, shallowEqual);
 
   const brands = brandResponse?.brands;
+  const sortedBrands = brandResponse?.sortedBrands;
   const pageCount = brandResponse?.lastPage;
   const totalRecord = brandResponse?.totalRecord;
 
@@ -29,12 +31,13 @@ const useBrand = ({ page, per_page, noPagination = false } = {}) => {
           token,
           pagination,
           search,
+          brandSort,
         })
       );
     } else {
       dispatch(clearBrandData());
     }
-  }, [token, page, per_page, noPagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search, brandSort]);
 
   const handleCreateBrand = useCallback(
     async (brands) => {
@@ -90,9 +93,11 @@ const useBrand = ({ page, per_page, noPagination = false } = {}) => {
 
   return {
     brands,
+    sortedBrands,
     search,
     pageCount,
     totalRecord,
+    setBrandSort,
     setSearch,
     handleUpdateBrand,
     handleCreateBrand,

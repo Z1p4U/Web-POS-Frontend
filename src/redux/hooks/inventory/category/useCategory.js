@@ -13,12 +13,14 @@ const useCategory = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
   const [search, setSearch] = useState("");
+  const [categorySort, setCategorySort] = useState({});
 
   const selectCategory = useMemo(() => (state) => state?.category, []);
 
   const categoryResponse = useSelector(selectCategory, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
 
   const categories = categoryResponse?.categories;
+  const sortedCategories = categoryResponse?.sortedCategories;
   const pageCount = categoryResponse?.lastPage;
   const totalRecord = categoryResponse?.totalRecord;
 
@@ -30,12 +32,13 @@ const useCategory = ({ page, per_page, noPagination = false } = {}) => {
           token,
           pagination,
           search,
+          categorySort,
         })
       );
     } else {
       dispatch(clearCategoryData());
     }
-  }, [token, page, per_page, noPagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search, categorySort]);
 
   const handleCreateCategory = useCallback(
     async (categories) => {
@@ -112,7 +115,9 @@ const useCategory = ({ page, per_page, noPagination = false } = {}) => {
     search,
     pageCount,
     totalRecord,
+    sortedCategories,
     setSearch,
+    setCategorySort,
     handleUpdateCategory,
     handleCreateCategory,
     handleDeleteCategory,

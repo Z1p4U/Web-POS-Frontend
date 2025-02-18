@@ -22,6 +22,7 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const selectProduct = useMemo(() => (state) => state?.product, []);
   const productResponse = useSelector(selectProduct, shallowEqual);
 
+  const allProducts = productResponse?.allProducts;
   const products = productResponse?.products;
   const status = productResponse?.status;
   const pageCount = productResponse?.lastPage;
@@ -192,10 +193,9 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     [token]
   );
 
-  console.log(products);
-
   return {
     products,
+    allProducts,
     pdDetail,
     search,
     status,

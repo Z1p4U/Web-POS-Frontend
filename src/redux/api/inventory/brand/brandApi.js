@@ -1,7 +1,13 @@
 import axios from "axios";
 import config from "../../../../config/environment";
 
-const fetchBrand = async (token, pagination = {}, search, columns = "name") => {
+const fetchBrand = async (
+  token,
+  pagination = {},
+  search,
+  brandSort,
+  columns = "name"
+) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
@@ -9,6 +15,7 @@ const fetchBrand = async (token, pagination = {}, search, columns = "name") => {
     const params = {
       columns,
       search,
+      ...(brandSort || {}),
       ...(pagination || {}),
     };
 

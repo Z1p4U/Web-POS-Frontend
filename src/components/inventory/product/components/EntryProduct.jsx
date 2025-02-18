@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Banner from "../../../ui/banner/Banner";
 import { Button, Box } from "@mui/material";
 import CustomStepper from "./productEntry/CustomStepper";
@@ -14,11 +14,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const EntryProduct = () => {
   const { handleCreateProduct, handleUpdateProduct } = useProduct({
+    page: 1,
+    per_page: 10,
+  });
+  const { sortedBrands, setBrandSort } = useBrand({ noPagination: true });
+  const { sortedCategories, setCategorySort } = useCategory({
     noPagination: true,
   });
-  const { brands } = useBrand({ noPagination: true });
-  const { categories } = useCategory({ noPagination: true });
-  const { suppliers } = useSupplier({ noPagination: true });
+  const { sortedSuppliers, setSupplierSort } = useSupplier({
+    noPagination: true,
+  });
   const nav = useNavigate();
   const location = useLocation();
   const product = location.state?.product;
@@ -37,7 +42,7 @@ const EntryProduct = () => {
     photo: "",
   });
 
-  // Prefill the form data if a product is passed
+  // Pre-fill form if editing an existing product
   useEffect(() => {
     if (product) {
       setFormData({
@@ -51,23 +56,34 @@ const EntryProduct = () => {
         description: product.description || "",
         photo: product.photo || "",
       });
-    } else {
-      setFormData({
-        name: "",
-        brand_id: "",
-        category_ids: [],
-        supplier_ids: [],
-        actual_price: "",
-        sale_price: "",
-        unit: "",
-        description: "",
-        photo: "",
-      });
     }
   }, [product]);
 
-  // Validation function
-  const isFormComplete = () => {
+  // Set category sort order on mount
+  useEffect(() => {
+    setBrandSort({ order: "name", sort: "ASC" });
+    setCategorySort({ order: "name", sort: "ASC" });
+    setSupplierSort({ order: "name", sort: "ASC" });
+  }, [setCategorySort, setSupplierSort, setBrandSort]);
+
+  // Use callbacks for navigation
+  const handleNext = useCallback(() => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+  }, [steps.length]);
+
+  const handleBack = useCallback(() => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  }, []);
+
+  // Use callback for input change
+  const handleInputChange = useCallback((field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  }, []);
+
+  const isFormComplete = useCallback(() => {
     return (
       formData.name.trim() &&
       formData.brand_id &&
@@ -78,40 +94,26 @@ const EntryProduct = () => {
       formData.unit.trim() &&
       formData.photo.trim()
     );
-  };
+  }, [formData]);
 
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
-  };
-
-  const handleBack = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Final Form Data:", formData);
-
-    if (product) {
-      // Update product
-      const response = handleUpdateProduct(product?.id, formData);
-      if (response) {
-        nav("/inventory/product");
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (product) {
+        // Update product
+        const response = handleUpdateProduct(product?.id, formData);
+        if (response) {
+          nav("/inventory/product");
+        }
+      } else {
+        const response = handleCreateProduct(formData);
+        if (response) {
+          nav("/inventory/product");
+        }
       }
-    } else {
-      const response = handleCreateProduct(formData);
-      if (response) {
-        nav("/inventory/product");
-      }
-    }
-  };
+    },
+    [formData, product, handleUpdateProduct, handleCreateProduct, nav]
+  );
 
   return (
     <Box className="w-full flex justify-center">
@@ -128,19 +130,19 @@ const EntryProduct = () => {
         {/* Main Form & Stepper Layout */}
         <Box className="flex flex-col">
           {/* Form Section */}
-          <Box className=" w-full">
+          <Box className="w-full">
             <form
               onSubmit={handleSubmit}
-              className=" w-full grid grid-cols-3 gap-5"
+              className="w-full grid grid-cols-3 gap-5"
             >
               <div className="w-full col-span-3 lg:col-span-2 order-2 lg:order-1">
                 {currentStep === 1 && (
                   <EntryProductStep1
                     formData={formData}
                     onInputChange={handleInputChange}
-                    brands={brands}
-                    categories={categories}
-                    suppliers={suppliers}
+                    brands={sortedBrands}
+                    categories={sortedCategories}
+                    suppliers={sortedSuppliers}
                   />
                 )}
                 {currentStep === 2 && (
@@ -158,9 +160,9 @@ const EntryProduct = () => {
                 {currentStep === 4 && (
                   <EntryProductConfirmation
                     formData={formData}
-                    brands={brands}
-                    categories={categories}
-                    suppliers={suppliers}
+                    brands={sortedBrands}
+                    categories={sortedCategories}
+                    suppliers={sortedSuppliers}
                   />
                 )}
               </div>
@@ -170,7 +172,7 @@ const EntryProduct = () => {
               </Box>
 
               {/* Navigation Buttons */}
-              <Box className=" col-span-3 order-3 flex mt-6 gap-4">
+              <Box className="col-span-3 order-3 flex mt-6 gap-4">
                 <Button
                   variant="contained"
                   color="secondary"

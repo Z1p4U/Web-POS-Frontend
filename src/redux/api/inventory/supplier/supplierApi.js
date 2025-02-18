@@ -5,6 +5,7 @@ const fetchSupplier = async (
   token,
   pagination = {},
   search,
+  supplierSort = {},
   columns = "name"
 ) => {
   const headers = {
@@ -14,6 +15,7 @@ const fetchSupplier = async (
     const params = {
       columns,
       search,
+      ...(supplierSort || {}),
       ...(pagination || {}),
     };
 

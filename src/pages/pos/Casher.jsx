@@ -5,12 +5,21 @@ import Loader from "../../components/ui/loader/Loader";
 import Banner from "../../components/ui/banner/Banner";
 import ProductCalculator from "./components/ProductCalculator";
 import { useState } from "react";
-import { Check, Close } from "@mui/icons-material";
+import { Check } from "@mui/icons-material";
 import useSetting from "../../redux/hooks/setting/useSetting";
+import { Pagination } from "@mui/material";
 
 const Casher = () => {
-  const { products, refetchProducts, setSearch, status } = useProduct({
-    noPagination: true,
+  const [pagination, setPagination] = useState({ page: 1, per_page: 300 });
+  const {
+    products,
+    status,
+    pageCount,
+    totalRecord,
+    setSearch,
+    refetchProducts,
+  } = useProduct({
+    ...pagination,
   });
   const { setting } = useSetting();
 
@@ -19,7 +28,6 @@ const Casher = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const inputValue = e.target.elements.search.value.trim();
-    // console.log(inputValue.length);
     setSearch(inputValue);
     e.target.reset();
   };
@@ -37,6 +45,10 @@ const Casher = () => {
         return [...prev, { quantity: 0, product }];
       });
     }
+  };
+
+  const handlePaginate = (e, value) => {
+    setPagination({ page: value, per_page: 300 });
   };
 
   return (
@@ -57,28 +69,23 @@ const Casher = () => {
             </div>
 
             {/* Search and Banner */}
-            <div className="flex flex-wrap justify-between items-center border-b border-[#3f4245] py-5 px-5">
-              <div className="w-[50%] flex gap-4 items-center">
-                <Banner title={"Casher"} path1={"POS"} />
+            <div className="flex flex-col gap-5 border-b border-[#3f4245] p-5">
+              <div className="flex flex-wrap flex-row justify-between items-center">
+                <div className=" flex gap-4 items-center">
+                  <Banner title={"Casher"} path1={"POS"} />
+                </div>
+                <form onSubmit={handleSearch} className="relative">
+                  <input
+                    type="text"
+                    name="search"
+                    placeholder="Search"
+                    className="border-2 border-[#E8EAED] py-[6px] pr-5 pl-10 rounded-md outline-none focus:border-primary duration-300 font-medium placeholder:tracking-wider"
+                  />
+                  <div className="absolute top-[10px] left-[11px]">
+                    <BiSearch size={20} />
+                  </div>
+                </form>
               </div>
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  name="search"
-                  placeholder="Search"
-                  className="border-2 border-[#E8EAED] py-[6px] pr-5 pl-10 rounded-md outline-none focus:border-primary duration-300 font-medium placeholder:tracking-wider"
-                />
-                <div className="absolute top-[10px] left-[11px]">
-                  <BiSearch size={20} />
-                </div>
-
-                <div
-                  onClick={() => setSearch("")}
-                  className="absolute top-[5px] right-[11px] cursor-pointer opacity-60 hover:opacity-100"
-                >
-                  <Close size={20} className="text-red-500" />
-                </div>
-              </form>
             </div>
             {/* Product List */}
             <div className="mx-5">
@@ -143,6 +150,25 @@ const Casher = () => {
                     );
                   })
                 )}
+
+                <div className=" col-span-full flex justify-between flex-wrap gap-5 items-center pr-10 mt-8">
+                  <div>
+                    {`Showing ${
+                      (pagination.page - 1) * pagination.per_page + 1
+                    } to ${Math.min(
+                      pagination.page * pagination.per_page,
+                      totalRecord
+                    )} of ${totalRecord}`}
+                  </div>
+
+                  <Pagination
+                    count={pageCount}
+                    shape="rounded"
+                    size="large"
+                    page={pagination.page}
+                    onChange={handlePaginate}
+                  />
+                </div>
               </div>
             </div>
           </div>

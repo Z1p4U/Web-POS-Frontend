@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import React, { useState } from "react";
 import ModalMedia from "../../../../ui/model/MediaModel";
 
-const EntryProductStep3 = ({ formData, setFormData }) => {
+const EntryProductStep3 = React.memo(({ formData, setFormData }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
   const handleImageSelect = (imageUrl) => {
@@ -62,7 +62,9 @@ const EntryProductStep3 = ({ formData, setFormData }) => {
       </Box>
     </Box>
   );
-};
+});
+
+EntryProductStep3.displayName = "EntryProductStep3";
 
 EntryProductStep3.propTypes = {
   formData: PropTypes.any,

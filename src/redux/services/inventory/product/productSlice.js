@@ -23,13 +23,17 @@ export const productList = createAsyncThunk(
         filterProperties
       );
 
-      const normalizedData = {
-        products: pagination ? response?.data?.data : response?.data,
-        lastPage: response?.data?.last_page || 1,
-        totalRecord: response?.data?.total || 0,
-      };
-
-      return normalizedData;
+      if (pagination) {
+        return {
+          products: response?.data?.data,
+          lastPage: response?.data?.last_page || 1,
+          totalRecord: response?.data?.total || 0,
+        };
+      } else {
+        return {
+          allProducts: response?.data,
+        };
+      }
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to fetch Products"
@@ -122,6 +126,7 @@ export const productStatus = createAsyncThunk(
 );
 
 const initialState = {
+  allProducts: [],
   products: [],
   productDetail: {},
   status: "idle",
@@ -150,9 +155,13 @@ const productSlice = createSlice({
       })
       .addCase(productList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.products = action?.payload?.products;
-        state.lastPage = action?.payload?.lastPage;
-        state.totalRecord = action?.payload?.totalRecord;
+        if (action.meta.arg.pagination) {
+          state.products = action.payload.products;
+          state.lastPage = action.payload.lastPage;
+          state.totalRecord = action.payload.totalRecord;
+        } else {
+          state.allProducts = action.payload.allProducts;
+        }
       })
       .addCase(productList.rejected, (state, action) => {
         state.status = "failed";

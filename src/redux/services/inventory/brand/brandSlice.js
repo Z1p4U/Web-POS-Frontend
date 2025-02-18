@@ -8,15 +8,21 @@ import {
 
 export const brandList = createAsyncThunk(
   "brand/brandList",
-  async ({ token, pagination, search }, { rejectWithValue }) => {
+  async ({ token, pagination, search, brandSort }, { rejectWithValue }) => {
     try {
-      const response = await fetchBrand(token, pagination, search);
-      const normalizedData = {
-        brands: pagination ? response?.data?.data : response?.data,
-        lastPage: response?.data?.last_page || 1,
-        totalRecord: response?.data?.total || 0,
-      };
-      return normalizedData;
+      const response = await fetchBrand(token, pagination, search, brandSort);
+
+      if (brandSort && Object.keys(brandSort).length > 0) {
+        return {
+          sortedBrands: pagination ? response?.data?.data : response?.data,
+        };
+      } else {
+        return {
+          brands: pagination ? response?.data?.data : response?.data,
+          lastPage: response?.data?.last_page || 1,
+          totalRecord: response?.data?.total || 0,
+        };
+      }
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch brands");
     }
@@ -61,6 +67,7 @@ export const brandDelete = createAsyncThunk(
 
 const initialState = {
   brands: [],
+  sortedBrands: [],
   status: "idle",
   error: null,
   lastPage: 1,
@@ -82,9 +89,15 @@ const brandSlice = createSlice({
       })
       .addCase(brandList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.brands = action.payload.brands;
-        state.lastPage = action.payload.lastPage;
-        state.totalRecord = action.payload.totalRecord;
+        const braSort = action.meta.arg.brandSort;
+
+        if (braSort && Object.keys(braSort).length > 0) {
+          state.sortedBrands = action.payload.sortedBrands;
+        } else {
+          state.brands = action.payload.brands;
+          state.lastPage = action.payload.lastPage;
+          state.totalRecord = action.payload.totalRecord;
+        }
       })
       .addCase(brandList.rejected, (state, action) => {
         state.status = "failed";

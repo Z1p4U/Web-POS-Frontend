@@ -5,6 +5,7 @@ const fetchCategory = async (
   token,
   pagination = {},
   search,
+  categorySort = {},
   columns = "name"
 ) => {
   const headers = {
@@ -14,6 +15,7 @@ const fetchCategory = async (
     const params = {
       columns,
       search,
+      ...(categorySort || {}),
       ...(pagination || {}),
     };
 

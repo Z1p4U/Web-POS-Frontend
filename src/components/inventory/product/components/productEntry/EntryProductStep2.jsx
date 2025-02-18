@@ -1,7 +1,8 @@
 import { TextField, Box } from "@mui/material";
 import PropTypes from "prop-types";
+import React from "react";
 
-const EntryProductStep2 = ({ formData, onInputChange }) => {
+const EntryProductStep2 = React.memo(({ formData, onInputChange }) => {
   return (
     <Box className="flex gap-10 w-full h-full">
       {/* Form Fields */}
@@ -30,7 +31,9 @@ const EntryProductStep2 = ({ formData, onInputChange }) => {
       </Box>
     </Box>
   );
-};
+});
+
+EntryProductStep2.displayName = "EntryProductStep2";
 
 EntryProductStep2.propTypes = {
   formData: PropTypes.any,

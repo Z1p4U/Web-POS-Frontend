@@ -13,12 +13,14 @@ const useSupplier = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
   const [search, setSearch] = useState("");
+  const [supplierSort, setSupplierSort] = useState({});
 
   const selectSupplier = useMemo(() => (state) => state?.supplier, []);
 
   const supplierResponse = useSelector(selectSupplier, shallowEqual); // Ensures that it only triggers re-renders if the reference changes
 
   const suppliers = supplierResponse?.suppliers;
+  const sortedSuppliers = supplierResponse?.sortedSuppliers;
   const pageCount = supplierResponse?.lastPage;
   const totalRecord = supplierResponse?.totalRecord;
 
@@ -30,12 +32,13 @@ const useSupplier = ({ page, per_page, noPagination = false } = {}) => {
           token,
           pagination,
           search,
+          supplierSort,
         })
       );
     } else {
       dispatch(clearSupplierData());
     }
-  }, [token, page, per_page, noPagination, dispatch, search]);
+  }, [token, page, per_page, noPagination, dispatch, search, supplierSort]);
 
   const handleCreateSupplier = useCallback(
     async (suppliers) => {
@@ -108,9 +111,11 @@ const useSupplier = ({ page, per_page, noPagination = false } = {}) => {
 
   return {
     suppliers,
+    sortedSuppliers,
     search,
     pageCount,
     totalRecord,
+    setSupplierSort,
     setSearch,
     handleUpdateSupplier,
     handleCreateSupplier,

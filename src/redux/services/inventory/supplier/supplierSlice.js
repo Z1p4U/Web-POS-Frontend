@@ -8,15 +8,26 @@ import {
 
 export const supplierList = createAsyncThunk(
   "supplier/supplierList",
-  async ({ token, pagination, search }, { rejectWithValue }) => {
+  async ({ token, pagination, search, supplierSort }, { rejectWithValue }) => {
     try {
-      const response = await fetchSupplier(token, pagination, search);
-      const normalizedData = {
-        suppliers: pagination ? response?.data?.data : response?.data,
-        lastPage: response?.data?.last_page || 1,
-        totalRecord: response?.data?.total || 0,
-      };
-      return normalizedData;
+      const response = await fetchSupplier(
+        token,
+        pagination,
+        search,
+        supplierSort
+      );
+
+      if (supplierSort && Object.keys(supplierSort).length > 0) {
+        return {
+          sortedSuppliers: pagination ? response?.data?.data : response?.data,
+        };
+      } else {
+        return {
+          suppliers: pagination ? response?.data?.data : response?.data,
+          lastPage: response?.data?.last_page || 1,
+          totalRecord: response?.data?.total || 0,
+        };
+      }
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to fetch Suppliers"
@@ -67,6 +78,7 @@ export const supplierDelete = createAsyncThunk(
 
 const initialState = {
   suppliers: [],
+  sortedSuppliers: [],
   status: "idle",
   error: null,
   lastPage: 1,
@@ -88,9 +100,15 @@ const supplierSlice = createSlice({
       })
       .addCase(supplierList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.suppliers = action.payload.suppliers;
-        state.lastPage = action.payload.lastPage;
-        state.totalRecord = action.payload.totalRecord;
+        const supSort = action.meta.arg.supplierSort;
+
+        if (supSort && Object.keys(supSort).length > 0) {
+          state.sortedSuppliers = action.payload.sortedSuppliers;
+        } else {
+          state.suppliers = action.payload.suppliers;
+          state.lastPage = action.payload.lastPage;
+          state.totalRecord = action.payload.totalRecord;
+        }
       })
       .addCase(supplierList.rejected, (state, action) => {
         state.status = "failed";
