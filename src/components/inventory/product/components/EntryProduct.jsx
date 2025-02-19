@@ -7,23 +7,19 @@ import EntryProductStep2 from "./productEntry/EntryProductStep2";
 import EntryProductStep3 from "./productEntry/EntryProductStep3";
 import EntryProductConfirmation from "./productEntry/EntryProductConfirmation";
 import useProduct from "../../../../redux/hooks/inventory/product/useProduct";
-import useBrand from "../../../../redux/hooks/inventory/brand/useBrand";
-import useCategory from "../../../../redux/hooks/inventory/category/useCategory";
-import useSupplier from "../../../../redux/hooks/inventory/supplier/useSupplier";
 import { useLocation, useNavigate } from "react-router-dom";
+import useSortedBrand from "../../../../redux/hooks/inventory/brand/useSortedBrand";
+import useSortedCategory from "../../../../redux/hooks/inventory/category/useSortedCategory";
+import useSortedSupplier from "../../../../redux/hooks/inventory/supplier/useSortedSupplier";
 
 const EntryProduct = () => {
   const { handleCreateProduct, handleUpdateProduct } = useProduct({
     page: 1,
     per_page: 10,
   });
-  const { sortedBrands, setBrandSort } = useBrand({ noPagination: true });
-  const { sortedCategories, setCategorySort } = useCategory({
-    noPagination: true,
-  });
-  const { sortedSuppliers, setSupplierSort } = useSupplier({
-    noPagination: true,
-  });
+  const { sortedBrands } = useSortedBrand();
+  const { sortedCategories } = useSortedCategory();
+  const { sortedSuppliers } = useSortedSupplier();
   const nav = useNavigate();
   const location = useLocation();
   const product = location.state?.product;
@@ -58,13 +54,6 @@ const EntryProduct = () => {
       });
     }
   }, [product]);
-
-  // Set category sort order on mount
-  useEffect(() => {
-    setBrandSort({ order: "name", sort: "ASC" });
-    setCategorySort({ order: "name", sort: "ASC" });
-    setSupplierSort({ order: "name", sort: "ASC" });
-  }, [setCategorySort, setSupplierSort, setBrandSort]);
 
   // Use callbacks for navigation
   const handleNext = useCallback(() => {
