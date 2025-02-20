@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -13,15 +13,10 @@ import useMedia from "../../../redux/hooks/media/useMedia";
 import Loader from "../loader/Loader";
 import PropTypes from "prop-types";
 
-const ModalMedia = ({ opened, onClose, handleImageSelect }) => {
-  const {
-    photos,
-    handleCreatePhoto,
-    pagination,
-    setPagination,
-    handlePaginate,
-    pageCount,
-  } = useMedia();
+const ModalMedia = React.memo(({ opened, onClose, handleImageSelect }) => {
+  const { photos, pagination, pageCount, handleCreatePhoto, handlePaginate } =
+    useMedia();
+
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleSubmit = async (files) => {
@@ -45,10 +40,9 @@ const ModalMedia = ({ opened, onClose, handleImageSelect }) => {
 
   useEffect(() => {
     if (opened) {
-      setPagination({ page: 1, per_page: 10 });
       setSelectedImage(null);
     }
-  }, [opened, setPagination]);
+  }, [opened]);
 
   return (
     <Modal open={opened} onClose={onClose} aria-labelledby="media-modal-title">
@@ -165,7 +159,9 @@ const ModalMedia = ({ opened, onClose, handleImageSelect }) => {
       </Box>
     </Modal>
   );
-};
+});
+
+ModalMedia.displayName = "ModalMedia";
 
 ModalMedia.propTypes = {
   opened: PropTypes.any,

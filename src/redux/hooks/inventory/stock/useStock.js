@@ -1,11 +1,7 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useAuth from "../../auth/useAuth";
-import {
-  clearStockData,
-  controlStock,
-  todayStock,
-} from "../../../services/inventory/stock/stockSlice";
+import { controlStock } from "../../../services/inventory/stock/stockSlice";
 
 const useStock = () => {
   const dispatch = useDispatch();
@@ -34,18 +30,6 @@ const useStock = () => {
     },
     [dispatch, token]
   );
-
-  useEffect(() => {
-    if (token) {
-      dispatch(
-        todayStock({
-          token,
-        })
-      );
-    } else {
-      dispatch(clearStockData());
-    }
-  }, [dispatch, token]);
 
   return { handleControlStock, stockInCount, stockOutCount };
 };

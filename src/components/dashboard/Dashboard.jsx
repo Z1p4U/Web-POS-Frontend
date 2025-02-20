@@ -7,9 +7,9 @@ import dayjs from "dayjs";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import useSupplier from "../../redux/hooks/inventory/supplier/useSupplier";
-import useStock from "../../redux/hooks/inventory/stock/useStock";
 import useUserProfile from "../../redux/hooks/user/useUserProfile";
 import useCustomProduct from "../../redux/hooks/inventory/product/useCustomProduct";
+import useTodayStock from "../../redux/hooks/inventory/stock/useTodayStock";
 
 // Register all necessary Chart.js components
 Chart.register(...registerables);
@@ -20,7 +20,7 @@ const Dashboard = () => {
   const { suppliers } = useSupplier({ noPagination: true });
   const { isAdmin } = useUserProfile();
   const { setting } = useSetting();
-  const { stockInCount, stockOutCount } = useStock();
+  const { stockInCount, stockOutCount } = useTodayStock();
 
   const {
     vouchers,

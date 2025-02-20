@@ -17,10 +17,16 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const { token } = useAuth();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  const [relationshipFilters, setRelationshipFilters] = useState({
+    brand_id: "",
+    category_id: "",
+    supplier_id: "",
+  });
 
-  // Create a memoized selector to prevent unnecessary re-renders.
   const selectProduct = useMemo(() => (state) => state?.product, []);
   const productResponse = useSelector(selectProduct, shallowEqual);
+
+  console.log(relationshipFilters);
 
   const allProducts = productResponse?.allProducts;
   const products = productResponse?.products;
@@ -43,29 +49,38 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     }
   }, [filter]);
 
-  // Single useEffect that fetches data using the computed filterProperties.
   useEffect(() => {
     if (token) {
-      const pagination = noPagination ? undefined : { page, per_page };
+      const paginationParam = noPagination ? undefined : { page, per_page };
       dispatch(
         productList({
           token,
-          pagination,
+          pagination: paginationParam,
           search,
           filterProperties,
+          relationshipFilters,
         })
       );
     } else {
       dispatch(clearProductData());
     }
-  }, [token, page, per_page, noPagination, dispatch, search, filterProperties]);
+  }, [
+    token,
+    page,
+    per_page,
+    noPagination,
+    dispatch,
+    search,
+    filterProperties,
+    relationshipFilters,
+  ]);
 
   const handleCreateProduct = useCallback(
-    async (products) => {
+    async (productsData) => {
       try {
         const response = await dispatch(
           productCreate({
-            products,
+            products: productsData,
             token,
           })
         );
@@ -78,12 +93,12 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   );
 
   const handleUpdateProduct = useCallback(
-    async (id, products) => {
+    async (id, productsData) => {
       try {
         const response = await dispatch(
           productUpdate({
             id,
-            products,
+            products: productsData,
             token,
           })
         );
@@ -123,7 +138,7 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
         );
         return response;
       } catch (error) {
-        console.error("Failed to delete products:", error);
+        console.error("Failed to fetch product detail:", error);
       }
     },
     [dispatch, token]
@@ -131,10 +146,8 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
 
   const refetchProducts = useCallback(() => {
     if (token) {
-      const pagination = noPagination ? undefined : { page, per_page };
-
-      dispatch(productList({ token, pagination, search }));
-
+      const paginationParam = noPagination ? undefined : { page, per_page };
+      dispatch(productList({ token, pagination: paginationParam, search }));
       setFilter("All");
     }
   }, [dispatch, token, search, page, per_page, noPagination]);
@@ -149,7 +162,6 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
           search: "",
         })
       );
-
       return response?.payload?.data || [];
     } catch (error) {
       console.error("Failed to fetch all Products:", error);
@@ -206,6 +218,7 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     hasOutOfStock,
     lowStockItemCount,
     outOfStockItemCount,
+    relationshipFilters,
     setFilter,
     setSearch,
     refetchProducts,
@@ -216,6 +229,7 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
     fetchAllProducts,
     handleExportProducts,
     handleImportProducts,
+    setRelationshipFilters,
   };
 };
 

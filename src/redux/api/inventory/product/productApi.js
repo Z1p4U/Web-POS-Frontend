@@ -6,6 +6,7 @@ const fetchProduct = async (
   pagination = {},
   search,
   filterProperties,
+  relationshipFilters,
   column = "name",
   columns = "total_stock"
 ) => {
@@ -17,6 +18,7 @@ const fetchProduct = async (
       column,
       search,
       columns,
+      ...(relationshipFilters || {}),
       ...(filterProperties || {}),
       ...(pagination || {}),
     };

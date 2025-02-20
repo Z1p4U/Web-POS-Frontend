@@ -12,7 +12,7 @@ import {
 export const productList = createAsyncThunk(
   "product/productList",
   async (
-    { token, pagination, search, filterProperties },
+    { token, pagination, search, filterProperties, relationshipFilters },
     { rejectWithValue }
   ) => {
     try {
@@ -20,7 +20,8 @@ export const productList = createAsyncThunk(
         token,
         pagination,
         search,
-        filterProperties
+        filterProperties,
+        relationshipFilters
       );
 
       if (pagination) {

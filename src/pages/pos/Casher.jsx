@@ -4,10 +4,19 @@ import { BiSearch } from "react-icons/bi";
 import Loader from "../../components/ui/loader/Loader";
 import Banner from "../../components/ui/banner/Banner";
 import ProductCalculator from "./components/ProductCalculator";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Check } from "@mui/icons-material";
 import useSetting from "../../redux/hooks/setting/useSetting";
-import { Pagination } from "@mui/material";
+import {
+  Autocomplete,
+  Chip,
+  FormControl,
+  Pagination,
+  TextField,
+} from "@mui/material";
+import useSortedBrand from "../../redux/hooks/inventory/brand/useSortedBrand";
+import useSortedCategory from "../../redux/hooks/inventory/category/useSortedCategory";
+import useSortedSupplier from "../../redux/hooks/inventory/supplier/useSortedSupplier";
 
 const Casher = () => {
   const [pagination, setPagination] = useState({ page: 1, per_page: 300 });
@@ -16,12 +25,15 @@ const Casher = () => {
     status,
     pageCount,
     totalRecord,
+    relationshipFilters,
     setSearch,
     refetchProducts,
-  } = useProduct({
-    ...pagination,
-  });
+    setRelationshipFilters,
+  } = useProduct({ ...pagination });
   const { setting } = useSetting();
+  const { sortedBrands } = useSortedBrand();
+  const { sortedCategories } = useSortedCategory();
+  const { sortedSuppliers } = useSortedSupplier();
 
   const [selectedProduct, setSelectedProduct] = useState([]);
 
@@ -46,6 +58,24 @@ const Casher = () => {
       });
     }
   };
+
+  const onInputChange = useCallback(
+    (field, value) => {
+      if (field === "category_id" || field === "supplier_id") {
+        const newValue = Array.isArray(value) ? value.join(",") : value;
+        setRelationshipFilters((prev) => ({
+          ...prev,
+          [field]: newValue,
+        }));
+      } else {
+        setRelationshipFilters((prev) => ({
+          ...prev,
+          [field]: value,
+        }));
+      }
+    },
+    [setRelationshipFilters]
+  );
 
   const handlePaginate = (e, value) => {
     setPagination({ page: value, per_page: 300 });
@@ -85,6 +115,147 @@ const Casher = () => {
                     <BiSearch size={20} />
                   </div>
                 </form>
+              </div>
+
+              <div className=" flex flex-wrap gap-5 items-center">
+                <div className=" text-nowrap text-lg lg:text-xl font-bold">
+                  Filter Products :
+                </div>
+                <div className=" flex flex-row flex-wrap lg:flex-nowrap gap-10">
+                  {/* Brand */}
+                  <FormControl sx={{ minWidth: "180px" }} fullWidth>
+                    <Autocomplete
+                      id="brand-autocomplete"
+                      options={sortedBrands || []}
+                      groupBy={(option) => option.name[0].toUpperCase()}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        relationshipFilters.brand_id
+                          ? sortedBrands.find(
+                              (brand) =>
+                                brand.id === relationshipFilters.brand_id
+                            )
+                          : null
+                      }
+                      onChange={(event, newValue) => {
+                        onInputChange("brand_id", newValue ? newValue.id : "");
+                      }}
+                      renderInput={(params) => {
+                        const { key, ...rest } = params;
+                        return (
+                          <TextField
+                            key={key}
+                            {...rest}
+                            label="Brand"
+                            placeholder="Select Brand"
+                            required
+                          />
+                        );
+                      }}
+                    />
+                  </FormControl>
+
+                  {/* Category Multi-Select with Chips */}
+                  <FormControl sx={{ minWidth: "180px" }} fullWidth>
+                    <Autocomplete
+                      multiple
+                      id="category-autocomplete"
+                      options={sortedCategories || []}
+                      groupBy={(option) => option.name[0]?.toUpperCase()}
+                      getOptionLabel={(option) => option.name}
+                      // Convert comma-separated string into an array of selected objects.
+                      value={
+                        relationshipFilters.category_id
+                          ? sortedCategories.filter((cat) =>
+                              relationshipFilters.category_id
+                                .split(",")
+                                .includes(String(cat.id))
+                            )
+                          : []
+                      }
+                      onChange={(event, newValue) => {
+                        onInputChange(
+                          "category_id",
+                          newValue.map((option) => option.id)
+                        );
+                      }}
+                      renderInput={(params) => {
+                        const { key, ...rest } = params;
+                        return (
+                          <TextField
+                            key={key}
+                            {...rest}
+                            label="Category"
+                            placeholder="Select Category"
+                            required
+                          />
+                        );
+                      }}
+                      renderTags={(value, getTagProps) =>
+                        value.map((option, index) => {
+                          const { key, ...chipProps } = getTagProps({ index });
+                          return (
+                            <Chip
+                              key={key}
+                              label={option.name}
+                              {...chipProps}
+                            />
+                          );
+                        })
+                      }
+                    />
+                  </FormControl>
+
+                  {/* Supplier Multi-Select with Chips */}
+                  <FormControl sx={{ minWidth: "180px" }} fullWidth>
+                    <Autocomplete
+                      multiple
+                      id="supplier-autocomplete"
+                      options={sortedSuppliers || []}
+                      groupBy={(option) => option.name[0].toUpperCase()}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        relationshipFilters.supplier_id
+                          ? sortedSuppliers.filter((sup) =>
+                              relationshipFilters.supplier_id
+                                .split(",")
+                                .includes(String(sup.id))
+                            )
+                          : []
+                      }
+                      onChange={(event, newValue) => {
+                        onInputChange(
+                          "supplier_id",
+                          newValue.map((option) => option.id)
+                        );
+                      }}
+                      renderInput={(params) => {
+                        const { key, ...rest } = params;
+                        return (
+                          <TextField
+                            {...rest}
+                            key={key}
+                            label="Supplier"
+                            placeholder="Select Supplier"
+                            required
+                          />
+                        );
+                      }}
+                      renderTags={(value, getTagProps) =>
+                        value.map((option, index) => {
+                          const { key, ...chipProps } = getTagProps({ index });
+                          return (
+                            <Chip
+                              key={key}
+                              label={option.name}
+                              {...chipProps}
+                            />
+                          );
+                        })
+                      }
+                    />
+                  </FormControl>
+                </div>
               </div>
             </div>
             {/* Product List */}

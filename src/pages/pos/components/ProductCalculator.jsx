@@ -28,7 +28,7 @@ const ProductCalculator = ({
   const [isManuallySelected, setIsManuallySelected] = useState(false);
   const [formData, setFormData] = useState({
     products: [],
-    payment_type: "",
+    payment_type: "Cash",
   });
 
   const prevLengthRef = useRef(selectedProduct.length);
