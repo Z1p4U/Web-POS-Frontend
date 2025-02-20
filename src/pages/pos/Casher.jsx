@@ -19,7 +19,7 @@ import useSortedCategory from "../../redux/hooks/inventory/category/useSortedCat
 import useSortedSupplier from "../../redux/hooks/inventory/supplier/useSortedSupplier";
 
 const Casher = () => {
-  const [pagination, setPagination] = useState({ page: 1, per_page: 300 });
+  const [pagination, setPagination] = useState({ page: 1, per_page: 100 });
   const {
     products,
     status,
@@ -121,7 +121,7 @@ const Casher = () => {
                 <div className=" text-nowrap text-lg lg:text-xl font-bold">
                   Filter Products :
                 </div>
-                <div className=" flex flex-row flex-wrap lg:flex-nowrap gap-10">
+                <div className=" flex flex-row flex-wrap lg:flex-nowrap gap-5 lg:gap-10">
                   {/* Brand */}
                   <FormControl sx={{ minWidth: "180px" }} fullWidth>
                     <Autocomplete
@@ -265,12 +265,17 @@ const Casher = () => {
                   <div className="col-span-4 h-full min-h-[500px] flex justify-center items-center">
                     <Loader />
                   </div>
+                ) : products?.length === 0 ? ( // Check if there are no products
+                  <div className="col-span-4 h-full min-h-[500px] flex justify-center items-center">
+                    <p className="text-gray-500 text-lg font-semibold">
+                      No products available
+                    </p>
+                  </div>
                 ) : (
                   products?.map((pd) => {
                     const isSelected = selectedProduct?.some(
                       (item) => item?.product.id === pd?.id
                     );
-
                     return (
                       <div
                         key={pd?.id}

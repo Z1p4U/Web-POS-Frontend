@@ -110,7 +110,9 @@ const ProductTable = ({
                       sx={{ padding: "16px", maxWidth: "80px" }}
                     >
                       <img
-                        src={product?.photo}
+                        src={
+                          product?.photo ? product?.photo : "/logo/noimg.jpg"
+                        }
                         className="object-contain aspect-square w-20"
                         alt=""
                       />

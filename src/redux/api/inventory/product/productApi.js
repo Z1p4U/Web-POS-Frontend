@@ -13,15 +13,20 @@ const fetchProduct = async (
   const headers = {
     Authorization: `Bearer ${token}`,
   };
+
   try {
     const params = {
-      column,
-      search,
-      columns,
       ...(relationshipFilters || {}),
       ...(filterProperties || {}),
       ...(pagination || {}),
     };
+
+    if (search) {
+      params.search = search;
+      params.column = column;
+    } else if (filterProperties == {}) {
+      params.columns = columns;
+    }
 
     const response = await axios.get(`${config.API_URL}/product/list`, {
       headers,

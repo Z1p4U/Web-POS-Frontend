@@ -123,7 +123,7 @@ const BrandTable = ({
                       sx={{ padding: "16px", maxWidth: "150px" }}
                     >
                       <img
-                        src={brand?.photo}
+                        src={brand?.photo ? brand?.photo : "/logo/noimg.jpg"}
                         className="object-contain aspect-square w-40"
                         alt=""
                       />
