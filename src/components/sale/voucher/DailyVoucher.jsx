@@ -65,7 +65,7 @@ const DailyVoucher = () => {
               {/* table  */}
 
               <div
-                className={` ${!vouchers ? "hidden" : "flex"} gap-5 items-end w-full overflow-scroll`}
+                className={` ${!vouchers ? "hidden" : "flex"} gap-5 items-end w-full overflow-auto`}
               >
                 {/* TOTAL DAILY MONEY  */}
                 <div className={` flex mt-5 border-dim bg-primary`}>
@@ -83,7 +83,16 @@ const DailyVoucher = () => {
                       Total Cash
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
-                      {dailyTotalSale?.total_cash}
+                      {dailyTotalSale?.total_cash?.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="border-r border-t border-b border-dim px-5 py-2 text-end w-auto">
+                    <h1 className=" text-light font-semibold whitespace-nowrap tracking-wide">
+                      Total Profit
+                    </h1>
+                    <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
+                      {dailyTotalSale?.total_profit?.toLocaleString()}
                     </p>
                   </div>
 
@@ -92,7 +101,7 @@ const DailyVoucher = () => {
                       Total Tax
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
-                      {dailyTotalSale?.total_tax}
+                      {dailyTotalSale?.total_tax?.toLocaleString()}
                     </p>
                   </div>
 
@@ -101,7 +110,7 @@ const DailyVoucher = () => {
                       Total
                     </h1>
                     <p className=" text-white text-xl whitespace-nowrap tracking-wider font-semibold">
-                      {dailyTotalSale?.total}
+                      {dailyTotalSale?.total?.toLocaleString()}
                     </p>
                   </div>
                 </div>

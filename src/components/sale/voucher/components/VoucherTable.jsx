@@ -86,6 +86,7 @@ const VoucherTable = ({ printVoucher, vouchers }) => {
                   sx={{
                     padding: "16px",
                     color: "white",
+                    textWrap: "nowrap",
                     textAlign:
                       index === 7 ? "center" : index < 2 ? "left" : "right",
                   }}
@@ -107,43 +108,43 @@ const VoucherTable = ({ printVoucher, vouchers }) => {
               >
                 <TableCell
                   align="left"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
                   {rVoucher?.id}
                 </TableCell>
                 <TableCell
                   align="left"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
                   {rVoucher?.voucher_number}
                 </TableCell>
                 <TableCell
                   align="center"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
                   {rVoucher?.product_count}
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
                   {rVoucher?.tax}
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
-                  {rVoucher?.net_total}
+                  {rVoucher?.net_total?.toLocaleString()}
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
                   {rVoucher?.created_at}
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ color: "white", padding: "16px" }}
+                  sx={{ color: "white", padding: "16px", textWrap: "nowrap" }}
                 >
                   {rVoucher?.created_time}
                 </TableCell>
@@ -160,6 +161,7 @@ const VoucherTable = ({ printVoucher, vouchers }) => {
                       borderRadius: "8px",
                       textTransform: "none", // Keeps the text case as provided
                       fontWeight: "bold",
+                      textWrap: "nowrap",
                     }}
                     onClick={() => handleOpen(rVoucher)}
                   >
@@ -209,8 +211,12 @@ const VoucherTable = ({ printVoucher, vouchers }) => {
                   <p>Phone: {setting.phone || "N/A"}</p>
                 </Box>
                 <Box textAlign="right">
-                  <p>Date: {selectedVoucher.created_at}</p>
-                  <p>Time: {selectedVoucher.created_time}</p>
+                  <p className=" text-nowrap">
+                    Date: {selectedVoucher.created_at}
+                  </p>
+                  <p className=" text-nowrap">
+                    Time: {selectedVoucher.created_time}
+                  </p>
                 </Box>
               </Box>
 
@@ -235,8 +241,12 @@ const VoucherTable = ({ printVoucher, vouchers }) => {
                     <TableRow key={record?.id}>
                       <TableCell>{record?.product_name}</TableCell>
                       <TableCell align="center">{record?.quantity}</TableCell>
-                      <TableCell align="right">{record?.sale_price}</TableCell>
-                      <TableCell align="right">{record?.cost}</TableCell>
+                      <TableCell align="right">
+                        {record?.sale_price?.toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">
+                        {record?.cost?.toLocaleString()}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -249,10 +259,12 @@ const VoucherTable = ({ printVoucher, vouchers }) => {
                 justifyContent="space-between"
                 mb={2}
               >
-                <p>Subtotal: {selectedVoucher.total} Ks</p>
+                <p>Subtotal: {selectedVoucher.total?.toLocaleString()} Ks</p>
                 <p>Tax: {selectedVoucher.tax} Ks</p>
                 <p>
-                  <strong>Total: {selectedVoucher.net_total} Ks</strong>
+                  <strong>
+                    Total: {selectedVoucher.net_total?.toLocaleString()} Ks
+                  </strong>
                 </p>
               </Box>
 
