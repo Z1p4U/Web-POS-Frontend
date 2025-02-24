@@ -18,6 +18,7 @@ import LocalMallIcon from "@mui/icons-material/LocalMall";
 import StyleIcon from "@mui/icons-material/Style";
 import People from "@mui/icons-material/People";
 import useCustomProduct from "../redux/hooks/inventory/product/useCustomProduct";
+import { ChecklistRtl } from "@mui/icons-material";
 
 const drawerWidth = 320;
 
@@ -77,6 +78,11 @@ const baseNavItems = [
         adminOnly: true,
       },
     ],
+  },
+  {
+    label: "Expense",
+    icon: <ChecklistRtl />,
+    path: "/expense",
   },
   {
     label: "Media",

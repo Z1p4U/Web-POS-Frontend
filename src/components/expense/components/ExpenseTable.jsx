@@ -9,21 +9,21 @@ import {
   Paper,
   Box,
 } from "@mui/material";
-import Loader from "../../../ui/loader/Loader";
+import Loader from "../../ui/loader/Loader";
 import PropTypes from "prop-types";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import ConfirmationModal from "../../../ui/model/ConfirmationModal";
+import ConfirmationModal from "../../ui/model/ConfirmationModal";
 import { useState } from "react";
 
-const BrandTable = ({
-  brands,
+const ExpenseTable = ({
+  expenses,
   pagination,
   pageCount,
   handleEdit,
   isAdmin,
   totalRecord,
   handlePaginate,
-  handleDeleteBrand,
+  handleDeleteExpense,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -40,22 +40,22 @@ const BrandTable = ({
 
   const handleDelete = async () => {
     try {
-      await handleDeleteBrand(selectedId);
+      await handleDeleteExpense(selectedId);
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Error deleting the brand:", error);
+      console.error("Error deleting the expense:", error);
     }
   };
 
   return (
     <>
-      {!brands ? (
+      {!expenses ? (
         <div>
           <Loader />
         </div>
       ) : (
         <TableContainer component={Paper} className="overflow-x-auto">
-          <Table sx={{ minWidth: 650 }} aria-label="brand table">
+          <Table sx={{ minWidth: 650 }} aria-label="expense table">
             <TableHead>
               <TableRow sx={{ backgroundColor: "#002d5d", color: "#fff" }}>
                 <TableCell
@@ -68,25 +68,46 @@ const BrandTable = ({
                   align="left"
                   sx={{ padding: "16px", color: "white" }}
                 >
-                  PHOTO
+                  TITLE
                 </TableCell>
                 <TableCell
                   align="left"
                   sx={{ padding: "16px", color: "white" }}
                 >
-                  NAME
+                  AMOUNT
                 </TableCell>
                 <TableCell
                   align="left"
-                  sx={{ padding: "16px", color: "white" }}
-                >
-                  COMPANY
-                </TableCell>
-                <TableCell
-                  align="left"
-                  sx={{ padding: "16px", color: "white", maxWidth: 500 }}
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    maxWidth: 500,
+                    textWrap: "nowrap",
+                  }}
                 >
                   NOTE
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    maxWidth: 500,
+                    textWrap: "nowrap",
+                  }}
+                >
+                  DATE
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{
+                    padding: "16px",
+                    color: "white",
+                    maxWidth: 500,
+                    textWrap: "nowrap",
+                  }}
+                >
+                  TIME
                 </TableCell>
                 <TableCell
                   align="center"
@@ -99,12 +120,12 @@ const BrandTable = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {brands?.map((brand, index) => {
+              {expenses?.map((expense, index) => {
                 const rowNumber =
                   (pagination.page - 1) * pagination.per_page + index + 1;
                 return (
                   <TableRow
-                    key={brand?.id}
+                    key={expense?.id}
                     sx={{
                       backgroundColor: index % 2 === 0 ? "#38577e" : "#38577e", // alternate row colors (bg-secondary & bg-primary)
                       "&:hover": {
@@ -114,37 +135,63 @@ const BrandTable = ({
                   >
                     <TableCell
                       align="left"
-                      sx={{ color: "#fff", padding: "16px" }}
+                      sx={{
+                        color: "#fff",
+                        padding: "16px",
+                        textWrap: "nowrap",
+                      }}
                     >
                       {rowNumber}
                     </TableCell>
                     <TableCell
                       align="left"
-                      sx={{ padding: "16px", maxWidth: "150px" }}
+                      sx={{
+                        color: "#fff",
+                        padding: "16px",
+                        textWrap: "nowrap",
+                      }}
                     >
-                      <img
-                        src={brand?.photo ? brand?.photo : "/logo/noimg.jpg"}
-                        className="object-contain aspect-square w-40"
-                        alt=""
-                      />
+                      {expense?.title}
                     </TableCell>
                     <TableCell
                       align="left"
-                      sx={{ color: "#fff", padding: "16px" }}
+                      sx={{
+                        color: "#fff",
+                        padding: "16px",
+                        textWrap: "nowrap",
+                      }}
                     >
-                      {brand?.name}
+                      {expense?.amount}
                     </TableCell>
                     <TableCell
                       align="left"
-                      sx={{ color: "#fff", padding: "16px" }}
+                      sx={{
+                        color: "#fff",
+                        padding: "16px",
+                        textWrap: "nowrap",
+                      }}
                     >
-                      {brand?.company}
+                      {expense?.note}
                     </TableCell>
                     <TableCell
                       align="left"
-                      sx={{ color: "#fff", padding: "16px" }}
+                      sx={{
+                        color: "white",
+                        padding: "16px",
+                        textWrap: "nowrap",
+                      }}
                     >
-                      {brand?.note}
+                      {expense?.created_at}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{
+                        color: "white",
+                        padding: "16px",
+                        textWrap: "nowrap",
+                      }}
+                    >
+                      {expense?.created_time}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -163,13 +210,13 @@ const BrandTable = ({
                         }}
                       >
                         <div
-                          onClick={() => handleEdit(brand)}
+                          onClick={() => handleEdit(expense)}
                           className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 text-white hover:text-light transition-all duration-200"
                         >
                           <BiEdit className=" text-lg" />
                         </div>
                         <div
-                          onClick={() => handleOpenModal(brand?.id)}
+                          onClick={() => handleOpenModal(expense?.id)}
                           className="px-3 py-2 rounded-lg bg-primary text-center cursor-pointer hover:opacity-80 text-white hover:text-red-500 transition-all duration-200"
                         >
                           <BiTrash className=" text-lg" />
@@ -208,21 +255,21 @@ const BrandTable = ({
         open={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleDelete}
-        message="Are you sure you want to delete this brand? This action cannot be undone."
+        message="Are you sure you want to delete this expense? This action cannot be undone."
       />
     </>
   );
 };
 
-BrandTable.propTypes = {
-  brands: PropTypes.any.isRequired,
+ExpenseTable.propTypes = {
+  expenses: PropTypes.any.isRequired,
   totalRecord: PropTypes.any,
   pagination: PropTypes.any,
   pageCount: PropTypes.any,
   isAdmin: PropTypes.bool,
   handleEdit: PropTypes.any,
   handlePaginate: PropTypes.any,
-  handleDeleteBrand: PropTypes.any,
+  handleDeleteExpense: PropTypes.any,
 };
 
-export default BrandTable;
+export default ExpenseTable;

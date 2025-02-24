@@ -19,6 +19,7 @@ import UserProfile from "../components/user/UserProfile";
 import MonthlyVoucher from "../components/sale/voucher/MonthlyVoucher";
 import YearlyVoucher from "../components/sale/voucher/YearlyVoucher";
 import AuthGuard from "../components/AuthGuard";
+import Expense from "../components/expense/Expense";
 
 const Path = () => {
   return (
@@ -74,6 +75,10 @@ const Path = () => {
             }
           />
           {/* Sale */}
+
+          {/* Expense */}
+          <Route path="/expense" element={<Expense />} />
+          {/* Expense */}
 
           {/* Media */}
           <Route path="/media" element={<Media />} />

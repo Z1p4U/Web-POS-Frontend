@@ -28,7 +28,7 @@ const ProductCalculator = ({
   const [isManuallySelected, setIsManuallySelected] = useState(false);
   const [formData, setFormData] = useState({
     products: [],
-    payment_type: "Cash",
+    payment_type: "",
   });
 
   const prevLengthRef = useRef(selectedProduct.length);
@@ -210,7 +210,7 @@ const ProductCalculator = ({
           Receive
         </h1>
 
-        <div className="h-auto overflow-y-scroll scrollbar">
+        <div className="h-auto overflow-y-auto scrollbar">
           {selectedProduct?.map((data) => (
             <div
               onClick={() => selectReceiveHandler(data.product.id)}
@@ -326,6 +326,7 @@ const ProductCalculator = ({
                 textTransform: "none",
                 fontWeight: "bold",
               }}
+              disabled={formData?.payment_type === ""}
               onClick={() => checkoutConfirm(formData)}
             >
               Checkout

@@ -26,8 +26,6 @@ const useProduct = ({ page, per_page, noPagination = false } = {}) => {
   const selectProduct = useMemo(() => (state) => state?.product, []);
   const productResponse = useSelector(selectProduct, shallowEqual);
 
-  console.log(relationshipFilters);
-
   const allProducts = productResponse?.allProducts;
   const products = productResponse?.products;
   const status = productResponse?.status;

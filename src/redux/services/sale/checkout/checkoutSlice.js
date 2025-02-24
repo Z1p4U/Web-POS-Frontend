@@ -16,6 +16,7 @@ export const checkoutCreate = createAsyncThunk(
 
 const initialState = {
   status: "idle",
+  message: "",
   error: null,
 };
 
@@ -30,7 +31,7 @@ const checkoutSlice = createSlice({
       })
       .addCase(checkoutCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log(action.payload);
+        state.message = action?.payload?.message;
       })
       .addCase(checkoutCreate.rejected, (state, action) => {
         state.status = "failed";

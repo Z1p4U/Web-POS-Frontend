@@ -6,6 +6,7 @@ import categoryReducer from "./services/inventory/category/categorySlice";
 import supplierReducer from "./services/inventory/supplier/supplierSlice";
 import productReducer from "./services/inventory/product/productSlice";
 import stockReducer from "./services/inventory/stock/stockSlice";
+import expenseReducer from "./services/expense/expenseSlice";
 import mediaReducer from "./services/media/mediaSlice";
 import voucherReducer from "./services/sale/voucher/voucherSlice";
 import checkoutReducer from "./services/sale/checkout/checkoutSlice";
@@ -20,6 +21,7 @@ const store = configureStore({
     supplier: supplierReducer,
     product: productReducer,
     stock: stockReducer,
+    expense: expenseReducer,
     media: mediaReducer,
     voucher: voucherReducer,
     checkout: checkoutReducer,
