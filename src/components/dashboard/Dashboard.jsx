@@ -152,7 +152,7 @@ const Dashboard = () => {
               width={150}
               height={100}
               className="absolute bottom-0 right-0"
-              src="https://appstack.bootlab.io/img/illustrations/customer-support.png"
+              src="/logo/cslogo.png"
               alt="Customer Support"
             />
           </div>
