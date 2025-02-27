@@ -4,6 +4,7 @@ import {
   fetchCreateExpense,
   fetchDeleteExpense,
   fetchUpdateExpense,
+  fetchMonthlyExpense,
 } from "../../api/expense/expenseApi";
 
 export const expenseList = createAsyncThunk(
@@ -76,9 +77,26 @@ export const expenseDelete = createAsyncThunk(
   }
 );
 
+export const monthlyExpense = createAsyncThunk(
+  "expense/monthlyExpense",
+  async ({ token, month, pagination }, { rejectWithValue }) => {
+    try {
+      const response = await fetchMonthlyExpense(token, month, pagination);
+
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch expenses"
+      );
+    }
+  }
+);
+
 const initialState = {
   expenses: [],
   sortedExpenses: [],
+  monthlyExpense: [],
+  monthlyExpenseAmount: 0,
   status: "idle",
   error: null,
   lastPage: 1,
@@ -120,7 +138,10 @@ const expenseSlice = createSlice({
       .addCase(expenseCreate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.expenses = [action.payload.data, ...state.expenses];
+        state.monthlyExpense = [action.payload.data, ...state.monthlyExpense];
         state.totalRecord = state.totalRecord + 1;
+        state.monthlyExpenseAmount =
+          action.payload?.data?.amount + state.monthlyExpenseAmount;
       })
       .addCase(expenseCreate.rejected, (state, action) => {
         state.status = "failed";
@@ -135,6 +156,11 @@ const expenseSlice = createSlice({
         state.expenses = state.expenses.map((expense) =>
           expense.id === updatedExpense.id ? updatedExpense : expense
         );
+        state.monthlyExpense = state.monthlyExpense.map((expense) =>
+          expense.id === updatedExpense.id ? updatedExpense : expense
+        );
+        state.monthlyExpenseAmount =
+          action.payload?.data?.amount + state.monthlyExpenseAmount;
       })
       .addCase(expenseUpdate.rejected, (state, action) => {
         state.status = "failed";
@@ -152,6 +178,22 @@ const expenseSlice = createSlice({
         state.totalRecord = state.totalRecord - 1;
       })
       .addCase(expenseDelete.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(monthlyExpense.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(monthlyExpense.fulfilled, (state, action) => {
+        state.status = "succeeded";
+
+        state.monthlyExpense = action.payload?.data?.data;
+        state.lastPage = action.payload?.data?.last_page;
+        state.totalRecord = action.payload?.data?.total;
+        state.monthlyExpenseAmount =
+          action.payload?.monthly_expense?.total_expense;
+      })
+      .addCase(monthlyExpense.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

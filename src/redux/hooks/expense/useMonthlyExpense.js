@@ -4,21 +4,24 @@ import useAuth from "../auth/useAuth";
 import {
   expenseCreate,
   expenseDelete,
-  expenseList,
   expenseUpdate,
   clearExpenseData,
+  monthlyExpense,
 } from "../../services/expense/expenseSlice";
+import dayjs from "dayjs";
 
-const useExpense = ({ page, per_page, noPagination = false } = {}) => {
+const useMonthlyExpense = ({ page, per_page, noPagination = false } = {}) => {
   const dispatch = useDispatch();
   const { token } = useAuth();
-  const [search, setSearch] = useState("");
-  const [expenseSort, setExpenseSort] = useState({});
+  const [selectedMonth, setSelectedMonth] = useState("");
 
+  // Selector to get expense state from Redux
   const selectExpense = useMemo(() => (state) => state?.expense, []);
   const expenseResponse = useSelector(selectExpense, shallowEqual);
 
+  // Destructure values from the expense state
   const expenses = expenseResponse?.expenses;
+  const monthlyExpenseList = expenseResponse?.monthlyExpense;
   const sortedExpenses = expenseResponse?.sortedExpenses;
   const pageCount = expenseResponse?.lastPage;
   const totalRecord = expenseResponse?.totalRecord;
@@ -27,18 +30,17 @@ const useExpense = ({ page, per_page, noPagination = false } = {}) => {
   useEffect(() => {
     if (token) {
       const pagination = noPagination ? undefined : { page, per_page };
-      dispatch(
-        expenseList({
-          token,
-          pagination,
-          search,
-          expenseSort,
-        })
-      );
+
+      if (selectedMonth) {
+        dispatch(monthlyExpense({ token, month: selectedMonth, pagination }));
+      } else {
+        const currentMonth = dayjs().format("YYYY-MM");
+        dispatch(monthlyExpense({ token, month: currentMonth, pagination }));
+      }
     } else {
       dispatch(clearExpenseData());
     }
-  }, [token, page, per_page, noPagination, dispatch, search, expenseSort]);
+  }, [dispatch, selectedMonth, token, noPagination, page, per_page]);
 
   const handleCreateExpense = useCallback(
     async (expenses) => {
@@ -49,9 +51,10 @@ const useExpense = ({ page, per_page, noPagination = false } = {}) => {
             token,
           })
         );
+
         return response?.payload?.message;
       } catch (error) {
-        console.error("Failed to add expenses:", error);
+        console.error("Failed to add expense:", error);
       }
     },
     [dispatch, token]
@@ -69,7 +72,7 @@ const useExpense = ({ page, per_page, noPagination = false } = {}) => {
         );
         return response?.payload?.message;
       } catch (error) {
-        console.error("Failed to update expenses:", error);
+        console.error("Failed to update expense:", error);
       }
     },
     [dispatch, token]
@@ -86,7 +89,7 @@ const useExpense = ({ page, per_page, noPagination = false } = {}) => {
         );
         return response?.payload?.message;
       } catch (error) {
-        console.error("Failed to delete expenses:", error);
+        console.error("Failed to delete expense:", error);
       }
     },
     [dispatch, token]
@@ -94,17 +97,17 @@ const useExpense = ({ page, per_page, noPagination = false } = {}) => {
 
   return {
     expenses,
+    monthlyExpenseList,
     sortedExpenses,
-    search,
+    selectedMonth,
     pageCount,
     totalRecord,
     monthlyExpenseAmount,
-    setExpenseSort,
-    setSearch,
+    setSelectedMonth,
     handleUpdateExpense,
     handleCreateExpense,
     handleDeleteExpense,
   };
 };
 
-export default useExpense;
+export default useMonthlyExpense;

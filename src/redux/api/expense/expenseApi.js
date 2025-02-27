@@ -31,6 +31,29 @@ const fetchExpense = async (
   }
 };
 
+const fetchMonthlyExpense = async (token, month, pagination) => {
+  try {
+    const response = await axios.post(
+      `${config.API_URL}/expense/monthly`,
+      { month }, // Request body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          ...pagination, // Include pagination as query params
+        },
+      }
+    );
+
+    return response?.data;
+  } catch (error) {
+    console.log("Failed to fetch Expense:", error);
+    throw error;
+  }
+};
+
 const fetchCreateExpense = async (expenses, token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -96,6 +119,7 @@ const fetchDeleteExpense = async (id, token) => {
 
 export {
   fetchExpense,
+  fetchMonthlyExpense,
   fetchCreateExpense,
   fetchUpdateExpense,
   fetchDeleteExpense,

@@ -161,7 +161,7 @@ const ExpenseTable = ({
                         textWrap: "nowrap",
                       }}
                     >
-                      {expense?.amount}
+                      {expense?.amount?.toLocaleString()}
                     </TableCell>
                     <TableCell
                       align="left"

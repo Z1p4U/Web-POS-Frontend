@@ -84,6 +84,7 @@ const EntryExpense = ({
           {/* Amount Field */}
           <TextField
             fullWidth
+            type="number"
             label="Amount"
             name="amount"
             value={formData.amount}

@@ -169,6 +169,10 @@ const UserEntry = ({
           <Button
             variant="contained"
             color="primary"
+            disabled={
+              formData?.password <= 6 ||
+              formData?.password_confirmation != formData?.password
+            }
             fullWidth
             sx={{ mt: 2 }}
             onClick={handleSubmit}
