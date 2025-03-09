@@ -4,10 +4,13 @@ import useVoucher from "../../../redux/hooks/sale/voucher/useVoucher";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { Button, Menu, MenuItem } from "@mui/material";
 
 const YearlyVoucher = () => {
+  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+
   const {
     vouchers,
     yearlyTotalSale,
@@ -16,7 +19,11 @@ const YearlyVoucher = () => {
     setSelectedYear,
     activeFilter,
     setActiveFilter,
+    handleExportVoucher,
   } = useVoucher();
+
+  const openExportMenu = (event) => setExportAnchorEl(event.currentTarget);
+  const closeExportMenu = () => setExportAnchorEl(null);
 
   const handleYearChange = (newValue) => {
     if (newValue) {
@@ -40,7 +47,7 @@ const YearlyVoucher = () => {
           {/* banner */}
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-center max-[680px]:flex-col max-[680px]:items-start max-[680px]:gap-3">
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-5">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Select Year"
@@ -50,6 +57,41 @@ const YearlyVoucher = () => {
                   views={["year"]}
                 />
               </LocalizationProvider>
+
+              <Button
+                onClick={openExportMenu}
+                className=" py-2 px-4 rounded-lg font-bold hover:opacity-80 transition-colors duration-200"
+                sx={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  px: 2,
+                  py: 1,
+                }}
+              >
+                Export
+              </Button>
+              <Menu
+                anchorEl={exportAnchorEl}
+                open={Boolean(exportAnchorEl)}
+                onClose={closeExportMenu}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleExportVoucher("csv");
+                    closeExportMenu();
+                  }}
+                >
+                  Export as CSV
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleExportVoucher("excel");
+                    closeExportMenu();
+                  }}
+                >
+                  Export as Excel
+                </MenuItem>
+              </Menu>
             </div>
           </div>
           {vouchers?.length === 0 ? (

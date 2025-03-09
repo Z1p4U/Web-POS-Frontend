@@ -12,6 +12,7 @@ import {
   monthsInYear,
 } from "../../../services/sale/voucher/voucherSlice";
 import dayjs from "dayjs";
+import { fetchExportVoucher } from "../../../api/sale/voucher/voucherApi";
 
 const useVoucher = () => {
   const dispatch = useDispatch();
@@ -109,6 +110,47 @@ const useVoucher = () => {
     [dispatch, token]
   );
 
+  const handleExportVoucher = useCallback(
+    async (fileType) => {
+      try {
+        let period;
+        let value;
+
+        switch (activeFilter) {
+          case "day":
+            period = "today";
+            value = selectedDay
+              ? dayjs(selectedDay).format("YYYY-MM-DD")
+              : dayjs().format("YYYY-MM-DD");
+            break;
+
+          case "month":
+            period = "month";
+            value = selectedMonth
+              ? dayjs(selectedMonth).format("YYYY-MM")
+              : dayjs().format("YYYY-MM");
+            break;
+
+          case "year":
+            period = "year";
+            value = selectedYear
+              ? dayjs(selectedYear).format("YYYY")
+              : dayjs().format("YYYY");
+            break;
+
+          default:
+            console.warn("Invalid filter type");
+            return;
+        }
+
+        await fetchExportVoucher(token, period, value, fileType);
+      } catch (error) {
+        console.error("Failed to export voucher:", error);
+      }
+    },
+    [token, activeFilter, selectedDay, selectedMonth, selectedYear]
+  );
+
   const voucherData = useMemo(
     () => ({
       vouchers,
@@ -127,6 +169,7 @@ const useVoucher = () => {
       setSelectedMonth,
       setSelectedYear,
       setActiveFilter,
+      handleExportVoucher,
     }),
     [
       vouchers,
@@ -141,6 +184,7 @@ const useVoucher = () => {
       activeFilter,
       getVoucherDetail,
       printVoucher,
+      handleExportVoucher,
     ]
   );
 
